@@ -1,0 +1,32 @@
+{
+  "name": "wsrouter",
+  "description": "web Services router",
+  "version": "0.0.1",
+  "contributors": [
+    {
+      "name": "Pablo D'Ambrosio",
+      "email": "pablo@vink.to "
+    }
+  ],
+  "license": "MIT",
+  "repository": {},
+  "dependencies": {
+    "md5": "^2.1.0"
+  },
+  "devDependencies": {},
+  "files": [
+    "lib/",
+    "index.js"
+  ],
+  "engines": {
+    "node": ">= 0.8"
+  },
+  "scripts": {},
+  "gitHead": "",
+  "bugs": {},
+  "homepage": "",
+  "maintainers": [],
+  "dist": {},
+  "directories": {},
+  "readme": "ERROR: No README data found!"
+}
