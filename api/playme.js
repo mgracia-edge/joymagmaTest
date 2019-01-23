@@ -5,7 +5,7 @@ exports.resourceList = [
         path: "ABMPlayme",
         callback: ABMPlayme,
         method: "post",
-        protected: false
+        protected: true
     }
 ];
 
