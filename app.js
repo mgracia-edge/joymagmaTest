@@ -34,7 +34,7 @@ wsr.register(app, {
 
         if(
             req.headers.authorization &&
-            req.headers.authorization.split('Bearer ')[1] === token
+            req.headers.authorization.toLowerCase().split('bearer ')[1] === token.toLowerCase()
         ){
             next();
         }else{
