@@ -26,13 +26,18 @@ function ABMPlayme(req, res) {
                 db.Subscribers
                     .findOne({"subscriberId": suscriptor_id}, (error, data) => {
                         if (error) {
-                            console.log(error, data);
-                            console.log("alta")
-                            res.status(500).send({error: "db error"});
+
+                            res.status(500).send({
+                                error: 0x0010,
+                                error_dsc: "Error en la base de datos"
+                            });
                         } else {
                             if (data) {
 
-                                res.status(200).send({error: "suscriptor_id duplicado"});
+                                res.status(200).send({
+                                    error: 0x0030,
+                                    error_dsc: "Subscriber ID duplicado."
+                                });
                             } else {
 
                                 let json = {
@@ -56,9 +61,12 @@ function ABMPlayme(req, res) {
                                 Subscribers.save(json, (err) => {
                                     if (err) {
                                         console.log(err);
-                                        res.status(500).send({error: "db error"});
+                                        res.status(500).send({
+                                            error: 0x0010,
+                                            error_dsc: "Error en la base de datos"
+                                        });
                                     } else {
-                                        res.status(200).send({error: null, subscriber: json});
+                                        res.status(200).send({error: 0});
                                     }
 
                                 });
@@ -72,7 +80,10 @@ function ABMPlayme(req, res) {
                     .findOne({"subscriberId": suscriptor_id}, (error, data) => {
                         if (error) {
                             console.log(error);
-                            res.status(500).send({error: "db error"});
+                            res.status(500).send({
+                                error: 0x0010,
+                                error_dsc: "Error en la base de datos"
+                            });
                         } else {
                             if (data) {
 
@@ -104,29 +115,44 @@ function ABMPlayme(req, res) {
                                 db.Subscribers.updateOne(query, update, (error, subscriber) => {
                                     if (error) {
                                         console.warn(error);
-                                        res.status(500).send({error: "db error"});
+                                        res.status(500).send({
+                                            error: 0x0010,
+                                            error_dsc: "Error en la base de datos"
+                                        });
                                     } else {
-                                        res.send({error: null});
+                                        res.send({error: 0});
                                     }
 
                                 });
                             } else {
-                                res.status(200).send({error: "No se encuentra un Subscriber para realizar un update."});
+                                res.status(200).send({
+                                    error: 0x0031,
+                                    error_dsc: "No se encuentra un Subscriber para realizar un update."
+                                });
                             }
                         }
                     });
 
             } else {
-                res.status(400).send({error: "error en parametros"});
+                res.status(400).send({
+                    error: 0x0020,
+                    error_dsc: "error en parametros"
+                });
             }
 
         } else {
-            res.status(400).send({error: "error en parametros"});
+            res.status(400).send({
+                error: 0x0020,
+                error_dsc: "error en parametros"
+            });
         }
 
     } else {
 
-        res.status(500).send({error: "db error"});
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
     }
 
 

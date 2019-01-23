@@ -38,7 +38,10 @@ wsr.register(app, {
         ){
             next();
         }else{
-            res.status(403).send('<h1>Acceso denegado debido a credenciales inválidas.</h1>');
+            res.status(403).send({
+                error: 0x0021,
+                error_dsc:"Acceso denegado, credenciales inválidas."
+            });
 
         }
 
