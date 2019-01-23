@@ -21,15 +21,29 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 
 // Adding API routes
-wsr.register(app,{
-    resourcesDirectory: path.join(__dirname,"api"),
+wsr.register(app, {
+    resourcesDirectory: path.join(__dirname, "api"),
     version: 0.1,
     headers: {
-        "Access-Control-Allow-Origin":"*",
-        "Access-Control-Allow-Headers":"Content-type"
-    }/*,
-    authenticationFunction: apiAuth
-    */
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-type"
+    },
+    authenticationFunction: (req, res, next) => {
+
+        const token = 'L2W-K0C-A3Q-6DR';
+
+        if(
+            req.headers.authorization &&
+            req.headers.authorization.split('Bearer ')[1] === token
+        ){
+            next();
+        }else{
+            res.status(403).send('<h1>Acceso denegado debido a credenciales inválidas.</h1>');
+
+        }
+
+    }
+
 });
 
 // catch 404 and forward to error handler
@@ -44,7 +58,7 @@ app.use(function (err, req, res, next) {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // show error in console
-    if(err.status !== 404) console.error(err);
+    if (err.status !== 404) console.error(err);
 
     // render the error page
     res.status(err.status || 500);
