@@ -2,7 +2,7 @@ const pdc = require("../lib/provisoryDataConnection");
 
 exports.resourceList = [
     {
-        path: "ABMPlayme",
+        path: "abm",
         callback: ABMPlayme,
         method: "post",
         protected: true
