@@ -23,7 +23,7 @@ app.use('/', indexRouter);
 // Adding API routes
 wsr.register(app, {
     resourcesDirectory: path.join(__dirname, "api"),
-    version: 1.0,
+    version: "1.0",
     headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-type"
