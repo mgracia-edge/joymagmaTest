@@ -18,6 +18,18 @@ exports.resourceList = [
         callback: LoginWOTT,
         method: "post",
         protected: false
+    },
+    {
+        path: "get_current_programme",
+        callback: getCurrentProgramme,
+        method: "post",
+        protected: false
+    },
+    {
+        path: "get_a_week",
+        callback: getAWeek,
+        method: "post",
+        protected: false
     }
 ];
 
@@ -25,7 +37,7 @@ exports.resourceList = [
 
 function listProgramme() {
     return new Promise((resolve, reject) => {
-        parseString(fs.readFileSync(path.join(__dirname, '../res/reportv.xml'), 'latin1'), function (err, result) {
+        parseString(fs.readFileSync(path.join(__dirname, '../res/reporttv/file.xml'), 'latin1'), function (err, result) {
             resolve(result.tv.programme)
         });
     })
@@ -34,7 +46,7 @@ function listProgramme() {
 }
 
 function downloadReportTV() {
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject) => {
 
         let ftp = new Client();
 
@@ -56,7 +68,7 @@ function downloadReportTV() {
 
                     });
 
-                    stream.pipe(fs.createWriteStream(path.join(__dirname, '../res/reportv.xml')));
+                    stream.pipe(fs.createWriteStream(path.join(__dirname, '../res/reporttv/file.xml')));
                 });
             });
         });
@@ -76,56 +88,55 @@ let programmeUpdateService = setTimeout(() => {
             string.substring(0, 4) + "/" +
             string.substring(4, 6) + "/" +
             string.substring(6, 8)
-        ).setHours(string.substring(8, 10),string.substring(10, 12),0);
+        ).setHours(string.substring(8, 10), string.substring(10, 12), 0);
     }
 
     downloadReportTV()
         .then(listProgramme)
         .then((list) => {
-        let db = pdc.db;
+            let db = pdc.db;
 
-        if (db) {
+            if (db) {
 
-            db.Programme.deleteMany().then(()=>{
-                let arr = [];
+                db.Programme.deleteMany().then(() => {
+                    let arr = [];
 
-                console.log("Registros Eliminados");
-                console.log("Numeros de Programas", list.length);
+                    console.log("Registros Eliminados");
+                    console.log("Numeros de Programas", list.length);
 
-                list.forEach((item) => {
+                    list.forEach((item) => {
 
-                    let json = {
-                        "start": parseDate(item["$"].start),
-                        "stop": parseDate(item["$"].stop),
-                        "title": item.title[0]["_"],
-                        "description": item.desc[0]["_"],
-                        "credits": item.credits ? item.credits[0] : '',
-                        "category": parseInt(item.category[0]["_"]),
-                        "subCategory": parseInt(item["sub-category"][0]["_"]),
-                        "parentalCode": parseInt(item["$"]['parental-code']),
-                        "channelEPGId": parseInt(item["$"]['channel'])
-                    };
+                        let json = {
+                            "start": parseDate(item["$"].start),
+                            "stop": parseDate(item["$"].stop),
+                            "title": item.title[0]["_"],
+                            "description": item.desc[0]["_"],
+                            "credits": item.credits ? item.credits[0] : '',
+                            "category": parseInt(item.category[0]["_"]),
+                            "subCategory": parseInt(item["sub-category"][0]["_"]),
+                            "parentalCode": parseInt(item["$"]['parental-code']),
+                            "channelEPGId": parseInt(item["$"]['channel'])
+                        };
 
-                    arr.push(json);
+                        arr.push(json);
 
+                    });
+
+                    db.Programme.insertMany(arr, (err) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+
+                        }
+
+                    });
                 });
 
-                db.Programme.insertMany(arr, (err) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
 
-                    }
-
-                });
-            });
-
-
-
-        } else {
-            console.log("error")
-        }
-    });
+            } else {
+                console.log("error")
+            }
+        });
 
 }, 1000 * 3600 * 24);
 
@@ -305,3 +316,121 @@ function ABMPlayme(req, res) {
 
 }
 
+function getCurrentProgramme(req, res) {
+
+    let db = pdc.db;
+
+    if (db) {
+
+        let channelEPGId = req.body.channelEPGId;
+
+        if(!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
+
+            res.status(400).send({
+                error: 0x0022,
+                error_dsc: "channelEPGId debe ser del tipo INT o [INT]"
+            });
+
+            return false
+        }
+
+        let query = {
+            find:{
+                start: {
+                    $lt: new Date()
+                },
+                stop: {
+                    $gte:new Date()
+                },
+                channelEPGId: Array.isArray(channelEPGId) ? { $in:channelEPGId} : channelEPGId
+            },
+            sort:{
+                channelEPGId:1,
+                start:1
+            }
+        };
+
+        db.Programme
+            .find(query.find)
+            .sort(query.sort)
+            .then((programmes) => {
+
+                res.status(200).send(programmes);
+
+            }).catch((error) => {
+            res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        })
+
+    } else {
+
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+
+    }
+
+}
+
+function getAWeek(req, res) {
+
+    let db = pdc.db;
+
+    if (db) {
+
+        let channelEPGId = req.body.channelEPGId;
+
+        if(!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
+
+            res.status(400).send({
+                error: 0x0022,
+                error_dsc: "channelEPGId debe ser del tipo INT o [INT]"
+            });
+
+            return false
+        }
+
+        let today = new Date().setHours(0,0,0);
+        let week = new Date(today).setDate(new Date().getDate() + 6);
+        week = new Date(week).setHours(23,59,59);
+
+        let query = {
+            find:{
+                start: {
+                    $lt: week,
+                    $gte:today
+                },
+                channelEPGId: Array.isArray(channelEPGId) ? { $in:channelEPGId} : channelEPGId
+            },
+            sort:{
+                channelEPGId:1,
+                start:1
+            }
+        };
+
+        db.Programme
+            .find(query.find)
+            .sort(query.sort)
+            .then((programmes) => {
+
+                res.status(200).send(programmes);
+
+            }).catch((error) => {
+            res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        })
+
+    } else {
+
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+
+    }
+}
