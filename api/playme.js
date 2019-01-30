@@ -30,6 +30,18 @@ exports.resourceList = [
         callback: getAWeek,
         method: "post",
         protected: false
+    },
+    {
+        path: "get_channels",
+        callback: getChannels,
+        method: "post",
+        protected: false
+    },
+    {
+        path: "get_products",
+        callback: getProducts,
+        method: "post",
+        protected: false
     }
 ];
 
@@ -324,7 +336,7 @@ function getCurrentProgramme(req, res) {
 
         let channelEPGId = req.body.channelEPGId;
 
-        if(!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
+        if (!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
 
             res.status(400).send({
                 error: 0x0022,
@@ -335,18 +347,18 @@ function getCurrentProgramme(req, res) {
         }
 
         let query = {
-            find:{
+            find: {
                 start: {
                     $lt: new Date()
                 },
                 stop: {
-                    $gte:new Date()
+                    $gte: new Date()
                 },
-                channelEPGId: Array.isArray(channelEPGId) ? { $in:channelEPGId} : channelEPGId
+                channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : channelEPGId
             },
-            sort:{
-                channelEPGId:1,
-                start:1
+            sort: {
+                channelEPGId: 1,
+                start: 1
             }
         };
 
@@ -383,7 +395,7 @@ function getAWeek(req, res) {
 
         let channelEPGId = req.body.channelEPGId;
 
-        if(!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
+        if (!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
 
             res.status(400).send({
                 error: 0x0022,
@@ -393,21 +405,21 @@ function getAWeek(req, res) {
             return false
         }
 
-        let today = new Date().setHours(0,0,0);
+        let today = new Date().setHours(0, 0, 0);
         let week = new Date(today).setDate(new Date().getDate() + 6);
-        week = new Date(week).setHours(23,59,59);
+        week = new Date(week).setHours(23, 59, 59);
 
         let query = {
-            find:{
+            find: {
                 start: {
                     $lt: week,
-                    $gte:today
+                    $gte: today
                 },
-                channelEPGId: Array.isArray(channelEPGId) ? { $in:channelEPGId} : channelEPGId
+                channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : channelEPGId
             },
-            sort:{
-                channelEPGId:1,
-                start:1
+            sort: {
+                channelEPGId: 1,
+                start: 1
             }
         };
 
@@ -434,3 +446,108 @@ function getAWeek(req, res) {
 
     }
 }
+
+function getChannels(req, res) {
+
+    let db = pdc.db;
+
+    if (db) {
+
+        let channelId = req.body.channelId;
+
+        if (!Number.isInteger(channelId) && !Array.isArray(channelId)) {
+
+            res.status(400).send({
+                error: 0x0022,
+                error_dsc: "channeId debe ser del tipo INT o [INT]"
+            });
+
+            return false
+        }
+
+        let query = {
+            find: {
+                channelId: Array.isArray(channelId) ? {$in: channelId} : channelId
+            },
+            sort: {
+                name: 1
+            }
+        };
+
+        db.Channels
+            .find(query.find)
+            .sort(query.sort)
+            .then((channels) => {
+
+                res.status(200).send(channels);
+
+            }).catch((error) => {
+            res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        })
+
+    } else {
+
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+
+    }
+}
+
+function getProducts(req, res) {
+
+
+    let db = pdc.db;
+
+    if (db) {
+
+        let productId = req.body.productId;
+
+        if (!Number.isInteger(productId) && !Array.isArray(productId)) {
+
+            res.status(400).send({
+                error: 0x0022,
+                error_dsc: "channeId debe ser del tipo INT o [INT]"
+            });
+
+            return false
+        }
+
+        let query = {
+            find: {
+                productId: Array.isArray(productId) ? {$in: productId} : productId
+            },
+            sort: {
+                productName: 1
+            }
+        };
+
+        db.Products
+            .find(query.find)
+            .sort(query.sort)
+            .then((products) => {
+
+                res.status(200).send(products);
+
+            }).catch((error) => {
+            res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        })
+
+    } else {
+
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+
+    }
+}
+
+
