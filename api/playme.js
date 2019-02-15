@@ -61,6 +61,18 @@ function listProgramme() {
 
 function downloadReportTV() {
     console.log('Descargando archivo de programas...');
+
+    fs.access(path.join(__dirname, '../res/reporttv/file.xml'), fs.constants.F_OK, (err) => {
+        if(!err){
+            fs.unlink(path.join(__dirname, '../res/reporttv/file.xml'),  (err) => {
+                if (err) console.log(err);
+                console.log('Archivo descargado Eliminado');
+            });
+        }
+
+
+    });
+
     return new Promise((resolve, reject) => {
 
         let ftp = new Client();
@@ -151,10 +163,7 @@ function programmeUpdateService() {
                     });
                 });
 
-                fs.unlink(path.join(__dirname, '../res/reporttv/file.xml'),  (err) => {
-                    if (err) reject(err);
-                    console.log('Archivo descargado Eliminado');
-                });
+
 
             } else {
                 console.log("error")
