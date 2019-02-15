@@ -93,8 +93,7 @@ function downloadReportTV() {
     });
 }
 
-let programmeUpdateService = setTimeout(() => {
-
+function programmeUpdateService(){
     function parseDate(string) {
         return new Date(
             string.substring(0, 4) + "/" +
@@ -149,8 +148,11 @@ let programmeUpdateService = setTimeout(() => {
                 console.log("error")
             }
         });
+}
 
-}, 1000 * 3600 * 24);
+let intervalID = setInterval(programmeUpdateService, 1000 * 3600 * 24);
+
+programmeUpdateService();
 
 /** API ***/
 
@@ -453,7 +455,7 @@ function getChannels(req, res) {
 
     if (db) {
 
-        let channelId = req.body.channelId;
+        let channelId = req.body.id;
 
         if (!Number.isInteger(channelId) && !Array.isArray(channelId)) {
 
@@ -467,7 +469,7 @@ function getChannels(req, res) {
 
         let query = {
             find: {
-                channelId: Array.isArray(channelId) ? {$in: channelId} : channelId
+                _id: Array.isArray(channelId) ? {$in: channelId} : channelId
             },
             sort: {
                 name: 1
@@ -505,7 +507,7 @@ function getProducts(req, res) {
 
     if (db) {
 
-        let productId = req.body.productId;
+        let productId = req.body.id;
 
         if (!Number.isInteger(productId) && !Array.isArray(productId)) {
 
@@ -519,7 +521,7 @@ function getProducts(req, res) {
 
         let query = {
             find: {
-                productId: Array.isArray(productId) ? {$in: productId} : productId
+                _id: Array.isArray(productId) ? {$in: productId} : productId
             },
             sort: {
                 productName: 1
@@ -549,5 +551,4 @@ function getProducts(req, res) {
 
     }
 }
-
 
