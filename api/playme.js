@@ -50,12 +50,9 @@ exports.resourceList = [
 function listProgramme() {
     return new Promise((resolve, reject) => {
         parseString(fs.readFileSync(path.join(__dirname, '../res/reporttv/file.xml'), 'latin1'), (err, result) => {
+            if(err) reject(err);
 
-
-            console.log('Archivo descargado Eliminado');
             resolve(result.tv.programme)
-
-
         });
     })
 
