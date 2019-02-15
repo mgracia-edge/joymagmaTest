@@ -85,9 +85,14 @@ function downloadReportTV() {
                         ftp.end();
 
                     });
-                    console.log(path.join(__dirname, '../res/reporttv/file.xml'))
 
-                    stream.pipe(fs.createWriteStream(path.join(__dirname, '../res/reporttv/file.xml')));
+                    fs.mkdir(path.join(__dirname, '../res/reporttv'), { recursive: true }, (err) => {
+                        if (err) throw err;
+
+                        stream.pipe(fs.createWriteStream(path.join(__dirname, '../res/reporttv/file.xml')));
+
+                    });
+
                 });
             });
         });
