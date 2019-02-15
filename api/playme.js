@@ -49,12 +49,12 @@ exports.resourceList = [
 
 function listProgramme() {
     return new Promise((resolve, reject) => {
-        parseString(fs.readFileSync(path.join(__dirname, '../res/reporttv/file.xml'), 'latin1'),  (err, result) => {
-            fs.unlink(path.join(__dirname, '../res/reporttv/file.xml'),  (err) => {
-                if (err) reject(err);
-                console.log('Archivo descargado Eliminado');
-                resolve(result.tv.programme)
-            });
+        parseString(fs.readFileSync(path.join(__dirname, '../res/reporttv/file.xml'), 'latin1'), (err, result) => {
+
+
+            console.log('Archivo descargado Eliminado');
+            resolve(result.tv.programme)
+
 
         });
     })
@@ -86,7 +86,7 @@ function downloadReportTV() {
 
                     });
 
-                    fs.mkdir(path.join(__dirname, '../res/reporttv'), { recursive: true }, (err) => {
+                    fs.mkdir(path.join(__dirname, '../res/reporttv'), {recursive: true}, (err) => {
                         if (err) throw err;
 
                         stream.pipe(fs.createWriteStream(path.join(__dirname, '../res/reporttv/file.xml')));
@@ -105,7 +105,7 @@ function downloadReportTV() {
     });
 }
 
-function programmeUpdateService(){
+function programmeUpdateService() {
     function parseDate(string) {
         return new Date(
             string.substring(0, 4) + "/" +
@@ -154,6 +154,10 @@ function programmeUpdateService(){
                     });
                 });
 
+                fs.unlink(path.join(__dirname, '../res/reporttv/file.xml'),  (err) => {
+                    if (err) reject(err);
+                    console.log('Archivo descargado Eliminado');
+                });
 
             } else {
                 console.log("error")
