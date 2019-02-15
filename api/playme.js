@@ -49,8 +49,13 @@ exports.resourceList = [
 
 function listProgramme() {
     return new Promise((resolve, reject) => {
-        parseString(fs.readFileSync(path.join(__dirname, '../res/reporttv/file.xml'), 'latin1'), function (err, result) {
-            resolve(result.tv.programme)
+        parseString(fs.readFileSync(path.join(__dirname, '../res/reporttv/file.xml'), 'latin1'),  (err, result) => {
+            fs.unlink(path.join(__dirname, '../res/reporttv/file.xml'),  (err) => {
+                if (err) reject(err);
+                console.log('Archivo descargado Eliminado');
+                resolve(result.tv.programme)
+            });
+
         });
     })
 
@@ -58,6 +63,7 @@ function listProgramme() {
 }
 
 function downloadReportTV() {
+    console.log('Descargando archivo de programas...');
     return new Promise((resolve, reject) => {
 
         let ftp = new Client();
@@ -73,7 +79,7 @@ function downloadReportTV() {
                     if (err) reject();
 
                     stream.once('close', function () {
-
+                        console.log('Archivo descargado');
                         resolve();
 
                         ftp.end();
@@ -113,7 +119,6 @@ function programmeUpdateService(){
                     let arr = [];
 
                     console.log("Registros Eliminados");
-                    console.log("Numeros de Programas", list.length);
 
                     list.forEach((item) => {
 
@@ -137,7 +142,7 @@ function programmeUpdateService(){
                         if (err) {
                             console.log(err);
                         } else {
-
+                            console.log("Numeros de Programas agregados", list.length);
                         }
 
                     });
