@@ -12,23 +12,11 @@
  */
 
 angular.module('NxStudio', ['ngMaterial', 'ngMessages', 'ngRoute'])
-    .config(function ($routeProvider, $locationProvider, $mdThemingProvider) {
-
-        /*$mdThemingProvider.theme('default')
-            .primaryPalette('blue')
-            .accentPalette('deep-orange');
-
-
-        $routeProvider
-            .when('/', {
-                templateUrl: '/res/layout/view_home.html',
-                controller: 'HomeCtrl'
-            });
-        */
+    .config(['$routeProvider', '$locationProvider', '$mdThemingProvider', ($routeProvider, $locationProvider, $mdThemingProvider) => {
 
         $locationProvider.html5Mode(true);
 
-    })
+    }])
     .run(function run($rootScope, $location, $window) {
         /*// initialise google analytics
         $window.ga('create', 'UA-126373601-1', 'auto');

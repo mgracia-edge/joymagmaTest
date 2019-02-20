@@ -11,12 +11,23 @@
  *  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
  */
 
+const C = {
+
+}
+
 angular.module('NxStudio')
-    .factory('$NX', function ($http, $q) {
+    .factory('$NX', ['$http', '$q', ($http, $q) => {
+
+
+        function login() {
+            return new Promise((success,reject) => {
+
+
+
+            });
+        }
 
         return {
-
-
-        };
-
-    });
+            login: login
+        }
+    }]);

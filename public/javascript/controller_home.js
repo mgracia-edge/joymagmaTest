@@ -12,7 +12,7 @@
  */
 
 angular.module('NxStudio')
-    .controller("HomeCtrl", function ($scope) {
+    .controller("HomeCtrl", ['$scope', ($scope) => {
 
 
-    });
+    }]);

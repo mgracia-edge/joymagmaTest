@@ -12,7 +12,7 @@
  */
 
 angular.module('NxStudio')
-    .controller("MainCtrl", ($scope) => {
+    .controller("MainCtrl", ['$scope', ($scope) => {
 
         // Scope Properties
 
@@ -39,4 +39,4 @@ angular.module('NxStudio')
 
         init();
 
-    });
+    }]);
