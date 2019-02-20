@@ -1,0 +1,27 @@
+{
+  "title": "Nx Studio",
+  "restriction": {
+    "ipWhitelist": [
+      "127.0.0.1",
+      "::ffff:127.0.0.1",
+      "::1",
+      "::ffff:192.168.0.16",
+      "::ffff:192.168.0.116",
+      "::ffff:192.168.0.149"
+    ],
+    "geo": {
+      "default": "allow",
+      "deny": [
+
+      ],
+      "allow": [
+
+      ]
+    }
+  },
+  "notifications": {
+    "mail": {
+      "from":"no-reply@studio.magma-nx.io"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+<div class="fdo-home-wrapper">
+    <div>
+        <!-- If the reques time long-->
+        <div ng-show="!next" class="match-announcement-box" layout-xs="column">
+            <div class="match">
+                <!-- <div class="fbo-loadding"></div> -->
+            </div>
+        </div>
+        <fbo-preview-banner
+                fbo-matches="next"
+                on-item-click="gotoLIVE">
+        </fbo-preview-banner>
+    </div>
+    <!-- If the reques time long-->
+    <div class="fbo-loading-carousel">
+        <div class="fbo-loading-carousel__title"></div>
+        <div class="fbo-loading-carousel__content">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <div>
+        <fbo-carousel
+                ng-repeat="section in data.carousel"
+                items="section.items"
+                label="section.title"
+                on-item-click="gotoVOD">
+        </fbo-carousel>
+
+    </div>
+</div>
+<!--
+<div class="fbo-footer" layout="row" layout-align="center center" ng-include="'/res/layout/fragment_footer.html'"></div>
+-->

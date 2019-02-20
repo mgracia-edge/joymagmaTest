@@ -1,0 +1,37 @@
+
+.nx-main-bar {
+  width: 64px;
+  background-color: $accent-bg;
+  padding: 12px 0;
+
+  .nx-app-icon {
+    margin: 16px auto;
+  }
+
+  md-icon {
+
+    height: 32px;
+    width: 32px;
+
+    fill: $accent-color-contrast;
+
+    &:hover {
+      fill: $accent-color-contrast-hover;
+    }
+
+  }
+
+  .md-button {
+    min-width: 0;
+    border-radius: 50px;
+    width: 42px;
+    height: 42px;
+    margin: 2px auto;
+  }
+
+  .nx-user-profile {
+    background-size: cover;
+    background-position: center;
+  }
+
+}

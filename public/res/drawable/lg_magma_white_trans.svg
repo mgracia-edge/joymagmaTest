@@ -1,0 +1,30 @@
+<svg id="Magma_Logo_White" data-name="Magma Logo White" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        opacity: 0.6;
+      }
+
+      .cls-3 {
+        opacity: 0.8;
+      }
+
+      .cls-4 {
+        opacity: 0.7;
+      }
+
+      .cls-5 {
+        opacity: 0.5;
+      }
+    </style>
+  </defs>
+  <path id="Path_8" data-name="Path 8" class="cls-1" d="M32,10.56,21.824,14.093l-1.071-1.044-4.775,4.738L11.2,13.049l-1.026,1.044L0,10.56,10.622,0l5.356,4.336L21.333,0Z"/>
+  <path id="Path_9" data-name="Path 9" class="cls-2" d="M10.176,48V60.728L0,56.351V53.5Z" transform="translate(0 -28.728)"/>
+  <path id="Path_10" data-name="Path 10" class="cls-3" d="M10.176,29.833v5.179L0,40.513V26.3Z" transform="translate(0 -15.74)"/>
+  <path id="Path_11" data-name="Path 11" class="cls-4" d="M59.076,26.3V40.513L48.9,35.013V29.833Z" transform="translate(-27.076 -15.74)"/>
+  <path id="Path_12" data-name="Path 12" class="cls-5" d="M59.076,53.5v2.851L48.9,60.728V48Z" transform="translate(-27.076 -28.728)"/>
+</svg>

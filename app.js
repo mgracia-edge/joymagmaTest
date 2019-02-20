@@ -3,7 +3,9 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const sassMiddleware = require('node-sass-middleware');
 const wsr = require("./lib/wsrouter");
+const bodyParser = require('body-parser');
 
 const indexRouter = require('./routes/index');
 
@@ -13,16 +15,26 @@ let app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(bodyParser.json({ type: 'application/*+json' }));
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(sassMiddleware({
+    src: path.join(__dirname, 'public'),
+    dest: path.join(__dirname, 'public'),
+    outputStyle: 'compressed',
+    indentedSyntax: false, // true = .sass and false = .scss
+    sourceMap: true
+}));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 
 // Adding API routes
 wsr.register(app, {
-    resourcesDirectory: path.join(__dirname, "api"),
+    resourcesDirectory: path.join(__dirname, "api/wiltel"),
     version: "1.0",
     headers: {
         "Access-Control-Allow-Origin": "*",
@@ -61,7 +73,7 @@ app.use(function (err, req, res, next) {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // show error in console
-    if (err.status !== 404) console.error(err);
+    if(err.status !== 404) console.error(err);
 
     // render the error page
     res.status(err.status || 500);

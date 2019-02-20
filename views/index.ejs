@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html>
+<head>
+    <title><%= title %></title>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="Futbol de Bolivia">
+    <meta name="keywords" content="liga, primera, futbol, bolivia">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel='stylesheet' href='/lib/bower_components/angular-material/angular-material.min.css'/>
+    <link rel='stylesheet' href='/res/values/main.css'/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <link rel="icon" href="/favicon.ico">
+
+    <base href="/">
+
+</head>
+<body ng-app="NxStudio" ng-cloak ng-controller="MainCtrl" layout="row">
+
+<div class="nx-main-bar" ng-include="'/res/layout/fragment_main_bar.html'">
+</div>
+
+<div class="nx-sections-panel">
+
+</div>
+<div class="nx-main-wrapper"
+     ng-view layout-fill>
+</div>
+
+
+<script src="/lib/bower_components/angular/angular.min.js"></script>
+<script src="/lib/bower_components/angular-route/angular-route.min.js"></script>
+<script src="/lib/bower_components/angular-aria/angular-aria.min.js"></script>
+<script src="/lib/bower_components/angular-animate/angular-animate.min.js"></script>
+<script src="/lib/bower_components/angular-messages/angular-messages.min.js"></script>
+<script src="/lib/bower_components/angular-material/angular-material.min.js"></script>
+<script src="/lib/bower_components/angular-i18n/angular-locale_es-bo.js"></script>
+<% // noinspection JSUnresolvedVariable
+for(var i = 0; i < javascript.length; i++) {  // noinspection JSUnresolvedVariable
+-%>
+<script src="<%= javascript[i] %>"></script>
+<% } %>
+</body>
+</html>

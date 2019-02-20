@@ -1,0 +1,21 @@
+{
+  "name": "Fut Bo",
+  "authors": [
+    "Pablo D'Ambrtosio <pablo@vink.to>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-material": "^1.1.10",
+    "angular-route": "^1.7.7"
+  }
+}
