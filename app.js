@@ -6,6 +6,7 @@ const logger = require('morgan');
 const sassMiddleware = require('node-sass-middleware');
 const wsr = require("./lib/wsrouter");
 const bodyParser = require('body-parser');
+const api_support = require('./api/support');
 
 const indexRouter = require('./routes/index');
 
@@ -40,24 +41,20 @@ wsr.register(app, {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-type"
     },
-    authenticationFunction: (req, res, next) => {
+    authenticationFunction: api_support.wiltelAuthenticationFunction
 
-        const token = 'L2W-K0C-A3Q-6DR';
+});
 
-        if(
-            req.headers.authorization &&
-            req.headers.authorization.toLowerCase().split('bearer ')[1] === token.toLowerCase()
-        ){
-            next();
-        }else{
-            res.status(403).send({
-                error: 0x0021,
-                error_dsc:"Acceso denegado, credenciales inválidas."
-            });
 
-        }
-
-    }
+// Adding API routes
+wsr.register(app, {
+    resourcesDirectory: path.join(__dirname, "api/nx"),
+    version: "1.0",
+    headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-type"
+    },
+    authenticationFunction: api_support.nxAuthenticationFunction
 
 });
 

@@ -1,0 +1,177 @@
+/*
+ * Copyright (C) 2019 ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
+ *
+ *  NOTICE:  All information contained herein is, and remains the property of
+ * ENTERTAINMENT PORTAL OF THE AMERICAS, LLC ; if any.
+ *
+ *  The intellectual and technical concepts contained herein are proprietary to ENTERTAINMENT PORTAL OF THE AMERICAS, LLC
+ *  and its suppliers and may be covered by U.S. and Foreign Patents, patents in
+ *  process, and are protected by trade secret or copyright law. Dissemination of this
+ *  information or reproduction of this material is strictly forbidden unless prior written
+ *  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
+ */
+
+const users_permissions = {
+    USER_ADMIN: "user.admin",
+    PRODUCTS_WRITE: "products.write",
+    PRODUCTS_READ: "products.read",
+    CHANNELS_WRITE: "channels.admin",
+    CHANNELS_READ: "channels.admin",
+    STATS_ACCESS: "stats.access",
+    SUBSCRIBERS_READ: "subscribers.read",
+};
+
+const errorCode = {
+
+    /**
+     * From 0X0000 to 0x0049
+     */
+    database: {
+        DISCONNECTED: {
+            code: 0X0001,
+            message: "Not Connected to database",
+            httpCode: 503
+        },
+        ERROR: {
+            code: 0X0010,
+            message: "Database unknown error",
+            httpCode: 500
+        },
+        OPERATION_ERROR: {
+            code: 0X0011,
+            message: "Database operation error",
+            httpCode: 500
+        },
+        DUPLICATED: {
+            code: 0X0012,
+            message: "Duplicated entity",
+            httpCode: 500
+        }
+    },
+    /**
+     * From 0X0100 to 0X0149
+     */
+    userRights: {
+        BAD_AUTHENTICATION: {
+            code: 0X0100,
+            message: "Bad authentication",
+            httpCode: 401
+        },
+        PERMISSION_DENIED: {
+            code: 0X0101,
+            message: "Permission denied",
+            httpCode: 403
+        },
+        NON_EXISTENT_USER: {
+            code: 0X0102,
+            message: "Non existent user",
+            httpCode: 401
+        }
+    },
+    /**
+     * From 0X0150 to 0X199
+     */
+    connection: {
+        BAD_REQUEST: {
+            code: 0X0150,
+            message: "Bad request",
+            httpCode: 400
+        },
+        TIMEOUT: {
+            code: 0X0151,
+            message: "Connection time out",
+            httpCode: 599
+        },
+        EMPTY_SESSION: {
+            code: 0X0152,
+            message: "No session data",
+            httpCode: 401
+        },
+        SESSION_EXPIRED: {
+            code: 0X0153,
+            message: "Session has expired",
+            httpCode: 401
+        },
+        UNKNOWN: {
+            code: 0X0199,
+            message: "Unknown connection error",
+            httpCode: 500
+        },
+    },
+    /**
+     * From 0X0200 to 0X0249
+     */
+    request: {
+        BAD_REQUEST: {
+            code: 0X0200,
+            message: "Bad request",
+            httpCode: 400
+        },
+        NOT_JSON: {
+            code: 0X0201,
+            message: "Response is not JSON",
+            httpCode: 415
+        }
+    },
+    /**
+     * From 0X0300 to 0X0349
+     */
+    operation: {
+        OPERATION_HAS_FAILED: {
+            code: 0X300,
+            message: "The Requested operation has failed"
+        },
+        OPERATION_NOT_IMPLEMENTED: {
+            code: 0X301,
+            message: "Requested operation not yet implemented",
+            httpCode: 400
+        },
+        OPERATION_INVALID_PARAMETERS: {
+            code: 0X302,
+            message: "Operation has failed by using invalid parameters when calling the method"
+        },
+        TARGET_NOT_FOUND: {
+            code: 0X303,
+            message: "The target was not found"
+        },
+        DUPLICATED_ENTITY: {
+            code: 0X304,
+            message: "Cannot create, entity already exists."
+        }
+    }
+};
+
+/** Checks if error codes are unique **/
+
+(function checkCodes(collections) {
+    let codesSoFar = [];
+
+    checkProperties(collections);
+
+    // Inner Functions
+
+    function checkProperties(collection) {
+        for (let i in collection) {
+            if (typeof collection[i].code !== "undefined") {
+                if (codeExists(collection[i].code)) {
+                    console.warn(new Error("Error code duplicated for " + i));
+                } else {
+                    codesSoFar.push(collection[i].code);
+                }
+            } else {
+                checkProperties(collection[i]);
+            }
+        }
+    }
+
+    function codeExists(code) {
+        for (let i = 0; i < codesSoFar.length; i++) {
+            if (codesSoFar[i] === code) return true;
+        }
+
+        return false;
+    }
+
+})(errorCode);
+
+exports.error = errorCode;
