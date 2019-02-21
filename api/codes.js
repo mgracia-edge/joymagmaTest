@@ -183,3 +183,4 @@ const errorCode = {
 })(errorCode);
 
 exports.error = errorCode;
+exports.users_permissions = users_permissions;

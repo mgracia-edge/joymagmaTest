@@ -33,9 +33,7 @@ function _create(req, res) {
 
     if (db) {
 
-        const {name, channels} = req.body;
-
-        if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
+        if(!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)){
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.DISCONNECTED));
@@ -43,7 +41,9 @@ function _create(req, res) {
             return;
         }
 
-        db.Products
+        const {channelEPGId, name, descriptionShort, descriptionLong, publishing} = req.body;
+
+        db.Channels
             .findOne({"name": name}, (error, data) => {
                 if (error) {
                     res.status(codes.error.database.DISCONNECTED.httpCode)
@@ -53,23 +53,33 @@ function _create(req, res) {
                         res.status(codes.error.operation.DUPLICATED_ENTITY.httpCode)
                             .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
                     } else {
+
                         let json = {
+                            channelEPGId: channelEPGId,
                             name: name,
-                            creationDate: new Date(),
-                            lastUpdate: new Date(),
-                            channels: channels,
+                            descriptionShort: descriptionShort,
+                            descriptionLong: descriptionLong,
+                            publishing: publishing,
                             updateHistory: [{
                                 date: new Date(),
-                                products: {
-                                    channels: channels
+                                payload: {
+                                    channelEPGId: channelEPGId,
+                                    name: name,
+                                    descriptionShort: descriptionShort,
+                                    descriptionLong: descriptionLong,
+                                    publishing: publishing,
                                 }
                             }]
                         };
 
-                        let Products = new db.Products(json);
+                        if (typeof descriptionShort === 'undefined') delete json.descriptionShort;
+                        if (typeof descriptionLong === 'undefined') delete json.descriptionLong;
 
-                        Products.save(json, (err) => {
+                        let Channels = new db.Channels(json);
+
+                        Channels.save(json, (err) => {
                             if (err) {
+                                console.log(err)
                                 res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                                     .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
                             } else {
@@ -81,6 +91,7 @@ function _create(req, res) {
                     }
                 }
             });
+
 
     } else {
 
@@ -94,7 +105,7 @@ function _read(req, res) {
 
     if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_READ)) {
+        if(!req.user.permissions.includes(codes.users_permissions.CHANNELS_READ)){
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.DISCONNECTED));
@@ -102,7 +113,7 @@ function _read(req, res) {
             return;
         }
 
-        let {id, name, includeUpdateHistory, includeChannels} = req.body;
+        let {id, name, includeUpdateHistory} = req.body;
 
         let query = {
             find: {},
@@ -110,7 +121,7 @@ function _read(req, res) {
                 updateHistory: 0
             },
             sort: {
-                name: 1
+                productName: 1
             }
         };
 
@@ -120,7 +131,7 @@ function _read(req, res) {
 
         } else if (name) {
 
-            query.find = {name: Array.isArray(name) ? {$in: name} : name}
+            query.find = {productName: Array.isArray(name) ? {$in: name} : name}
 
         }
 
@@ -130,18 +141,12 @@ function _read(req, res) {
 
         }
 
-        if (typeof includeChannels !== "undefined" && !includeChannels) {
-
-            query.projection.channels = 0;
-
-        }
-
-        db.Products
+        db.Channels
             .find(query.find, query.projection)
             .sort(query.sort)
-            .then((products) => {
+            .then((channels) => {
 
-                res.status(200).send(new api.Success(products));
+                res.status(200).send(new api.Success(channels));
 
             }).catch((error) => {
             console.log(error)
@@ -161,7 +166,7 @@ function _update(req, res) {
 
     if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
+        if(!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)){
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.DISCONNECTED));
@@ -171,7 +176,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, channels} = data;
+        const {channelEPGId, name, descriptionShort, descriptionLong, publishing} = data;
 
         let query = {
             find: {
@@ -179,26 +184,30 @@ function _update(req, res) {
             },
             update: {
                 $set: {
+                    channelEPGId: channelEPGId,
                     name: name,
-                    lastUpdate: new Date(),
-                    channels: channels,
-
+                    descriptionShort: descriptionShort,
+                    descriptionLong: descriptionLong,
+                    publishing: publishing
                 },
                 $push: {
                     updateHistory: {
                         date: new Date(),
-                        products: {
-                            channels: channels
-                        }
+                        payload: {}
                     }
                 }
             }
         };
 
-        if (typeof channels === 'undefined') delete query.update.$set.channels;
+        if (typeof channelEPGId === 'undefined') delete query.update.$set.channelEPGId;
         if (typeof name === 'undefined') delete query.update.$set.name;
+        if (typeof descriptionShort === 'undefined') delete query.update.$set.descriptionShort;
+        if (typeof descriptionLong === 'undefined') delete query.update.$set.descriptionLong;
+        if (typeof publishing === 'undefined') delete query.update.$set.publishing;
 
-        db.Products.updateOne(query.find, query.update, (error, products) => {
+        query.update.$push.updateHistory.payload = query.update.$set;
+
+        db.Channels.updateOne(query.find, query.update, (error, products) => {
             if (error) {
                 res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                     .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
@@ -221,7 +230,7 @@ function _delete(req, res) {
 
     if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
+        if(!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)){
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.DISCONNECTED));
@@ -237,7 +246,7 @@ function _delete(req, res) {
             }
         };
 
-        db.Products
+        db.Channels
             .remove(query.find)
             .then((data) => {
 
