@@ -10,24 +10,22 @@
  *  information or reproduction of this material is strictly forbidden unless prior written
  *  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
  */
+(function () {
+    const C = {}
 
-const C = {
-
-}
-
-angular.module('NxStudio')
-    .factory('$NX', ['$http', '$q', ($http, $q) => {
+    angular.module('NxStudio')
+        .factory('$NX', ['$http', '$q', ($http, $q) => {
 
 
-        function login() {
-            return new Promise((success,reject) => {
+            function login() {
+                return new Promise((success, reject) => {
 
 
+                });
+            }
 
-            });
-        }
-
-        return {
-            login: login
-        }
-    }]);
+            return {
+                login: login
+            }
+        }]);
+})();

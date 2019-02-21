@@ -10,18 +10,19 @@
  *  information or reproduction of this material is strictly forbidden unless prior written
  *  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
  */
+(function () {
+    angular.module('NxStudio', ['ngMaterial', 'ngMessages', 'ngRoute'])
+        .config(['$routeProvider', '$locationProvider', '$mdThemingProvider', ($routeProvider, $locationProvider, $mdThemingProvider) => {
 
-angular.module('NxStudio', ['ngMaterial', 'ngMessages', 'ngRoute'])
-    .config(['$routeProvider', '$locationProvider', '$mdThemingProvider', ($routeProvider, $locationProvider, $mdThemingProvider) => {
+            $locationProvider.html5Mode(true);
 
-        $locationProvider.html5Mode(true);
+        }])
+        .run(function run($rootScope, $location, $window) {
+            /*// initialise google analytics
+            $window.ga('create', 'UA-126373601-1', 'auto');
 
-    }])
-    .run(function run($rootScope, $location, $window) {
-        /*// initialise google analytics
-        $window.ga('create', 'UA-126373601-1', 'auto');
-
-        $rootScope.$on('$routeChangeSuccess', function (event) {
-            $window.ga('send', 'pageview', $location.path());
-        });*/
-    });
+            $rootScope.$on('$routeChangeSuccess', function (event) {
+                $window.ga('send', 'pageview', $location.path());
+            });*/
+        });
+})();

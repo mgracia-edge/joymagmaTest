@@ -29,23 +29,23 @@ const errorCode = {
     database: {
         DISCONNECTED: {
             code: 0X0001,
-            message: "Not Connected to database",
+            message: "Data connection failed",
             httpCode: 503
         },
         ERROR: {
             code: 0X0010,
-            message: "Database unknown error",
+            message: "Data connection unknown error",
             httpCode: 500
         },
         OPERATION_ERROR: {
             code: 0X0011,
-            message: "Database operation error",
+            message: "Data query error",
             httpCode: 500
         },
         DUPLICATED: {
             code: 0X0012,
             message: "Duplicated entity",
-            httpCode: 500
+            httpCode: 409
         }
     },
     /**
@@ -66,6 +66,11 @@ const errorCode = {
             code: 0X0102,
             message: "Non existent user",
             httpCode: 401
+        },
+        SESSION_EXPIRED: {
+            code: 0X0103,
+            message: "Session has expired",
+            httpCode: 401
         }
     },
     /**
@@ -85,11 +90,6 @@ const errorCode = {
         EMPTY_SESSION: {
             code: 0X0152,
             message: "No session data",
-            httpCode: 401
-        },
-        SESSION_EXPIRED: {
-            code: 0X0153,
-            message: "Session has expired",
             httpCode: 401
         },
         UNKNOWN: {
@@ -119,24 +119,32 @@ const errorCode = {
     operation: {
         OPERATION_HAS_FAILED: {
             code: 0X300,
-            message: "The Requested operation has failed"
+            message: "The Requested operation has failed",
+            httpCode: 500
+
         },
         OPERATION_NOT_IMPLEMENTED: {
             code: 0X301,
             message: "Requested operation not yet implemented",
-            httpCode: 400
+            httpCode: 501
         },
         OPERATION_INVALID_PARAMETERS: {
             code: 0X302,
-            message: "Operation has failed by using invalid parameters when calling the method"
+            message: "Operation has failed by using invalid parameters when calling the method",
+            httpCode: 400
+
         },
         TARGET_NOT_FOUND: {
             code: 0X303,
-            message: "The target was not found"
+            message: "The target was not found",
+            httpCode: 404
+
         },
         DUPLICATED_ENTITY: {
             code: 0X304,
-            message: "Cannot create, entity already exists."
+            message: "Cannot create, entity already exists.",
+            httpCode: 409
+
         }
     }
 };

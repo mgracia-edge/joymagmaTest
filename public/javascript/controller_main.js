@@ -10,33 +10,33 @@
  *  information or reproduction of this material is strictly forbidden unless prior written
  *  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
  */
+(function () {
+    angular.module('NxStudio')
+        .controller("MainCtrl", ['$scope', ($scope) => {
 
-angular.module('NxStudio')
-    .controller("MainCtrl", ['$scope', ($scope) => {
+            // Scope Properties
 
-        // Scope Properties
+            $scope.user = {};
 
-        $scope.user = {};
+            // Methods Declaration
 
-        // Methods Declaration
+            $scope.getUserPicture = getUserPicture;
 
-        $scope.getUserPicture = getUserPicture;
+            // Implementation
 
-        // Implementation
+            function init() {
 
-        function init() {
-
-        }
-
-        function getUserPicture() {
-            if ($scope.user && $scope.user.picture) {
-                return $scope.user.picture.url
-            } else {
-                return "/res/drawable/ph_user.jpg"
             }
-        }
 
+            function getUserPicture() {
+                if ($scope.user && $scope.user.picture) {
+                    return $scope.user.picture.url
+                } else {
+                    return "/res/drawable/ph_user.jpg"
+                }
+            }
 
-        init();
+            init();
 
-    }]);
+        }]);
+})();

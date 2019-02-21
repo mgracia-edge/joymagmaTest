@@ -14,5 +14,4 @@
 angular.module('NxStudio')
     .controller("HomeCtrl", ['$scope', ($scope) => {
 
-
     }]);

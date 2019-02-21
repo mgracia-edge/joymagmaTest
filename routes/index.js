@@ -18,7 +18,14 @@ const router = express.Router();
 const maxmind = require('maxmind');
 const siteSettings = require('../lib/appSettings');
 
-const js = getJSFiles("/javascript", join(__dirname, "../public/javascript"));
+
+let  js;
+
+if(process.env.ENV && process.env.ENV === "PROD"){
+    js = ["app.js"]
+}else{
+    js =  getJSFiles("/javascript", join(__dirname, "../public/javascript"))
+}
 
 let country;
 
