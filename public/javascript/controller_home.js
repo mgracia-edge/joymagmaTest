@@ -10,8 +10,39 @@
  *  information or reproduction of this material is strictly forbidden unless prior written
  *  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
  */
+(function () {
+    angular.module('NxStudio')
+        .controller("HomeCtrl", ['$scope', function($scope) {
 
-angular.module('NxStudio')
-    .controller("HomeCtrl", ['$scope', ($scope) => {
+            $scope.channel = {
+                logo:'https://is5-ssl.mzstatic.com/image/thumb/Purple118/v4/e0/4d/be/e04dbe0a-748d-ba79-bae0-1c0b23c937a5/source/512x512bb.jpg',
+                stats: [{
 
-    }]);
+                    timestamp: Date.parse(new Date()),
+                    concurrency: 2121,
+                    users: 2313
+
+                }],
+                name: "Vivo 1",
+                online: true,
+                publishing: true
+            };
+
+            $scope.channel1 = {
+                logo:'https://is5-ssl.mzstatic.com/image/thumb/Purple118/v4/e0/4d/be/e04dbe0a-748d-ba79-bae0-1c0b23c937a5/source/512x512bb.jpg',
+                stats: [{
+
+                    timestamp: Date.parse(new Date()),
+                    concurrency: 2121,
+                    users: 2313
+
+                }],
+                name: "Vivo 2",
+                online: false,
+                publishing: true
+            };
+
+            console.log($scope)
+
+        }]);
+})();

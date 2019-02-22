@@ -1,0 +1,24 @@
+<div class="channel">
+    <div class="channel__panel-left">
+        <img class="channel__logo" ng-src="{{$parent.channel.logo}}" />
+        <span class="channel__name">{{$parent.channel.name}}</span>
+        <span>Viewing Now</span>
+        <span>{{$parent.channel.stats[0].users}}</span>
+    </div>
+    <div class="channel__panel-right">
+
+        <div class="channel__online">
+            <span class="{{$parent.channel.online ? 'online' : 'offline'}}">on line</span>
+        </div>
+        <div class="channel__publishing">
+            <span class="{{$parent.channel.publishing ? 'online' : 'offline'}}">published</span>
+        </div>
+        <div class="channel__chart" >
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
