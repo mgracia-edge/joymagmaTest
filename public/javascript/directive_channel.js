@@ -1,74 +1,81 @@
 (function () {
     angular.module('NxStudio')
-        .directive("nxChannel", function() {
+        .directive("nxChannel", function () {
             return {
                 restrict: 'E',
+                require: '?ngModel',
                 templateUrl: "/res/layout/directive_channel.html",
-                scope:{},
-                controller: controller
+                link: link,
+                controller: ["$scope", controller]
             }
         });
 
 
-    function controller($scope) {
+    function link(scope, element, attributes, ngModel) {
 
-        function init(){
-            console.log($scope.$parent.channel)
-            let ctx = document.getElementById("myChart");
-            ctx.height = 100;
-            let myBarChart = new Chart(ctx, {
-                "type": "bar",
-                "data": {
-                    "labels": ["January", "February", "March", "April", "May", "June", "s","as", "s","as", "s","as", "s","as"],
-                    "datasets": [
-                        {
-                            "label": "My First Dataset",
-                            "data": [56, 39, 30, 31, 26, 35, 40,55, 59, 80, 81, 86, 95, 100],
-                            "fill": true,
-                            "backgroundColor": '#42516E',
-                            //"borderColor": ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)", "rgb(201, 203, 207)","rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
-                            "borderWidth": 0
-                        }]
-                },
-                "options": {
-                    layout: {
-                        padding: {
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            bottom: 0
-                        }
-                    },
-                    legend: {
-                        display: false,
-                        labels: {
-                            fontColor: 'rgb(255, 99, 132)'
-                        }
-                    },
-                    title: {
-                        display: false
-                    },
-                    tooltips: {
-                        enabled: false,
-                        display: false,
-                    },
-                    scales: {
-                        xAxes: [{
-                            stacked: true,
-                            display: false,
-                        }],
-                        yAxes: [{
-                            display: false,
-                            stacked: true
-                        }]
-                    }
-                }
-            });
+        scope.channel = scope.item
+
+        let chart_data = [];
+        let char_labels = []
+
+        for(let i in scope.channel.stats){
+            chart_data.push(scope.channel.stats[i].concurrency)
+            char_labels.push(scope.channel.stats[i].timestamp)
         }
 
-        init();
+        let ctx = element[0].getElementsByTagName("canvas")[0];
+        ctx.height = 100;
+        let myBarChart = new Chart(ctx, {
+            "type": "bar",
+            "data": {
+                "labels": char_labels,
+                "datasets": [
+                    {
+                        "label": "Concurrency",
+                        "data": chart_data,
+                        "fill": true,
+                        "backgroundColor": '#42516E',
+                        "borderWidth": 0
+                    }]
+            },
+            "options": {
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        fontColor: 'rgb(255, 99, 132)'
+                    }
+                },
+                title: {
+                    display: false
+                },
+                tooltips: {
+                    enabled: false,
+                    display: false,
+                },
+                scales: {
+                    xAxes: [{
+                        stacked: true,
+                        display: false,
+                    }],
+                    yAxes: [{
+                        display: false,
+                        stacked: true
+                    }]
+                }
+            }
+        });
 
+    }
 
+    function controller(scope) {
 
     }
 

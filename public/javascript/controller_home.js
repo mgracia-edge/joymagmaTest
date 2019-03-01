@@ -12,37 +12,41 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("HomeCtrl", ['$scope', function($scope) {
+        .controller("HomeCtrl", ['$scope','$interval', function ($scope, $interval) {
 
-            $scope.channel = {
-                logo:'https://is5-ssl.mzstatic.com/image/thumb/Purple118/v4/e0/4d/be/e04dbe0a-748d-ba79-bae0-1c0b23c937a5/source/512x512bb.jpg',
-                stats: [{
+            $scope.channels = [
+            ]
 
-                    timestamp: Date.parse(new Date()),
-                    concurrency: 2121,
-                    users: 2313
+            for (let i = 0; i < 50; i++){
+                $scope.channels.push(channel("Vivo " + i))
+            }
 
-                }],
-                name: "Vivo 1",
-                online: true,
-                publishing: true
-            };
 
-            $scope.channel1 = {
-                logo:'https://is5-ssl.mzstatic.com/image/thumb/Purple118/v4/e0/4d/be/e04dbe0a-748d-ba79-bae0-1c0b23c937a5/source/512x512bb.jpg',
-                stats: [{
+            function channel(name) {
 
-                    timestamp: Date.parse(new Date()),
-                    concurrency: 2121,
-                    users: 2313
+                let c = [];
 
-                }],
-                name: "Vivo 2",
-                online: false,
-                publishing: true
-            };
+                for (let i = 0; i < 15; i++) {
+                    c.push({
+                        timestamp: Date.now() + 1 * 1000,
+                        concurrency: Math.round(Math.random()*1000),
+                        users: Math.round(Math.random()*1000)
+                    });
+                }
 
-            console.log($scope)
+                return {
+                    logo: 'https://is5-ssl.mzstatic.com/image/thumb/Purple118/v4/e0/4d/be/e04dbe0a-748d-ba79-bae0-1c0b23c937a5/source/512x512bb.jpg',
+                    stats: c,
+                    name: name,
+                    online: Math.random()>0.5?true:false,
+                    publishing: Math.random()>0.5?true:false
+                }
+
+                $interval(()=>{
+
+                },1000)
+
+            }
 
         }]);
 })();

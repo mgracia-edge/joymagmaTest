@@ -15,10 +15,11 @@
 @import "common";
 
 /* Views */
+@import "view_login";
 
 /* Fragments */
 @import "main_bar";
-@import "sections_panel";
+@import "nav_panel";
 
 /* Directives */
 @import "directive_channel";

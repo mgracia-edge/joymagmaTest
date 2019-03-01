@@ -18,17 +18,33 @@
                 .when('/', {
                     templateUrl: '/res/layout/view_home.html',
                     controller: 'HomeCtrl'
+                })
+                .when('/login', {
+                    templateUrl: '/res/layout/view_login.html',
+                    controller: 'LoginCtrl'
                 });
 
             $locationProvider.html5Mode(true);
 
         })
-        .run(function run($rootScope, $location, $window) {
+        .run(["$rootScope", "$location", "$window","$NxNav", function run($rootScope,$location, $window,$NxNav) {
             /*// initialise google analytics
             $window.ga('create', 'UA-126373601-1', 'auto');
 
             $rootScope.$on('$routeChangeSuccess', function (event) {
                 $window.ga('send', 'pageview', $location.path());
             });*/
-        });
+
+
+            $rootScope.$on('$routeChangeSuccess', function (event) {
+                if($location.path() == "/login"){
+                    $NxNav.hide();
+                }else{
+                    $NxNav.show();
+                }
+            });
+
+
+
+        }]);
 })();

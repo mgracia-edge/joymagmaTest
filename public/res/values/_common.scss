@@ -4,5 +4,85 @@ body {
 }
 
 @mixin box-shadow {
-  box-shadow: 0px 0px 1px 0px #00000055;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .2);
+}
+
+@mixin border-radius {
+  border-radius: 3px;
+}
+
+scroll-view {
+  display: block;
+
+  &[orientation="horizontal"] {
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+
+  &[orientation="vertical"] {
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+}
+
+* [secction],
+* [padding] {
+  padding: 8px;
+}
+
+* [block] {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+* [secction] {
+
+  h1 {
+    font-size: 24px;
+    color: $heading_color;
+    margin: 0
+  }
+
+}
+
+a {
+  color: $link_text_color;
+}
+
+input[type="search"],
+input[type="text"],
+input[type="password"],
+search-box {
+  display: inline-block;
+  outline: none;
+  background: $light-bg;
+  border: 1.2px solid $border-color-light;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+search-box {
+  input[type="search"] {
+    display: inline-flex;
+    outline: none;
+    background: none;
+    border: none;
+    padding: 0;
+    border-radius: 0;
+  }
+}
+
+.nx-panel {
+  background: $light-bg;
+  color: $text-color;
+  padding: 20px;
+  @include border-radius;
+  @include box-shadow;
+
+  input {
+    margin: 2px;
+    padding: 6px;
+    min-width: 200px;
+    background: white;
+  }
 }

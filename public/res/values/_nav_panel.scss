@@ -1,0 +1,7 @@
+.nx-nav-panel {
+  min-width: 240px;
+  background-color: $light-bg;
+
+  @include box-shadow;
+
+}

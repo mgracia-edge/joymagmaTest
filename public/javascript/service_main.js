@@ -14,13 +14,11 @@
     const C = {}
 
     angular.module('NxStudio')
-        .factory('$NX', ['$http', '$q', ($http, $q) => {
-
+        .factory('$NxApi', ['$http', '$q', function ($http, $q) {
 
             function login() {
                 return new Promise((success, reject) => {
-
-
+                    reject()
                 });
             }
 

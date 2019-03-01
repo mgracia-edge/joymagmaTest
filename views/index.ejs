@@ -21,11 +21,11 @@
 </head>
 <body ng-app="NxStudio" ng-cloak ng-controller="MainCtrl" layout="row">
 
-<div class="nx-main-bar" ng-include="'/res/layout/fragment_main_bar.html'">
+<div class="nx-main-bar" ng-include="'/res/layout/fragment_main_bar.html'" ng-hide="mainBar.hidden">
 </div>
 
-<div class="nx-sections-panel">
-
+<div class="nx-nav-panel" ng-hide="navPanel.hidden">
+    
 </div>
 <div class="nx-main-wrapper"
      ng-view layout-fill>
@@ -38,7 +38,6 @@
 <script src="/lib/bower_components/angular-animate/angular-animate.min.js"></script>
 <script src="/lib/bower_components/angular-messages/angular-messages.min.js"></script>
 <script src="/lib/bower_components/angular-material/angular-material.min.js"></script>
-<script src="/lib/bower_components/angular-i18n/angular-locale_es-bo.js"></script>
 <% // noinspection JSUnresolvedVariable
 for(var i = 0; i < javascript.length; i++) {  // noinspection JSUnresolvedVariable
 -%>

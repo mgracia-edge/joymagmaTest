@@ -1,0 +1,25 @@
+<div layout-fill layout="column" class="nx-view-login">
+    <div style="height: 10%">
+
+    </div>
+    <div layout="column" layout-align="center center">
+
+        <img class="m-logo" src="/res/drawable/lg_magma_white_trans.svg">
+        <img class="banner" src="/res/drawable/lg_nx_studio_white_trans.svg">
+
+        <label>Log in to your account</label>
+
+        <div class="nx-panel" layout="column">
+            <input placeholder="email" type="text" ng-model="loginData.email" title="password">
+            <input placeholder="password" type="password" ng-model="loginData.password" title="password"
+                   ng-keypress="keyPress($event)">
+            <md-button ng-click="checkLogin()">Login</md-button>
+        </div>
+    </div>
+    <div flex layout="column" layout-align="center center">
+        If you have troubles with you account, please contact us at <a href="mailto:support@edge-americas.com">support@edge-americas.com</a>
+    </div>
+    <div layout="column" layout-align="center center">
+        <p>Copyright @ 2019 Edge Technology S.A.</p>
+    </div>
+</div>

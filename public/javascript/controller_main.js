@@ -12,11 +12,14 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("MainCtrl", ['$scope', ($scope) => {
+        .controller("MainCtrl", ['$scope', '$NxApi', '$NxNav', '$location', function ($scope, $NxApi,$NxNav,$location) {
 
             // Scope Properties
 
             $scope.user = {};
+            $scope.navPanel = $NxNav.navPanel;
+            $scope.mainBar = $NxNav.mainBar;
+
 
             // Methods Declaration
 
@@ -25,6 +28,12 @@
             // Implementation
 
             function init() {
+
+                $NxApi.login().catch(() => {
+                    if ($location.path() != "/login") {
+                        $location.path("/login");
+                    }
+                })
 
             }
 

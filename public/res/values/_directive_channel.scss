@@ -1,76 +1,83 @@
+nx-channel {
 
-.online,
-.offline{
-  position: relative;
-  margin-right: 20px;
-  &:after{
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    margin-left: 10px;
+  display: inline-block;
 
-    top: calc(50% - 3px);
-  }
-}
+  .online,
+  .offline {
+    position: relative;
+    margin-right: 20px;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-left: 10px;
 
-.online{
-  &:after{
-    background: #54C600;
-  }
-}
-
-.offline{
-  &:after{
-    background: red;
-  }
-}
-
-.channel{
-  //padding: 20px;
-  display: flex;
-  width: 363px;
-  height: 116px;
-  background: #F8F8F8;
-  box-shadow: 0px 0px 6px 0px #ccc;
-  border-radius: 6px;
-  padding:9px;
-  box-sizing: border-box;
-
-  &__panel-left{
-    display: flex;
-    flex-direction: column;
-    width: 50%;
+      top: calc(50% - 3px);
+    }
   }
 
-  &__panel-right{
-
-    display: flex;
-    flex-direction: column;
-    width: 50%;
+  .online {
+    &:after {
+      background: #54C600;
+    }
   }
 
-  &__logo{
-    width: 32px;
-    height: 32px;
-    border-radius: 4px;
+  .offline {
+    &:after {
+      background: red;
+    }
   }
 
-  &__online{
-    //position: absolute;
-    align-self: flex-end;
-    font-size: 14px;
-  }
+  .channel {
+    //padding: 20px;
+    margin: 5px;
+    display: inline-flex;
+    width: 363px;
+    height: 116px;
+    background: #F8F8F8;
+    padding: 9px;
+    box-sizing: border-box;
 
-  &__publishing{
-    //position: absolute;
-    font-size: 14px;
-    align-self: flex-end;
-  }
+    @include border-radius;
+    @include box-shadow;
 
-  &__chart{
-    height: 100px;
-  }
+    &_panel-left {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+    }
 
+    &_panel-right {
+
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+    }
+
+    &_logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+    }
+
+    &_online {
+      //position: absolute;
+      align-self: flex-end;
+      font-size: 14px;
+    }
+
+    &_publishing {
+      //position: absolute;
+      font-size: 14px;
+      align-self: flex-end;
+    }
+
+    &_chart {
+      height: 96px;
+      margin: 2px;
+    }
+
+  }
 }

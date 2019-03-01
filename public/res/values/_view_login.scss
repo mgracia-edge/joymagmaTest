@@ -1,0 +1,30 @@
+.nx-view-login {
+  background: $accent-color;
+
+  color: $light-bg;
+
+  a {
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .m-logo {
+    height: 45px;
+    margin: 15px;
+  }
+
+  .banner {
+    height: 45px;
+  }
+
+  label{
+    color: White;
+    font-size: 28px;
+    margin: 25px
+  }
+}

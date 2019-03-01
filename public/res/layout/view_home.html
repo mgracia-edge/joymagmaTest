@@ -1,2 +1,12 @@
-
-<nx-channel ng-model="channel"></nx-channel>
+<div  secction layout-fill layout="column">
+    <h1>Live Feeds</h1>
+    <div block layout="row">
+        <search-box layout="row">
+            <input type="search" ng-model="search.name" flex>
+            <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
+        </search-box>
+    </div>
+    <scroll-view orientation="vertical" flex>
+        <nx-channel ng-repeat="item in channels | filter:search" ng-model="item"></nx-channel>
+    </scroll-view>
+</div>
