@@ -11,6 +11,20 @@
  *  permission is obtained from EDGE TECHNOLOGY, S.A.
  */
 
+const services = {
+    USER_CREATION: "account.users",
+    ACCOUNTS_CREATION: "account.sub_accounts",
+    PRIVATE_CLOUD_LIVE: "private_cloud.live",
+    PRIVATE_CLOUD_LIVE_CLIPPING: "private_cloud.live.clipping",
+    PRIVATE_CLOUD_VOD: "private_cloud.VOD",
+    MAGMA_LIVE: "magma.live",
+    MAGMA_LIVE_CLIPPING: "magma.live.clipping",
+    MAGMA_VOD: "magma.VOD",
+    CMS_OTT: "cms.ott",
+    CMS_EDITORIAL: "cms.editorial",
+    STATS_KIBANA: "stats.kibana"
+};
+
 const users_permissions = {
     USER_ADMIN: "user.admin",
     PRODUCTS_WRITE: "products.write",
@@ -184,3 +198,4 @@ const errorCode = {
 
 exports.error = errorCode;
 exports.users_permissions = users_permissions;
+exports.services = services;

@@ -12,41 +12,11 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("HomeCtrl", ['$scope','$interval', function ($scope, $interval) {
+        .controller("HomeCtrl", ['$scope', '$interval', constoller]);
 
-            $scope.channels = [
-            ]
-
-            for (let i = 0; i < 50; i++){
-                $scope.channels.push(channel("Vivo " + i))
-            }
+    function constoller($scope, $interval) {
 
 
-            function channel(name) {
+    }
 
-                let c = [];
-
-                for (let i = 0; i < 15; i++) {
-                    c.push({
-                        timestamp: Date.now() + 1 * 1000,
-                        concurrency: Math.round(Math.random()*1000),
-                        users: Math.round(Math.random()*1000)
-                    });
-                }
-
-                return {
-                    logo: 'https://is5-ssl.mzstatic.com/image/thumb/Purple118/v4/e0/4d/be/e04dbe0a-748d-ba79-bae0-1c0b23c937a5/source/512x512bb.jpg',
-                    stats: c,
-                    name: name,
-                    online: Math.random()>0.5?true:false,
-                    publishing: Math.random()>0.5?true:false
-                }
-
-                $interval(()=>{
-
-                },1000)
-
-            }
-
-        }]);
 })();

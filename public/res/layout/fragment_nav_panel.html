@@ -1,0 +1,23 @@
+<!--
+  ~ Copyright (C) 2018 ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
+  ~
+  ~  NOTICE:  All information contained herein is, and remains the property of
+  ~ ENTERTAINMENT PORTAL OF THE AMERICAS, LLC ; if any.
+  ~
+  ~  The intellectual and technical concepts contained herein are proprietary to ENTERTAINMENT PORTAL OF THE AMERICAS, LLC
+  ~  and its suppliers and may be covered by U.S. and Foreign Patents, patents in
+  ~  process, and are protected by trade secret or copyright law. Dissemination of this
+  ~  information or reproduction of this material is strictly forbidden unless prior written
+  ~  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
+  -->
+<div layout-fill layout="column">
+
+    <div ng-repeat="group in navPanel.currentMap" layout="column">
+        <h1>{{group.name}}</h1>
+        <md-button ng-repeat="item in group.items" ng-click="navAction(item, group, $event)">
+            <md-icon md-svg-src="{{item.iconURL}}"></md-icon>
+            {{item.name}}
+        </md-button>
+    </div>
+
+</div>

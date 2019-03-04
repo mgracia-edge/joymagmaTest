@@ -13,7 +13,7 @@
             <input placeholder="email" type="text" ng-model="loginData.email" title="password">
             <input placeholder="password" type="password" ng-model="loginData.password" title="password"
                    ng-keypress="keyPress($event)">
-            <md-button ng-click="checkLogin()">Login</md-button>
+            <md-button ng-click="checkLogin($event)">Login</md-button>
         </div>
     </div>
     <div flex layout="column" layout-align="center center">

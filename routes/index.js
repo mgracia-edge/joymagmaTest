@@ -41,6 +41,9 @@ maxmind.open(join(__dirname, "../res/raw/GeoIP2-Country.mmdb"), (err, countryRes
 
 router.get('/', index);
 router.get('/login', index);
+router.get('/s/:l1', index);
+router.get('/s/:l1/:l2', index);
+router.get('/s/:l1/:l2/:l3', index);
 router.get('/terms', terms);
 router.get('/privacy-policy', privacyPolicy);
 

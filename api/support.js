@@ -38,7 +38,18 @@ function nxAuthenticationFunction(req, res, next) {
                         res.status(codes.error.userRights.SESSION_EXPIRED.httpCode)
                             .send(new api.Error(codes.error.userRights.SESSION_EXPIRED));
                     } else {
+
+                        let currentSession;
+
+                        for (let session of user.authentication.sessions) {
+                            if (session.token === token) {
+                                currentSession = session;
+                            }
+                        }
+
                         req.user = user;
+                        req.session = currentSession;
+
                         next();
                     }
 
@@ -105,5 +116,5 @@ function Success_class(payload) {
 }
 
 function newToken() {
-    return Date.now().toString(36)+"/"+passHash(Math.random() + "_" + Date.now() + "_" + Math.random());
+    return Date.now().toString(36) + "/" + passHash(Math.random() + "_" + Date.now() + "_" + Math.random());
 }

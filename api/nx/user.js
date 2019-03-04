@@ -27,7 +27,7 @@ exports.resourceList = [
         path: "check-session",
         callback: _checkSession,
         method: "post",
-        protected: false
+        protected: true
     },
     {
         path: "create",
@@ -129,9 +129,12 @@ function _login(req, res) {
 }
 
 function _checkSession(req, res) {
+
     res.send(new api.Success({
-        user: req.user
+        user: req.user,
+        session: req.session
     }));
+
 }
 
 function getIp(req) {
@@ -211,7 +214,7 @@ function _create(req, res) {
 
                         User.save(json, (err) => {
                             if (err) {
-                                console.log(err)
+                                console.error(err);
                                 res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                                     .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
                             } else {

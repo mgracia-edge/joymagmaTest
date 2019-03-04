@@ -12,7 +12,7 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("LoginCtrl", ['$scope','$NxApi','$location', function ($scope,$NxApi,$location) {
+        .controller("LoginCtrl", ['$scope', '$NxApi','$NxNav', '$location', '$mdToast', function ($scope, $NxApi, $NxNav,$location, $mdToast) {
 
             // Scope Properties
 
@@ -21,12 +21,32 @@
 
             // Methods Declaration
 
-            function keyPress() {
-
+            function keyPress($event) {
+                if ($event.code === "Enter") {
+                    checkLogin()
+                }
             }
 
-            function checkLogin(){
+            function checkLogin() {
+                if ($scope.loginData.email === "" || $scope.loginData.password === "") {
+                    toast("Please complete all your login information")
+                } else {
+                    $NxApi.login($scope.loginData.email, $scope.loginData.password).then((user) => {
+                        $location.path("/");
+                    }).catch((error) => {
+                        toast("Invalid email or password. Pleas, check your login information.")
+                    })
+                }
+            }
 
+            function toast(msg) {
+                $mdToast.show(
+                    $mdToast.simple()
+                        .textContent(msg)
+                        .hideDelay(5000))
+                    .then(function () {
+                    }).catch(function () {
+                });
             }
 
             // Implementation

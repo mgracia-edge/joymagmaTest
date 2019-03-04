@@ -12,11 +12,10 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("MainCtrl", ['$scope', '$NxApi', '$NxNav', '$location', function ($scope, $NxApi,$NxNav,$location) {
+        .controller("MainCtrl", ['$scope', '$NxApi', '$NxNav', '$location', function ($scope, $NxApi, $NxNav, $location) {
 
             // Scope Properties
 
-            $scope.user = {};
             $scope.navPanel = $NxNav.navPanel;
             $scope.mainBar = $NxNav.mainBar;
 
@@ -24,25 +23,37 @@
             // Methods Declaration
 
             $scope.getUserPicture = getUserPicture;
+            $scope.navAction = navAction;
 
             // Implementation
 
             function init() {
 
-                $NxApi.login().catch(() => {
-                    if ($location.path() != "/login") {
-                        $location.path("/login");
+                $NxApi.login().then(() => {
+
+                    if ($location.path() === "/login") {
+                        $location.path("/")
                     }
-                })
+
+                }).catch((e) => {
+                    console.log(2, e)
+                    $location.path("/login");
+                });
 
             }
 
             function getUserPicture() {
-                if ($scope.user && $scope.user.picture) {
-                    return $scope.user.picture.url
+                const user = $NxApi.getUser()
+
+                if (user && user.photo.url) {
+                    return user.photo.url
                 } else {
                     return "/res/drawable/ph_user.jpg"
                 }
+            }
+
+            function navAction(item) {
+                $location.path(item.path);
             }
 
             init();
