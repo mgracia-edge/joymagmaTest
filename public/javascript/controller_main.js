@@ -22,8 +22,12 @@
 
             // Methods Declaration
 
-            $scope.getUserPicture = getUserPicture;
+            $scope.userPicture = userPicture;
+            $scope.userName = userName;
             $scope.navAction = navAction;
+            $scope.currentAccount = currentAccount;
+            $scope.logOut = logOut;
+            $scope.accessProfile = accessProfile;
 
             // Implementation
 
@@ -36,14 +40,14 @@
                     }
 
                 }).catch((e) => {
-                    console.log(2, e)
+                    console.log(2, e);
                     $location.path("/login");
                 });
 
             }
 
-            function getUserPicture() {
-                const user = $NxApi.getUser()
+            function userPicture() {
+                const user = $NxApi.getUser();
 
                 if (user && user.photo.url) {
                     return user.photo.url
@@ -52,9 +56,33 @@
                 }
             }
 
+            function userName() {
+                const user = $NxApi.getUser();
+
+                if (user) {
+                    return user.firstName + " " + user.lastName
+                } else {
+                    return "..."
+                }
+            }
+
             function navAction(item) {
                 $location.path(item.path);
             }
+
+            function currentAccount() {
+                return $NxNav.navPanel.currentAccount;
+            }
+
+            function logOut(){
+                localStorage.clear();
+                window.location = "/login"
+            }
+
+            function accessProfile(){
+                $location.path("/s/user-profile")
+            }
+
 
             init();
 

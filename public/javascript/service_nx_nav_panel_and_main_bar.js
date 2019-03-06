@@ -11,7 +11,7 @@
  *  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
  */
 (function () {
-    const C = {}
+    const C = {};
 
     angular.module('NxStudio')
         .factory('$NxNav', ['$http', '$q', function ($http, $q) {
@@ -19,11 +19,11 @@
 
             let mainBar = {
                 hidden: true
-            }
+            };
 
             let navPanel = {
                 hidden: true
-            }
+            };
 
 
             function hide() {
@@ -36,7 +36,8 @@
                 navPanel.hidden = false;
             }
 
-            function loadRootLevel(user) {
+            function loadRootLevel(user, account) {
+                navPanel.currentAccount = account;
                 navPanel.currentMap = [
                     {
                         name: "Assets (PC)",
@@ -44,12 +45,12 @@
                             {
                                 iconURL: "/res/drawable/ic_live_alt.svg",
                                 name: "Live Feeds",
-                                path: "s/ott/channel"
+                                path: "/s/ott/channel"
                             },
                             {
                                 iconURL: "/res/drawable/ic_vod.svg",
                                 name: "On Demand",
-                                path: "/private-cloud/channels"
+                                path: "/s/n/a"
                             }
                         ],
                     },
@@ -59,21 +60,32 @@
                             {
                                 iconURL: "/res/drawable/ic_show.svg",
                                 name: "Channels",
-                                path: "s/ott/channel"
+                                path: "/s/ott/channel"
                             },
                             {
                                 iconURL: "/res/drawable/ic_channel.svg",
-                                name: "Products",
-                                path: "/private-cloud/channels"
+                                name: "Package",
+                                path: "/s/ott/products"
                             },
                             {
                                 iconURL: "/res/drawable/ic_ott_project.svg",
-                                name: "Settings",
+                                name: "Config",
                                 path: "/s/ott/settings"
                             }
                         ]
+                    },
+                    {
+                        name: "Account",
+                        items: [
+                            {
+                                iconURL: "/res/drawable/ic_settings.svg",
+                                name: "Settings",
+                                path: "/s/account/settings"
+                            }
+                        ]
                     }
-                ]
+
+                ];
             }
 
 

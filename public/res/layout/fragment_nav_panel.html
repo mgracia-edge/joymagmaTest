@@ -12,6 +12,14 @@
   -->
 <div layout-fill layout="column">
 
+
+    <div class="account" layout="row">
+        <div class="logo" style="background-image: url('{{currentAccount().logo.url}}')"></div>
+        <div layout="column">
+            <h1>{{currentAccount().name}}</h1>
+            <h2>{{currentAccount()._id}}</h2>
+        </div>
+    </div>
     <div ng-repeat="group in navPanel.currentMap" layout="column">
         <h1>{{group.name}}</h1>
         <md-button ng-repeat="item in group.items" ng-click="navAction(item, group, $event)">

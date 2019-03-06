@@ -1,10 +1,12 @@
 
 body {
   font-family: $font-family;
+  background: #FcFcFc;
 }
 
 @mixin box-shadow {
   box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .2);
+  border: 1px solid #42516e30;
 }
 
 @mixin border-radius {
@@ -12,6 +14,7 @@ body {
 }
 
 scroll-view {
+
   display: block;
 
   &[orientation="horizontal"] {
@@ -23,16 +26,19 @@ scroll-view {
     overflow-x: hidden;
     overflow-y: scroll;
   }
+
 }
 
 * [secction],
 * [padding] {
-  padding: 8px;
+  padding: 8px 24px;
+  box-sizing: border-box;
 }
 
 * [block] {
   padding-top: 8px;
   padding-bottom: 8px;
+  box-sizing: border-box;
 }
 
 * [secction] {
@@ -85,4 +91,31 @@ search-box {
     min-width: 200px;
     background: white;
   }
+}
+
+md-menu-item {
+  height: 0;
+  min-height: fit-content;
+
+  > .md-button {
+    line-height: unset;
+    padding: 4px 14px;
+    min-height: fit-content;
+    height: 0;
+    color: #42516e;
+    margin: 0;
+  }
+}
+
+md-menu-content {
+  padding: 4px 0;
+
+  h1 {
+    color: $primary-color;
+    margin: 0;
+    font-size: 14px;
+    padding: 4px 12px 8px 12px;
+    font-weight: 700;
+  }
+
 }

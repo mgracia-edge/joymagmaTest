@@ -35,18 +35,32 @@ function getJSFiles(root, folderPath) {
 }
 
 const config = {
+    entry: getJSFiles("", path.join(__dirname, './public/javascript/')),
     mode: 'production',
-    optimization:{
+    optimization: {
         minimize: false
     },
-    entry: getJSFiles("", path.join(__dirname, './public/javascript/')),
     output: {
         filename: 'app.js',
         path: path.resolve(__dirname, './public')
     },
     plugins: [
-        new MinifyPlugin({}, {})
-    ]
+        new MinifyPlugin({
+            mangle: false
+        }, {}),
+    ],
+    module: {
+        rules: [{
+            test: /\.js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+                loader: "babel-loader",
+                options: {
+                    presets: ["@babel/preset-env"]
+                }
+            }
+        }]
+    }
 };
 
 module.exports = config;

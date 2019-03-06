@@ -26,6 +26,10 @@
                 .when('/s/ott/channel', {
                     templateUrl: '/res/layout/view_s_ott_channel.html',
                     controller: 'sOttChannelCtrl'
+                })
+                .when('/s/user-profile', {
+                    templateUrl: '/res/layout/view_s_user_profile.html',
+                    controller: 'sUserProfileCtrl'
                 });
 
             $locationProvider.html5Mode(true);

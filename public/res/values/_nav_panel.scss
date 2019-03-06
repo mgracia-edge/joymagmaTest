@@ -1,9 +1,13 @@
+//noinspection ALL
 .nx-nav-panel {
-  min-width: 240px;
+  min-width: 200px;
   background-color: $light-bg;
   padding: 16px;
 
   @include box-shadow;
+  border-left: none;
+  border-top: none;
+  border-bottom: none;
 
   h1 {
     margin: 16px 0 8px 0;
@@ -14,25 +18,47 @@
     padding-left: 2px;
   }
 
+  .account {
+    .logo {
+      min-height: 38px; max-height: 38px;
+      min-width: 38px; max-width: 38px;
+      background-size: cover;
+      margin: 0 8px 0 0 ;
+    }
+
+    h1,h2 {
+      color: $primary-color;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 16px;
+    }
+
+    h2 {
+      font-size: 10px;
+    }
+  }
+
   .md-button {
-    color: #42516E;
+    color: $primary-color;
     text-align: left;
     margin: 0;
     padding: 0;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
+    text-transform: capitalize;
 
-    //noinspection ALL
     md-icon {
-      $md-icon-size: 32px;
+      $md-icon-size: 28px;
       padding-bottom: 3px;
       height: $md-icon-size;
       min-height: $md-icon-size;
       width: $md-icon-size;
       min-width: $md-icon-size;
       fill: #42516E;
+      margin-right: 8px;
     }
-
   }
 
 }

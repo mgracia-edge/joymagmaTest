@@ -19,6 +19,7 @@
             const HOST = "";
             const LOGIN_PATH = "/api/1.0/user/login";
             const CHECK_SESSIOM = "/api/1.0/user/check-session";
+            const GET_ACCOUNT = "/api/1.0/account/get";
 
             let session = {
                 user: null,
@@ -74,24 +75,53 @@
 
                         localStorage.setItem("token", session.data.token);
 
-                        $NxNav.loadRootLevel(session.user)
+                        let account = null;
 
-                        success(response.content.user)
+                        getAccount(response.content.user.account).then((data) => {
+                            account = data;
+                        }).catch((b) => {
+                        }).finally(() => {
+                            $NxNav.loadRootLevel(session.user, account)
+                            success(response.content.user)
+                        })
+
+
                     }
 
                 })
 
             }
 
-            function getUser(){
+            function getUser() {
                 return session.user;
+            }
+
+            function getAccount(id) {
+                return $q((success, reject) => {
+                    $http.post(getURI(GET_ACCOUNT), {
+                        id: id
+                    }, {
+                        headers: {
+                            "Authorization": "Bearer " + session.token
+                        }
+                    }).then((response) => {
+                        if (response.data.error !== null) {
+                            reject(response.data.error)
+                        } else {
+                            success(response.data.content)
+                        }
+                    }).catch((error) => {
+                        reject(error)
+                    });
+                })
             }
 
             init();
 
             return {
                 login: login,
-                getUser: getUser
+                getUser: getUser,
+                getAccount: getAccount
             }
         }]);
 })();
