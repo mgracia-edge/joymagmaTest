@@ -1,3 +1,34 @@
-<div  secction layout-fill layout="column">
+<div secction layout-fill layout="column">
     <h1>User Profile & Settings</h1>
+    <div class="form" layout="column">
+
+        <item layout="column">
+            <label>first name</label>
+            <input type="text" ng-model="userData.firstName" aria-label="first name" title="first name" autocomplete="off" >
+        </item>
+
+        <item>
+            <label>last name</label>
+            <input type="text" ng-model="userData.lastName" aria-label="last name" title="last name" autocomplete="off">
+        </item>
+
+        <item>
+            <label>email</label>
+            <input type="email" ng-model="userData.email" aria-label="email" title="email" autocomplete="off">
+        </item>
+
+        <item>
+            <label>Password</label>
+            <div layout="row">
+                <input placeholder="new password" type="password" ng-model="userData.newPassword" aria-label="password" title="password">
+                <input placeholder="password verification" type="password" ng-model="userData.newPasswordVerify" aria-label="password verification" title="password verification">
+            </div>
+        </item>
+
+        <item>
+            <label>account</label>
+            <input type="text" ng-model="userData.account" aria-label="email" title="account" disabled>
+        </item>
+{{userData}}
+    </div>
 </div>

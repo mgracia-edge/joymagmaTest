@@ -12,7 +12,7 @@
  */
 (function () {
     angular.module('NxStudio', ['ngMaterial', 'ngMessages', 'ngRoute'])
-        .config(function ($routeProvider, $locationProvider, $mdThemingProvider){
+        .config(["$routeProvider", "$locationProvider", "$mdThemingProvider",function ($routeProvider, $locationProvider, $mdThemingProvider){
 
             $routeProvider
                 .when('/', {
@@ -34,7 +34,7 @@
 
             $locationProvider.html5Mode(true);
 
-        })
+        }])
         .run(["$rootScope", "$location", "$window","$NxNav", function run($rootScope,$location, $window,$NxNav) {
             /*// initialise google analytics
             $window.ga('create', 'UA-126373601-1', 'auto');

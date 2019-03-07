@@ -16,10 +16,17 @@
 
             // Scope Properties
 
+            // Methods Declaration
+
             $scope.keyPress = keyPress;
             $scope.checkLogin = checkLogin;
 
-            // Methods Declaration
+            // Implementation
+
+            function init() {
+
+            }
+
 
             function keyPress($event) {
                 if ($event.code === "Enter") {
@@ -47,13 +54,6 @@
                     .then(function () {
                     }).catch(function () {
                 });
-            }
-
-            // Implementation
-
-            function init() {
-
-
             }
 
             init();

@@ -12,7 +12,9 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sUserProfileCtrl", ['$scope', function ($scope) {
+        .controller("sUserProfileCtrl", ['$scope', '$NxApi', function ($scope, $NxApi) {
+
+            console.log($NxApi.getUser())
 
         }]);
 })();
