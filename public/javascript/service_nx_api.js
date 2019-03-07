@@ -11,20 +11,21 @@
  *  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
  */
 (function () {
-    const C = {}
 
     angular.module('NxStudio')
         .factory('$NxApi', ['$http', '$q', '$NxNav', function ($http, $q, $NxNav) {
 
             const HOST = "";
             const LOGIN_PATH = "/api/1.0/user/login";
-            const CHECK_SESSIOM = "/api/1.0/user/check-session";
+            const CHECK_SESSION = "/api/1.0/user/check-session";
             const GET_ACCOUNT = "/api/1.0/account/get";
 
             let session = {
                 user: null,
                 token: null
-            }
+            };
+
+            let afterLoginCallback = null;
 
             function init() {
                 if (localStorage.getItem("token")) {
@@ -43,7 +44,7 @@
                     if (email === undefined) {
 
                         if (session.token) {
-                            $http.post(getURI(CHECK_SESSIOM), {}, {
+                            $http.post(getURI(CHECK_SESSION), {}, {
                                 headers: {
                                     "Authorization": "Bearer " + session.token
                                 }
@@ -81,8 +82,9 @@
                             account = data;
                         }).catch((b) => {
                         }).finally(() => {
-                            $NxNav.loadRootLevel(session.user, account)
-                            success(response.content.user)
+                            $NxNav.loadRootLevel(session.user, account);
+                            success(response.content.user);
+                            if(afterLoginCallback) afterLoginCallback();
                         })
 
 
@@ -90,6 +92,10 @@
 
                 })
 
+            }
+
+            function setAfterLogin(callback){
+                afterLoginCallback = callback;
             }
 
             function getUser() {
@@ -120,6 +126,7 @@
 
             return {
                 login: login,
+                setAfterLogin: setAfterLogin,
                 getUser: getUser,
                 getAccount: getAccount
             }
