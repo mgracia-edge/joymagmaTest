@@ -84,7 +84,7 @@
                         }).finally(() => {
                             $NxNav.loadRootLevel(session.user, account);
                             success(response.content.user);
-                            if(afterLoginCallback) afterLoginCallback();
+                            if (afterLoginCallback) afterLoginCallback();
                         })
 
 
@@ -94,7 +94,7 @@
 
             }
 
-            function setAfterLogin(callback){
+            function setAfterLogin(callback) {
                 afterLoginCallback = callback;
             }
 
@@ -122,13 +122,83 @@
                 })
             }
 
+            function Users($http, $q) {
+
+                function create(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/0.1/user/create", params)
+                            .then(({data}) => {
+                                resolve(data);
+
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function read(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/0.1/user/read", params)
+                            .then(({data}) => {
+
+                                resolve({
+                                    users: data.users,
+                                    count: data.count
+                                });
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function update(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/user/update", {
+                            id:params._id,
+                            data:params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+
+                                console.log("update user", data)
+                                resolve({});
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function remove() {
+                    return $q((resolve, reject) => {
+
+                    });
+                }
+
+                return {
+                    create,
+                    read,
+                    update,
+                    delete: remove,
+                }
+            }
+
             init();
 
             return {
                 login: login,
                 setAfterLogin: setAfterLogin,
                 getUser: getUser,
-                getAccount: getAccount
+                getAccount: getAccount,
+                users: Users($http, $q)
             }
         }]);
+
+
 })();

@@ -4,7 +4,8 @@
 
         <item layout="column">
             <label>first name</label>
-            <input type="text" ng-model="userData.firstName" aria-label="first name" title="first name" autocomplete="off" >
+            <input type="text" ng-model="userData.firstName" aria-label="first name" title="first name"
+                   autocomplete="off">
         </item>
 
         <item>
@@ -14,14 +15,18 @@
 
         <item>
             <label>email</label>
-            <input type="email" ng-model="userData.email" aria-label="email" title="email" autocomplete="off">
+            <input type="email" ng-model="userData.email" aria-label="email" title="email" autocomplete="off" disabled>
         </item>
 
         <item>
             <label>Password</label>
+
             <div layout="row">
-                <input placeholder="new password" type="password" ng-model="userData.newPassword" aria-label="password" title="password">
-                <input placeholder="password verification" type="password" ng-model="userData.newPasswordVerify" aria-label="password verification" title="password verification">
+
+                <input placeholder="new password" type="password" ng-model="userData.newPassword" aria-label="password"
+                       title="password" autocomplete="off">
+                <input placeholder="password verification" type="password" ng-model="userData.newPasswordVerify"
+                       aria-label="password verification" title="password verification" autocomplete="off">
             </div>
         </item>
 
@@ -29,6 +34,11 @@
             <label>account</label>
             <input type="text" ng-model="userData.account" aria-label="email" title="account" disabled>
         </item>
-{{userData}}
+
+
+        <md-button ng-click="updateUser()"
+                   class="md-raised md-warn">Save</md-button>
+
+
     </div>
 </div>

@@ -37,6 +37,8 @@
 
                     if ($location.path() === "/login") {
                         $location.path("/")
+                    }else{
+
                     }
 
                 }).catch((e) => {
@@ -49,7 +51,7 @@
             function userPicture() {
                 const user = $NxApi.getUser();
 
-                if (user && user.photo.url) {
+                if (user && user.photo && user.photo.url) {
                     return user.photo.url
                 } else {
                     return "/res/drawable/ph_user.jpg"

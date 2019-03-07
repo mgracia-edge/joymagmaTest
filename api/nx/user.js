@@ -291,6 +291,8 @@ function _update(req, res) {
 
     if (db) {
 
+        console.log(req.user)
+
         if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
