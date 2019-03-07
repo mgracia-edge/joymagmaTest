@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "compile": "npx webpack --config webpack.config.js "
+    "compile": "npx webpack --config webpack.config.js",
+    "heroku-post-build": "npm run compile"
   },
   "babel": {
     "presets": [
