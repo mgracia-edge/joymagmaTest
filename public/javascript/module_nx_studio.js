@@ -27,9 +27,33 @@
                     templateUrl: '/res/layout/view_s_ott_channel.html',
                     controller: 'sOttChannelCtrl'
                 })
+                .when('/s/ott/subscribers', {
+                    templateUrl: '/res/layout/view_s_ott_subscribers.html',
+                    controller: 'sOttSubscribersCtrl'
+                })
+                .when('/s/ott/products', {
+                    templateUrl: '/res/layout/view_s_ott_products.html',
+                    controller: 'sOttProductsCtrl'
+                })
+                .when('/s/ott/epg_monitor', {
+                    templateUrl: '/res/layout/view_s_ott_epg_monitor.html',
+                    controller: 'sOttEPGMonitorCtrl'
+                })
+                .when('/s/ott/config', {
+                    templateUrl: '/res/layout/view_s_ott_config.html',
+                    controller: 'sOttConfigCtrl'
+                })
                 .when('/s/user-profile', {
                     templateUrl: '/res/layout/view_s_user_profile.html',
                     controller: 'sUserProfileCtrl'
+                })
+                .when('/s/account/settings', {
+                    templateUrl: '/res/layout/view_s_account_settings.html',
+                    controller: 'sAccountSettingsCtrl'
+                })
+                .when('/s/n/a', {
+                    templateUrl: '/res/layout/view_n_a.html',
+                    controller: 'sNACtrl'
                 });
 
             $locationProvider.html5Mode(true);

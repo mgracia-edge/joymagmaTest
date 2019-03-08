@@ -42,15 +42,15 @@
                     {
                         name: "Assets (PC)",
                         items: [
-                            {
+                            /*{
                                 iconURL: "/res/drawable/ic_live_alt.svg",
                                 name: "Live Feeds",
                                 path: "/s/ott/channel"
-                            },
+                            },*/
                             {
                                 iconURL: "/res/drawable/ic_playlist.svg",
                                 name: "Private Cloud",
-                                path: "/s/ott/channel"
+                                path: "/s/n/a"
                             }
                         ],
                     },
@@ -85,7 +85,7 @@
                             {
                                 iconURL: "/res/drawable/ic_ott_project.svg",
                                 name: "Config",
-                                path: "/s/ott/settings"
+                                path: "/s/ott/config"
                             }]
 
                     },
