@@ -39,7 +39,7 @@
                     toast("Please complete all your login information")
                 } else {
                     $NxApi.login($scope.loginData.email, $scope.loginData.password).then((user) => {
-                        $location.path("/");
+                        window.location = "/";
                     }).catch((error) => {
                         toast("Invalid email or password. Pleas, check your login information.")
                     })

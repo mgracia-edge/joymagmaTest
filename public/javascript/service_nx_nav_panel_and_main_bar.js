@@ -48,14 +48,14 @@
                                 path: "/s/ott/channel"
                             },
                             {
-                                iconURL: "/res/drawable/ic_vod.svg",
-                                name: "On Demand",
-                                path: "/s/n/a"
+                                iconURL: "/res/drawable/ic_playlist.svg",
+                                name: "Private Cloud",
+                                path: "/s/ott/channel"
                             }
                         ],
                     },
                     {
-                        name: "OTT",
+                        name: "Publishing",
                         items: [
                             {
                                 iconURL: "/res/drawable/ic_show.svg",
@@ -66,13 +66,28 @@
                                 iconURL: "/res/drawable/ic_channel.svg",
                                 name: "Package",
                                 path: "/s/ott/products"
+                            }
+                        ]
+                    },
+                    {
+                        name: "OTT",
+                        items: [
+                            {
+                                iconURL: "/res/drawable/ic_subscribers.svg",
+                                name: "Subscribers",
+                                path: "/s/ott/subscribers"
+                            },
+                            {
+                                iconURL: "/res/drawable/ic_epg_monitor.svg",
+                                name: "EPG Monitor",
+                                path: "/s/ott/epg_monitor"
                             },
                             {
                                 iconURL: "/res/drawable/ic_ott_project.svg",
                                 name: "Config",
                                 path: "/s/ott/settings"
-                            }
-                        ]
+                            }]
+
                     },
                     {
                         name: "Account",
