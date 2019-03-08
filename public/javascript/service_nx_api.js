@@ -165,8 +165,6 @@
                             }
                         })
                             .then(({data}) => {
-
-                                console.log("update user", data)
                                 resolve({});
                             })
                             .catch((error) => {
