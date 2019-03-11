@@ -14,14 +14,35 @@
     const C = {};
 
     angular.module('NxStudio')
-        .factory('$NxDialgs', ['$http', '$q','$mdDialog', function ($http, $q,$mdDialog) {
+        .factory('$NxDialogs', ['$http', '$q','$mdDialog', function ($http, $q,$mdDialog) {
 
 
-            function showAdd($http, $q,$mdDialog){
+            function showAdd($event){
+
+                let addDialog = {
+                    templateUrl: "/res/layout/fragment_dialog_add.html",
+                    controller: controller,
+
+                };
+                
+                
+                function controller($scope, $mdDialog) {
+
+                    $scope.cancel = cancel;
 
 
+                    function cancel() {
+                        $mdDialog.hide()
+                    }
+
+                    
+                }
+
+                $mdDialog.show(addDialog);
 
             }
+
+
 
 
             return {

@@ -19,12 +19,12 @@ const maxmind = require('maxmind');
 const siteSettings = require('../lib/appSettings');
 
 
-let  js;
+let js;
 
-if(process.env.ENV && process.env.ENV === "PROD"){
+if (process.env.ENV && process.env.ENV === "PROD") {
     js = ["app.js"]
-}else{
-    js =  getJSFiles("/javascript", join(__dirname, "../public/javascript"))
+} else {
+    js = getJSFiles("/javascript", join(__dirname, "../public/javascript"))
 }
 
 let country;
@@ -116,7 +116,6 @@ function getJSFiles(root, path) {
 function checkSiteRules(req) {
 
     return true;
-
 }
 
 

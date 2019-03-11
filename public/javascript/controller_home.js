@@ -12,9 +12,9 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("HomeCtrl", ['$scope', '$interval', constoller]);
+        .controller("HomeCtrl", ['$scope', '$interval', controller]);
 
-    function constoller($scope, $interval) {
+    function controller($scope, $interval) {
 
 
     }

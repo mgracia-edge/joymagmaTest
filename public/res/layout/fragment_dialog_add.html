@@ -1,0 +1,50 @@
+<md-dialog>
+    <md-dialog-content class="nx-dialog-add">
+        <h1>Create</h1>
+
+        <div class="groups">
+            <div class="group">
+                <label>
+                    Publishing
+                </label>
+
+                <div class="content">
+
+                    <div class="item" layout="row">
+                        <md-icon md-svg-src="/res/drawable/ic_show.svg">
+                        </md-icon>
+                        <div layout="column">
+                            <label>
+                                Channel
+                            </label>
+                            <description>
+                                Add a live channel for an OTT Service.
+                            </description>
+                        </div>
+                    </div>
+
+                    <div class="item" layout="row">
+                        <md-icon md-svg-src="/res/drawable/ic_channel.svg">
+                        </md-icon>
+                        <div layout="column">
+                            <label>
+                                Package
+                            </label>
+                            <description>
+                                An OTT package is a set of channels grouped by topics and properties.
+                            </description>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="line"></div>
+        <div layout="row" layout-align="end">
+            <md-button class="md-raised" ng-click="cancel()">
+                cancel
+            </md-button>
+        </div>
+    </md-dialog-content>
+</md-dialog>

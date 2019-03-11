@@ -15,11 +15,12 @@
         .controller("sOttSubscribersCtrl", ['$scope', '$NxApi', '$mdToast','$location', function ($scope, $NxApi, $mdToast,$location) {
 
             function init(){
-
+                $NxApi
             }
 
 
             $NxApi.setAfterLogin(init);
+            init();
 
         }]);
 })();

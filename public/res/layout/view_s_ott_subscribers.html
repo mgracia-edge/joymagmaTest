@@ -1,10 +1,51 @@
-<div secction layout-fill layout="column" layout-align="center center">
-
-
-    <div style="text-align: center">
-        <md-icon md-svg-src="/res/drawable/vc_unavailable.svg" style="height: 110px;width: 110px; margin: 20px">
-        </md-icon>
-        <h1>Action unavailable</h1>
+<div secction layout-fill layout="column">
+    <h1>Subscribers</h1>
+    <div block layout="row">
+        <search-box layout="row">
+            <input type="search" ng-model="search" flex>
+            <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
+        </search-box>
     </div>
-
+    <scroll-view orientation="vertical" flex>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        email
+                    </th>
+                    <th>
+                        packages
+                    </th>
+                    <th>
+                        Creation Date
+                    </th>
+                    <th>
+                        Last Update
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="subscriber in subscribers | filter by ">
+                    <td>
+                        {{subscriber.subscriberId}}
+                    </td>
+                    <td>
+                        {{subscriber.email}}
+                    </td>
+                    <td>
+                        {{subscriber.email}}
+                    </td>
+                    <td>
+                        {{subscriber.creationDate}}
+                    </td>
+                    <td>
+                        {{subscriber.lastUpdate}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </scroll-view>
 </div>

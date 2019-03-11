@@ -12,81 +12,87 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("MainCtrl", ['$scope', '$NxApi', '$NxNav', '$location', function ($scope, $NxApi, $NxNav, $location) {
+        .controller("MainCtrl", ['$scope', '$NxApi', '$NxNav', '$NxDialogs', '$location',
+            function ($scope, $NxApi, $NxNav, $NxDialogs, $location) {
 
-            // Scope Properties
+                // Scope Properties
 
-            $scope.navPanel = $NxNav.navPanel;
-            $scope.mainBar = $NxNav.mainBar;
+                $scope.navPanel = $NxNav.navPanel;
+                $scope.mainBar = $NxNav.mainBar;
 
 
-            // Methods Declaration
+                // Methods Declaration
 
-            $scope.userPicture = userPicture;
-            $scope.userName = userName;
-            $scope.navAction = navAction;
-            $scope.currentAccount = currentAccount;
-            $scope.logOut = logOut;
-            $scope.accessProfile = accessProfile;
+                $scope.userPicture = userPicture;
+                $scope.userName = userName;
+                $scope.navAction = navAction;
+                $scope.currentAccount = currentAccount;
+                $scope.logOut = logOut;
+                $scope.accessProfile = accessProfile;
+                $scope.showAddDialog = showAddDialog;
 
-            // Implementation
+                // Implementation
 
-            function init() {
+                function init() {
 
-                $NxApi.login().then(() => {
+                    $NxApi.login().then(() => {
 
-                    if ($location.path() === "/login") {
-                        $location.path("/")
-                    }else{
+                        if ($location.path() === "/login") {
+                            $location.path("/")
+                        } else {
 
+                        }
+
+                    }).catch((e) => {
+                        console.log(2, e);
+                        $location.path("/login");
+                    });
+
+                }
+
+                function userPicture() {
+                    const user = $NxApi.getUser();
+
+                    if (user && user.photo && user.photo.url) {
+                        return user.photo.url
+                    } else {
+                        return "/res/drawable/ph_user.jpg"
                     }
-
-                }).catch((e) => {
-                    console.log(2, e);
-                    $location.path("/login");
-                });
-
-            }
-
-            function userPicture() {
-                const user = $NxApi.getUser();
-
-                if (user && user.photo && user.photo.url) {
-                    return user.photo.url
-                } else {
-                    return "/res/drawable/ph_user.jpg"
                 }
-            }
 
-            function userName() {
-                const user = $NxApi.getUser();
+                function userName() {
+                    const user = $NxApi.getUser();
 
-                if (user) {
-                    return user.firstName + " " + user.lastName
-                } else {
-                    return "..."
+                    if (user) {
+                        return user.firstName + " " + user.lastName
+                    } else {
+                        return "..."
+                    }
                 }
-            }
 
-            function navAction(item) {
-                $location.path(item.path);
-            }
+                function navAction(item) {
+                    $location.path(item.path);
+                }
 
-            function currentAccount() {
-                return $NxNav.navPanel.currentAccount;
-            }
+                function currentAccount() {
+                    return $NxNav.navPanel.currentAccount;
+                }
 
-            function logOut(){
-                localStorage.clear();
-                window.location = "/login"
-            }
+                function logOut() {
+                    localStorage.clear();
+                    window.location = "/login"
+                }
 
-            function accessProfile(){
-                $location.path("/s/user-profile")
-            }
+                function accessProfile() {
+                    $location.path("/s/user-profile")
+                }
+
+                function showAddDialog($event) {
+                    $NxDialogs.showAdd($event)
+                }
 
 
-            init();
+                init();
 
-        }]);
+            }]);
 })();
