@@ -16,7 +16,9 @@ let app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.json({ type: 'application/*+json' }));
+app.use(bodyParser.json({ type: 'application/json' ,limit: '1024mb'}));
+// TODO: VEr porque falla con type
+// app.use(bodyParser.json({ type: 'application/*+json' ,limit: '1024mb'}));
 
 app.use(logger('dev'));
 app.use(express.json());

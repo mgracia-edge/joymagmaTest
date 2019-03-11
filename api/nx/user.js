@@ -3,6 +3,7 @@ const codes = require('../codes');
 const dc = require('../../lib/dataConnection');
 const {join} = require("path");
 const maxmind = require("maxmind");
+const cloudinary = require('cloudinary');
 const parser = require('ua-parser-js');
 
 let country;
@@ -291,8 +292,6 @@ function _update(req, res) {
 
     if (db) {
 
-        console.log(req.user)
-
         if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
@@ -303,36 +302,44 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {firstName, lastName, password, permissions} = data;
+        const {firstName, lastName, password, permissions, photo} = data;
 
         let query = {
             find: {
                 _id: id
             },
             update: {
-                $set: {
-                    firstName: firstName,
-                    lastName: lastName,
-                    "authentication.password": password,
-                    permissions: permissions
-                }
+                $set: {}
             }
         };
 
-        if (typeof firstName === 'undefined') delete query.update.$set.firstName;
-        if (typeof lastName === 'undefined') delete query.update.$set.lastName;
-        if (typeof password === 'undefined') delete query.update.$set["authentication.password"];
-        if (typeof permissions === 'undefined') delete query.update.$set.permissions;
+        if (typeof firstName !== 'undefined') query.update.$set["firstName"] = firstName;
+        if (typeof lastName !== 'undefined') query.update.$set["lastName"] = lastName;
+        if (typeof password !== 'undefined') query.update.$set["authentication.password"] = api.passHash(password);
+        if (typeof permissions !== 'undefined') query.update.$set["permissions"] = permissions;
 
-        db.User.updateOne(query.find, query.update, (error, products) => {
-            if (error) {
-                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-            } else {
-                res.status(200).send(new api.Success(products));
-            }
+        if(typeof photo !== 'undefined' && photo.update === true){
+            cloudinary.uploader.upload(photo.url, (result) => {
+                query.update.$set["photo.url"] = result.url;
+                _update();
+            })
+        }else{
+            _update();
+        }
 
-        });
+        function _update(){
+            db.User.updateOne(query.find, query.update, (error, products) => {
+                if (error) {
+                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+                } else {
+                    res.status(200).send(new api.Success(products));
+                }
+
+            });
+        }
+
+
 
     } else {
 
