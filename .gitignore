@@ -4,3 +4,4 @@ node_modules
 .idea
 .DS_Store
 res/reporttv/file.xml
+public/app.js
