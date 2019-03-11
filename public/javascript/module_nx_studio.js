@@ -51,6 +51,14 @@
                     templateUrl: '/res/layout/view_s_account_settings.html',
                     controller: 'sAccountSettingsCtrl'
                 })
+                .when('/s/account/settings/users', {
+                    templateUrl: '/res/layout/view_s_account_settings_users.html',
+                    controller: 'sAccountSettingsUsersCtrl'
+                })
+                .when('/s/account/settings/users/:user_id', {
+                    templateUrl: '/res/layout/view_s_account_settings_user.html',
+                    controller: 'sAccountSettingsUserCtrl'
+                })
                 .when('/s/n/a', {
                     templateUrl: '/res/layout/view_n_a.html',
                     controller: 'sNACtrl'

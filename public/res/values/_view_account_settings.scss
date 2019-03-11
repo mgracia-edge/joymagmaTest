@@ -1,0 +1,100 @@
+.form{
+
+  &-acount-settings{
+
+    .user-profile-photo{
+      @include margin-left(0)
+    }
+
+    & .active-services{
+
+      &__service{
+        padding: 5px 10px;
+        border-radius: 6px;
+        background-color: #42516E;
+        font-size: 14px;
+        color:white;
+        min-width: 147px;
+        width: fit-content;
+        margin-top: 5px;
+        &:first-child{
+          margin-top: 0;
+        }
+      }
+    }
+
+    /* View - account_settings_users - Account Access */
+    &-users{
+
+      .table-users{
+        margin-top: 15px;
+        thead{
+          th{
+            text-align: left;
+          }
+          th:last-child{
+            text-align: center;
+          }
+
+        }
+        &__user{
+          td{
+            padding: 8px 0;
+          }
+          &__info{
+
+            display: flex;
+
+            &__img{
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              padding-right: 10px;
+              img{
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+              }
+            }
+
+            &__desc{
+              display: flex;
+              flex-direction: column;
+              & div:nth-child(1){
+                font-size: 14px;
+              }
+              & div:nth-child(2){
+                font-size: 11px;
+              }
+            }
+          }
+        }
+
+        &__actions{
+          text-align: center;
+        }
+      }
+
+    }
+
+    /* View - account_settings_user - User Derails */
+    &-user{
+
+      .user_permissions{
+
+        &__permission{
+          display: flex;
+          min-width: 300px;
+          justify-content: space-between;
+          width: fit-content;
+
+        }
+      }
+
+      md-switch{
+        margin:0
+      }
+
+    }
+  }
+}

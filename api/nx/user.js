@@ -248,7 +248,7 @@ function _read(req, res) {
             return;
         }
 
-        let {id, email} = req.body;
+        let {id, email,account} = req.body;
 
         let query = {
             find: {},
@@ -265,6 +265,10 @@ function _read(req, res) {
 
             query.find = {email: Array.isArray(email) ? {$in: email} : email}
 
+        }
+
+        if(typeof account !== 'undefined'){
+            query.find["account"] = account;
         }
 
         db.User

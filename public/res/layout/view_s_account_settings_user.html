@@ -1,0 +1,77 @@
+<div secction layout-fill layout="column">
+    <h1>User Details</h1>
+    <div class="form form-acount-settings-user" layout="row">
+
+        <div layout="column">
+
+            <div layout="row">
+                <div layout="column">
+                    <item flex>
+                        <label>first name</label>
+                        <input type="text" ng-model="user.firstName" aria-label="first name" title="first name"
+                               autocomplete="off">
+                    </item>
+
+                    <item flex>
+                        <label>last name</label>
+                        <input type="text" ng-model="user.lastName" aria-label="last name" title="last name" autocomplete="off">
+                    </item>
+                </div>
+                <div layout="column" >
+                    <div flex layout="row" layout-align="center center">
+                        <img ng-src={{getUrlProfilePhoto(user)}}
+                             ng-click="uploadImage()"
+                             class="user-profile-photo" />
+                    </div>
+                </div>
+            </div>
+
+            <item>
+                <label>email</label>
+                <input type="email" ng-model="user.email" aria-label="email" title="email" autocomplete="off" disabled>
+            </item>
+            <!--
+                    <item>
+                        <label>Password</label>
+                        <md-button md-no-ink class="md-warn" ng-click="dialog_changePassword ()">Change Password</md-button>
+
+                        <div layout="row">
+
+                            <input placeholder="new password" type="password" ng-model="userData.newPassword" aria-label="password"
+                                   title="password" autocomplete="off">
+                            <input placeholder="password verification" type="password" ng-model="userData.newPasswordVerify"
+                                   aria-label="password verification" title="password verification" autocomplete="off">
+                        </div>
+
+            </item>
+
+            <item>
+                <label>account</label>
+                <input type="text" ng-model="user.account" aria-label="email" title="account" disabled>
+            </item>
+    -->
+
+            <h2>User permissions</h2>
+            <div class="user_permissions">
+
+                <div class="user_permissions__permission" ng-repeat="permissions in users_permissions track by $index">
+                    {{permissions.value}} <md-switch ng-model="permissions.state" aria-label="Switch 1"></md-switch>
+                </div>
+
+            </div>
+
+            <md-button ng-click="updateUser()" class="md-raised md-warn" layout="row" layout-align="center center">
+                <md-progress-circular ng-show="loading" class="md-warn md-hue-3" md-diameter="30"></md-progress-circular>
+                <span ng-show="!loading">Save</span>
+            </md-button>
+
+        </div>
+        <div layout="column" style="margin-left: 50px;">
+            <md-button md-no-ink class="md-raised md-warn" ng-click="dialog_alert()">Remove User</md-button>
+            <md-button md-no-ink class="md-raised md-warn" ng-click="dialog_changePassword()">Reset Password</md-button>
+            <md-button md-no-ink class="md-raised md-warn" ng-click="">Log as user</md-button>
+
+        </div>
+
+    </div>
+</div>

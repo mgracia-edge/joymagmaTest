@@ -138,13 +138,20 @@
                 }
 
                 function read(params) {
+
                     return $q((resolve, reject) => {
-                        $http.post("/api/0.1/user/read", params)
+                        $http.post("/api/1.0/user/read", {
+                            id:params._id,
+                            data:params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
                             .then(({data}) => {
 
                                 resolve({
-                                    users: data.users,
-                                    count: data.count
+                                    users: data.content
                                 });
                             })
                             .catch((error) => {
@@ -173,9 +180,21 @@
                     });
                 }
 
-                function remove() {
+                function remove(params) {
                     return $q((resolve, reject) => {
-
+                        $http.post("/api/1.0/user/delete", {
+                            id:params._id
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
                     });
                 }
 
