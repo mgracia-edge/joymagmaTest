@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "compile": "npx webpack --config webpack.config.js",
-    "heroku-post-build": "npm run compile"
+    "heroku-postbuild": "npm run compile"
   },
   "babel": {
     "presets": [
@@ -29,6 +29,7 @@
     "@sendgrid/mail": "^6.3.1",
     "babel-loader": "^8.0.5",
     "body-parser": "^1.18.3",
+    "cloudinary": "^1.13.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",

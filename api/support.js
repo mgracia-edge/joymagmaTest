@@ -88,6 +88,7 @@ function wiltelAuthenticationFunction(req, res, next) {
     ) {
         next();
     } else {
+
         res.status(403).send({
             error: 0x0021,
             error_dsc: "Acceso denegado, credenciales inválidas."
