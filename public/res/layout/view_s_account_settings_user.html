@@ -28,28 +28,8 @@
 
             <item>
                 <label>email</label>
-                <input type="email" ng-model="user.email" aria-label="email" title="email" autocomplete="off" disabled>
+                <input type="email" ng-model="user.email" aria-label="email" title="email" autocomplete="off">
             </item>
-            <!--
-                    <item>
-                        <label>Password</label>
-                        <md-button md-no-ink class="md-warn" ng-click="dialog_changePassword ()">Change Password</md-button>
-
-                        <div layout="row">
-
-                            <input placeholder="new password" type="password" ng-model="userData.newPassword" aria-label="password"
-                                   title="password" autocomplete="off">
-                            <input placeholder="password verification" type="password" ng-model="userData.newPasswordVerify"
-                                   aria-label="password verification" title="password verification" autocomplete="off">
-                        </div>
-
-            </item>
-
-            <item>
-                <label>account</label>
-                <input type="text" ng-model="user.account" aria-label="email" title="account" disabled>
-            </item>
-    -->
 
             <h2>User permissions</h2>
             <div class="user_permissions">
@@ -69,7 +49,7 @@
         <div layout="column" style="margin-left: 50px;">
             <md-button md-no-ink class="md-raised md-warn" ng-click="dialog_alert()">Remove User</md-button>
             <md-button md-no-ink class="md-raised md-warn" ng-click="dialog_changePassword()">Reset Password</md-button>
-            <md-button md-no-ink class="md-raised md-warn" ng-click="">Log as user</md-button>
+            <md-button md-no-ink class="md-raised md-warn" ng-click="logAsUser(user)">Log as user</md-button>
 
         </div>
 

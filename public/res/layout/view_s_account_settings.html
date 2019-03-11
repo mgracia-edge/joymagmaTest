@@ -4,7 +4,7 @@
         <item>
             <label>Logo</label>
             <img ng-src={{acount.logo.url}}
-                 ng-click=""
+                 ng-click="uploadImage()"
                  class="user-profile-photo"/>
         </item>
 
@@ -31,6 +31,11 @@
                 {{service}}
             </div>
         </div>
+
+        <md-button ng-click="updateAccount()"
+                   class="md-raised md-warn form-acount-settings__save"
+                   layout="row" layout-align="center center">save</md-button>
+
 
 
     </div>

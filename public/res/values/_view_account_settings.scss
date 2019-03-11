@@ -2,6 +2,10 @@
 
   &-acount-settings{
 
+    &__save{
+      margin-top: 20px;
+    }
+
     .user-profile-photo{
       @include margin-left(0)
     }
