@@ -37,7 +37,7 @@ function _create(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
@@ -133,7 +133,7 @@ function _read(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_READ)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
@@ -194,7 +194,7 @@ function _update(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
@@ -238,7 +238,7 @@ function _update(req, res) {
                     type:db.Channels.poster.LANDSCAPE
                 };
 
-                query["$set"].poster = [poster];
+                query.update["$set"].poster = [poster];
 
                 _update();
             });
@@ -277,7 +277,7 @@ function _delete(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
