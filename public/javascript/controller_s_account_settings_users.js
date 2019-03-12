@@ -12,41 +12,40 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sAccountSettingsCtrl", ['$scope', '$NxApi', '$mdToast', '$location', function ($scope, $NxApi, $mdToast, $location) {
+        .controller("sAccountSettingsUsersCtrl", ['$scope', '$NxApi', '$mdToast', '$location', function ($scope, $NxApi, $mdToast, $location) {
 
-            $scope.acount = {
-                logo: '',
-                name: '',
-                description: '',
-                services: []
-            };
-
-            $scope.account_users = account_users;
-
+            $scope.users = [];
+            $scope.accountName = '';
+            $scope.getUrlProfilePhoto = getUrlProfilePhoto;
+            $scope.userDetails = userDetails;
 
             function init() {
                 let user = $NxApi.getUser();
 
-                if(user){
+                if (user) {
+
                     $NxApi.getAccount(user.account).then((account) => {
-                        console.log(account)
-                        let {name, logo, description, services} = account;
-
-                        $scope.acount = {
-                            name,
-                            logo,
-                            description,
-                            services
-                        }
+                        $scope.accountName = account.name;
+                        $NxApi.users.read({account: user.account}).then(({users}) => {
+                            console.log(users);
+                            $scope.users = users;
+                        });
                     })
+
                 }
-
-
 
             }
 
-            function account_users(){
-                $location.path("/s/account/settings/users")
+            function userDetails(user){
+                $location.path('/s/account/settings/users/'+user._id)
+            }
+
+            function getUrlProfilePhoto(user){
+                if(user.photo && user.photo.url){
+                    return user.photo.url
+                }
+
+                return '/res/drawable/ph_user.jpg'
             }
 
             init();

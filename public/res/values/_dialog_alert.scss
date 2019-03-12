@@ -1,0 +1,16 @@
+.dialog_alert{
+  padding: 10px 20px;
+  &__title{
+    color: #42516e;
+    font-size: 16px;
+    text-align: center;
+
+  }
+
+  &__form{
+    input{
+      margin-bottom: 10px;
+    }
+  }
+
+}

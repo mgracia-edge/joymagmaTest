@@ -1,0 +1,61 @@
+<div secction layout-fill layout="column">
+    <h1>Acount Access</h1>
+    <div class="form form-acount-settings-users" layout="column">
+
+        <div block layout="row">
+            <search-box layout="row">
+                <input type="search" ng-model="search.email" flex>
+                <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
+            </search-box>
+        </div>
+
+        <table class="table-users">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Last session</th>
+                    <th>Account</th>
+                    <th>Details</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in users | filter:search.email" class="table-users__user">
+                    <td>
+                        <div class="table-users__user__info">
+                            <div class="table-users__user__info__img">
+                                <img ng-src="{{getUrlProfilePhoto(user)}}">
+                            </div>
+                            <div class="table-users__user__info__desc">
+                                <div>{{user.firstName}} {{user.lastName}}</div>
+                                <div>{{user.email}}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {{user.authentication.sessions[user.authentication.sessions.length-1].lastAccess | date:'MMMMdd, yyyy'}}
+                    </td>
+                    <td>
+                        {{accountName}}
+                    </td>
+                    <td>
+                        <md-button ng-click="userDetails(user)">more</md-button>
+                    </td>
+                    <td class="table-users__actions">
+                        <md-menu>
+                            <md-button ng-click="$mdMenu.open($event)">
+                                <md-icon>more_horiz</md-icon>
+                            </md-button>
+                            <md-menu-content >
+                                <md-menu-item><md-button ng-click="userDetails(user)" aria-label="details">details</md-button></md-menu-item>
+                                <md-menu-item><md-button ng-click="" aria-label="remove">remove</md-button></md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+</div>

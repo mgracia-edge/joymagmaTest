@@ -1,10 +1,37 @@
-<div secction layout-fill layout="column" layout-align="center center">
+<div secction layout-fill layout="column">
+    <h1>Acount Settings</h1>
+    <div class="form form-acount-settings" layout="column">
+        <item>
+            <label>Logo</label>
+            <img ng-src={{acount.logo.url}}
+                 ng-click=""
+                 class="user-profile-photo"/>
+        </item>
+
+        <item>
+            <label>Name</label>
+            <input type="text" ng-model="acount.name" aria-label="Name" title="Name"
+                   autocomplete="off">
+        </item>
+
+        <item>
+            <label>Description</label>
+            <textarea type="text" ng-model="acount.description" aria-label="Description" title="Description"
+                      autocomplete="off"></textarea>
+        </item>
+
+        <md-button ng-click="account_users()"
+                   class="md-raised md-warn" layout="row" layout-align="center center">Account users</md-button>
+
+        <h2>Active Services</h2>
+
+        <div class="active-services">
+
+            <div class="active-services__service" ng-repeat="service in acount.services">
+                {{service}}
+            </div>
+        </div>
 
 
-    <div style="text-align: center">
-        <md-icon md-svg-src="/res/drawable/vc_unavailable.svg" style="height: 110px;width: 110px; margin: 20px">
-        </md-icon>
-        <h1>Action unavailable</h1>
     </div>
-
 </div>

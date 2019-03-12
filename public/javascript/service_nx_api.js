@@ -138,13 +138,20 @@
                 }
 
                 function read(params) {
+
                     return $q((resolve, reject) => {
-                        $http.post("/api/0.1/user/read", params)
+                        $http.post("/api/1.0/user/read", {
+                            id:params._id,
+                            data:params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
                             .then(({data}) => {
 
                                 resolve({
-                                    users: data.users,
-                                    count: data.count
+                                    users: data.content
                                 });
                             })
                             .catch((error) => {
@@ -173,9 +180,21 @@
                     });
                 }
 
-                function remove() {
+                function remove(params) {
                     return $q((resolve, reject) => {
-
+                        $http.post("/api/1.0/user/delete", {
+                            id:params._id
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
                     });
                 }
 
@@ -187,6 +206,38 @@
                 }
             }
 
+
+            function Subscribers($http, $q) {
+
+
+                function read(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/subscriber/read", {
+                            id:params._id,
+                            data:params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+
+                                resolve({
+                                    users: data.content
+                                });
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                return {
+                    read
+                }
+            }
+
             init();
 
             return {
@@ -194,7 +245,8 @@
                 setAfterLogin: setAfterLogin,
                 getUser: getUser,
                 getAccount: getAccount,
-                users: Users($http, $q)
+                users: Users($http, $q),
+                subscribers: Subscribers($http, $q)
             }
         }]);
 

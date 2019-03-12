@@ -10,23 +10,20 @@
  *  information or reproduction of this material is strictly forbidden unless prior written
  *  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
  */
-
 @import "theme";
 @import "common";
-
 /* Views */
 @import "view_login";
-
+@import "view_account_settings";
 /* Fragments */
 @import "main_bar";
 @import "nav_panel";
-
 /* Directives */
 @import "directive_channel";
-
 /* Dialogs */
 @import "dialog_change_password";
 @import "dialog_add";
+@import "dialog_alert";
 
 
 

@@ -13,6 +13,10 @@ body {
   border-radius: 3px;
 }
 
+@mixin margin-left($size) {
+  margin-left: #{$size};
+}
+
 scroll-view {
 
   display: block;
@@ -49,12 +53,20 @@ scroll-view {
     margin: 16px 0 24px 0;
   }
 
+  h2 {
+    font-size: 20px;
+    color: #565758;
+    font-weight: 600;
+    margin: 16px 0;
+  }
+
 }
 
 a {
   color: $link_text_color;
 }
 
+textarea,
 input[type="search"],
 input[type="text"],
 input[type="password"],
@@ -86,7 +98,8 @@ search-box {
   @include border-radius;
   @include box-shadow;
 
-  input {
+  input,
+  textarea {
     margin: 2px;
     padding: 6px;
     min-width: 200px;
@@ -143,30 +156,50 @@ md-menu-content {
       text-transform: capitalize;
     }
 
-    input {
+    input,
+    textarea {
       max-width: 300px;
     }
 
   }
 
-  .user-profile-photo{
+  .user-profile-photo {
     outline: none;
     width: 100px;
     height: 100px;
     border-radius: 50%;
     background-size: cover;
-    box-shadow: 0 0 7px 0px black;
-    margin-left: 20px;
-    &:hover{
+    box-shadow: 0 0 7px 0 black;
+    @include margin-left(20px);
+    &:hover {
       cursor: pointer;
       opacity: .7;
     }
   }
 
-
-  .md-button{
+  .md-button {
     margin-left: 0;
     max-width: fit-content;
+  }
+
+}
+
+
+table {
+
+  border-spacing: 0px;
+
+  th, td {
+    margin: 0;
+  }
+
+  thead {
+    th {
+      border-bottom: 2px solid #ddd;
+      margin: 0;
+      padding: 8px;
+      font-size: 14px;
+    }
   }
 
 }
