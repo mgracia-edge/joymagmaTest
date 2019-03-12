@@ -1,48 +1,60 @@
 <div secction layout-fill layout="column">
     <h1>{{isNew ? "New Channel" : "Channel Detail"}}</h1>
-    <scroll-view class="form" orientation="vertical" flex>
-        <item>
-            <label>Logo</label>
-            <div layout="row">
-                <div flex layout="row" layout-align="start center">
-                    <div class="channel-logo"
-                         ng-style='getUrlPoster(channelData)'
-                         ng-click="uploadImage()"></div>
+
+    <div class="form" layout="row">
+        <div layout="column">
+
+            <item>
+                <label>Logo</label>
+                <div layout="row">
+                    <div flex layout="row" layout-align="start center">
+                        <div class="channel-logo"
+                             ng-style='getUrlPoster(channelData)'
+                             ng-click="uploadImage()"></div>
+                    </div>
                 </div>
-            </div>
-        </item>
+            </item>
 
-        <item>
-            <label>Name</label>
-            <input type="text" ng-model="channelData.name" aria-label="first name" title="first name"
-                   autocomplete="off">
-        </item>
+            <item>
+                <label>Name</label>
+                <input type="text" ng-model="channelData.name" aria-label="first name" title="first name"
+                       autocomplete="off">
+            </item>
 
-        <item>
-            <label>Short description</label>
-            <input type="text" ng-model="channelData.descriptionShort" aria-label="first name" title="first name"
-                   autocomplete="off">
-        </item>
+            <item>
+                <label>Short description</label>
+                <input type="text" ng-model="channelData.descriptionShort" aria-label="first name" title="first name"
+                       autocomplete="off">
+            </item>
 
-        <item>
-            <label>EPG Source Id</label>
-            <input type="text" ng-model="channelData.channelEPGId" aria-label="first name" title="first name"
-                   autocomplete="off">
-        </item>
+            <item>
+                <label>EPG Source Id</label>
+                <input type="text" ng-model="channelData.channelEPGId" aria-label="first name" title="first name"
+                       autocomplete="off">
+            </item>
 
-        <item>
-            <label>Large description</label>
-            <textarea type="text" ng-model="channelData.descriptionLong" aria-label="first name" title="first name"
-                      autocomplete="off" rows="4">
-            </textarea>
-        </item>
+            <item>
+                <label>Large description</label>
+                <textarea type="text" ng-model="channelData.descriptionLong" aria-label="first name" title="first name"
+                          autocomplete="off" rows="4">
+                </textarea>
+            </item>
 
-        <md-button ng-click="updateChannel()" class="md-raised md-warn" layout="row" layout-align="center center">
-            <md-progress-circular ng-show="loading" class="md-warn md-hue-3" md-diameter="30"></md-progress-circular>
-            <span ng-show="!loading">Save</span>
-        </md-button>
+            <md-button ng-click="updateChannel()" class="md-raised md-warn" layout="row" layout-align="center center">
+                <md-progress-circular ng-show="loading" class="md-warn md-hue-3"
+                                      md-diameter="30"></md-progress-circular>
+                <span ng-show="!loading">Save</span>
+            </md-button>
 
 
+        </div>
 
-    </scroll-view>
+        <div layout="column" style="margin-left: 50px;">
+            <md-button ng-hide="isNew" md-no-ink class="md-raised md-warn"
+                       ng-click="removeChannel()">Remove Channel</md-button>
+
+        </div>
+    </div>
+
+
 </div>

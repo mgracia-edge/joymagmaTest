@@ -253,7 +253,19 @@
 
                 function remove(params) {
                     return $q((resolve, reject) => {
-
+                        $http.post("/api/1.0/channels/delete", {
+                            id: params._id
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch(({error}) => {
+                                reject(error)
+                            });
                     });
                 }
 

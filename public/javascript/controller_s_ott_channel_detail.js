@@ -12,36 +12,36 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sOttChannelDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi','$q', controller]);
+        .controller("sOttChannelDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', '$q', '$location', '$mdDialog', controller]);
 
-    function controller($scope, $interval, $routeParams, $NxApi, $q) {
+    function controller($scope, $interval, $routeParams, $NxApi, $q, $location, $mdDialog) {
 
         $scope.isNew = $routeParams.id === "new";
         $scope.channelData = {
-            name:'',
-            descriptionShort:'',
-            channelEPGId:'',
-            descriptionLong:'',
-            poster:{
-                url:''
-            }
+            name: '',
+            descriptionShort: '',
+            channelEPGId: '',
+            descriptionLong: '',
+            poster: ''
         };
 
         $scope.uploadImage = uploadImage;
         $scope.getUrlPoster = getUrlPoster;
         $scope.updateChannel = updateChannel;
+        $scope.removeChannel = removeChannel;
 
         function init() {
-            //console.log($scope.$parent.toast("hola"))
-            if(!$scope.isNew){
+            if (!$scope.isNew) {
                 $NxApi.channels
-                    .read({_id:$routeParams.id})
+                    .read({_id: $routeParams.id})
                     .then((channel) => {
                         console.log(channel);
                         $scope.channelData = channel[0];
                     })
                     .catch((error) => {
                         console.log(error);
+                        $location.path("/s/ott/channel");
+                        $scope.$parent.toast('The channel not exist');
 
                     })
             }
@@ -50,10 +50,10 @@
 
         function getUrlPoster(channel) {
             if (channel && channel.poster && channel.poster.length) {
-                return {'background-image':'url('+channel.poster[0].url+')'}
+                return {'background-image': 'url(' + channel.poster[0].url + ')'}
             }
 
-            return {'background-image':'url(/res/drawable/ph_noimage.png)'}
+            return {'background-image': 'url(/res/drawable/ph_noimage.png)'}
         }
 
         function _getImage() {
@@ -83,8 +83,8 @@
         function uploadImage() {
             _getImage().then((img) => {
                 $scope.channelData.poster = [{
-                    update:true,
-                    url:img
+                    update: true,
+                    url: img
                 }];
             }).catch((error) => {
                 $scope.$parent.toast(error);
@@ -93,7 +93,7 @@
 
         function checkForm() {
 
-            let {name, descriptionShort, channelEPGId,descriptionLong} = $scope.channelData;
+            let {name, descriptionShort, channelEPGId, descriptionLong} = $scope.channelData;
 
             if (name !== '' && descriptionShort !== '' && channelEPGId !== '' && descriptionLong !== '') {
                 return true
@@ -104,19 +104,88 @@
             return false
         }
 
-        function updateChannel(){
-            if(checkForm()){
+        function removeChannel() {
+
+            dialog_alert()
+                .then(() => {
+                    $location.path('/s/ott/channel');
+                })
+        }
+
+        function dialog_alert() {
+
+            let title = 'Remove Channel';
+            let description = 'You are sure to delete the current Channel?';
+            let templateUrl = "/res/layout/dialog_alert.html";
+            let channelId = $routeParams.id;
+
+            return $q((resolve, reject) => {
+
+                let dialog = {
+                    templateUrl: templateUrl,
+                    parent: angular.element(document.body),
+                    escapeToClose: true,
+                    clickOutsideToClose: true,
+                    controller: dialogController
+                };
+
+                $mdDialog.show(dialog).then(resolve, reject);
+
+                function dialogController($scope, $mdDialog, $location) {
+
+                    $scope.title = title;
+                    $scope.description = description;
+                    $scope.channelId = channelId;
+                    $scope.loading = false;
+
+                    $scope.cancel = cancel;
+                    $scope.ok = ok;
+
+                    function init() {
+
+                    }
+
+                    function cancel() {
+                        $mdDialog.cancel();
+                    }
+
+                    function ok() {
+                        $scope.loading = true;
+                        $NxApi.channels
+                            .delete({
+                                _id: channelId
+                            })
+                            .then(() => {
+                                $mdDialog.hide();
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                $mdDialog.hide();
+                                $scope.loading = false;
+                            })
+
+                    }
+
+                    init();
+                }
+
+            });
+
+        }
+
+        function updateChannel() {
+            if (checkForm()) {
 
                 $scope.loading = true;
 
-                if($scope.isNew){
+                if ($scope.isNew) {
 
                     $NxApi.channels
                         .create($scope.channelData)
                         .then(() => {
                             $scope.$parent.toast('The channel was created');
                             $scope.loading = false;
-                            window.location = "/s/ott/channel";
+                            $location.path("/s/ott/channel");
 
                         })
                         .catch((error) => {
@@ -124,18 +193,19 @@
                             $scope.loading = false;
                         })
 
-                }else{
+                } else {
                     $NxApi.channels
                         .update($scope.channelData)
                         .then(() => {
                             $scope.$parent.toast('The channel was update');
                             $scope.loading = false;
-                            if($scope.channelData.poster) $scope.channelData.poster.update = false;
+                            if ($scope.channelData.poster) $scope.channelData.poster.update = false;
 
                         })
                         .catch((error) => {
                             console.log(error);
                             $scope.loading = false;
+
                         })
 
                 }
