@@ -7,6 +7,9 @@
         </search-box>
     </div>
     <scroll-view orientation="vertical" flex>
-        <nx-channel ng-repeat="item in channels | filter:search" ng-model="item"></nx-channel>
+        <nx-channel
+                ng-click="channelDetails(item)"
+                ng-repeat="item in channels | filter:search"
+                ng-model="item"></nx-channel>
     </scroll-view>
 </div>

@@ -12,14 +12,13 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("MainCtrl", ['$scope', '$NxApi', '$NxNav', '$NxDialogs', '$location',
-            function ($scope, $NxApi, $NxNav, $NxDialogs, $location) {
+        .controller("MainCtrl", ['$scope', '$NxApi', '$NxNav', '$NxDialogs', '$location','$mdToast',
+            function ($scope, $NxApi, $NxNav, $NxDialogs, $location,$mdToast) {
 
                 // Scope Properties
 
                 $scope.navPanel = $NxNav.navPanel;
                 $scope.mainBar = $NxNav.mainBar;
-
 
                 // Methods Declaration
 
@@ -30,6 +29,7 @@
                 $scope.logOut = logOut;
                 $scope.accessProfile = accessProfile;
                 $scope.showAddDialog = showAddDialog;
+                $scope.toast = toast;
 
                 // Implementation
 
@@ -89,6 +89,16 @@
 
                 function showAddDialog($event) {
                     $NxDialogs.showAdd($event)
+                }
+
+                function toast(msg) {
+                    $mdToast.show(
+                        $mdToast.simple()
+                            .textContent(msg)
+                            .hideDelay(5000))
+                        .then(function () {
+                        }).catch(function () {
+                    });
                 }
 
 

@@ -191,11 +191,15 @@
                 }
             }
 
-            function Users($http, $q) {
+            function Channels($http, $q) {
 
                 function create(params) {
                     return $q((resolve, reject) => {
-                        $http.post("/api/0.1/user/create", params)
+                        $http.post("/api/1.0/channels/create", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
                             .then(({data}) => {
                                 resolve(data);
 
@@ -203,6 +207,69 @@
                             .catch((error) => {
                                 reject(error)
                             });
+                    });
+                }
+
+                function read(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/channels/read", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+
+                                resolve(data.content);
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function update(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/channels/update", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function remove(params) {
+                    return $q((resolve, reject) => {
+
+                    });
+                }
+
+                return {
+                    create,
+                    read,
+                    update,
+                    delete: remove,
+                }
+            }
+
+            function Users($http, $q) {
+
+                function create(params) {
+                    return $q((resolve, reject) => {
+
                     });
                 }
 
@@ -275,7 +342,6 @@
                 }
             }
 
-
             function Subscribers($http, $q) {
 
 
@@ -314,7 +380,8 @@
                 getAccount: getAccount,
                 subscribers: Subscribers($http, $q),
                 account: Account($http, $q),
-                users: Users($http, $q)
+                users: Users($http, $q),
+                channels: Channels($http, $q)
             }
         }]);
 

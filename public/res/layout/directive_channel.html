@@ -1,6 +1,9 @@
 <div class="channel">
     <div class="channel_panel-left">
-        <img class="channel_logo" ng-src="{{channel.logo}}" />
+        <div class="channel_logo"
+             ng-style="{'background-image':'url('+channel.poster[0].url+')'}">
+
+        </div>
         <span class="channel_name">{{channel.name}}</span>
         <span>Viewing Now</span>
         <span>{{channel.stats[channel.stats.length-1].users}}</span>
