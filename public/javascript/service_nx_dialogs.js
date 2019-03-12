@@ -14,7 +14,7 @@
     const C = {};
 
     angular.module('NxStudio')
-        .factory('$NxDialogs', ['$http', '$q','$mdDialog', function ($http, $q,$mdDialog) {
+        .factory('$NxDialogs', ['$http', '$q','$mdDialog','$location', function ($http, $q,$mdDialog,$location) {
 
 
             function showAdd($event){
@@ -30,9 +30,25 @@
 
                     $scope.cancel = cancel;
 
+                    $scope.add = add;
+
 
                     function cancel() {
                         $mdDialog.hide()
+                    }
+
+                    function add(event) {
+                        cancel();
+                        switch (event){
+                            case "channel":{
+                                $location.path("/s/ott/channel/new");
+                                break;
+                            }
+                            default: {
+                                $location.path("/s/n/a")
+                            }
+                        }
+
                     }
 
                     

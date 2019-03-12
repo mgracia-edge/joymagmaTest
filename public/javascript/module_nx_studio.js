@@ -27,6 +27,10 @@
                     templateUrl: '/res/layout/view_s_ott_channel.html',
                     controller: 'sOttChannelCtrl'
                 })
+                .when('/s/ott/channel/:id', {
+                    templateUrl: '/res/layout/view_s_ott_channel_detail.html',
+                    controller: 'sOttChannelDetailCtrl'
+                })
                 .when('/s/ott/subscribers', {
                     templateUrl: '/res/layout/view_s_ott_subscribers.html',
                     controller: 'sOttSubscribersCtrl'

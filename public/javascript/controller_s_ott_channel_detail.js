@@ -1,4 +1,4 @@
-/*!
+/*
  * Copyright (C) 2018 ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
  *
  *  NOTICE:  All information contained herein is, and remains the property of
@@ -10,21 +10,21 @@
  *  information or reproduction of this material is strictly forbidden unless prior written
  *  permission is obtained from ENTERTAINMENT PORTAL OF THE AMERICAS, LLC.
  */
-@import "theme";
-@import "common";
-/* Views */
-@import "view_login";
-@import "view_account_settings";
-@import "view_ott_channel";
-/* Fragments */
-@import "main_bar";
-@import "nav_panel";
-/* Directives */
-@import "directive_channel";
-/* Dialogs */
-@import "dialog_change_password";
-@import "dialog_add";
-@import "dialog_alert";
+(function () {
+    angular.module('NxStudio')
+        .controller("sOttChannelDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', controller]);
+
+    function controller($scope, $interval, $routeParams, $NxApi) {
+
+        $scope.isNew = $routeParams.id === "new";
+
+        function init() {
+
+        }
 
 
+        $NxApi.setAfterLogin(init);
+        init();
 
+    }
+})();

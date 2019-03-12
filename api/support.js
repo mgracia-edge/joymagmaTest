@@ -11,6 +11,7 @@ exports.Error = Error_class;
 exports.Success = Success_class;
 exports.passHash = passHash;
 exports.newToken = newToken;
+exports.newStreamKeyCode = newStreamKeyCode;
 
 function nxAuthenticationFunction(req, res, next) {
 
@@ -118,4 +119,12 @@ function Success_class(payload) {
 
 function newToken() {
     return Date.now().toString(36) + "/" + passHash(Math.random() + "_" + Date.now() + "_" + Math.random());
+}
+
+function newStreamKeyCode() {
+    const N = Math.pow(26,5);
+    return  Math.round(Math.random()*N).toString(26) + "-" +
+            Math.round(Math.random()*N).toString(26) + "-" +
+            Math.round(Math.random()*N).toString(26) + "-" +
+            Math.round(Math.random()*N).toString(26);
 }
