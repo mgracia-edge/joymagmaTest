@@ -1,0 +1,30 @@
+<div secction layout-fill layout="column">
+    <h1>{{isNew?"New Channel":"Channel Detail"}}</h1>
+    <scroll-view class="form" orientation="vertical" flex>
+        <item>
+            <label>Name</label>
+            <input type="text" ng-model="channelData.name" aria-label="first name" title="first name"
+                   autocomplete="off">
+        </item>
+
+        <item>
+            <label>Short description</label>
+            <input type="text" ng-model="channelData.descriptionShort" aria-label="first name" title="first name"
+                   autocomplete="off">
+        </item>
+
+        <item>
+            <label>EPG Source Id</label>
+            <input type="text" ng-model="channelData.channelEPGId" aria-label="first name" title="first name"
+                   autocomplete="off">
+        </item>
+
+        <item>
+            <label>Large description</label>
+            <textarea type="text" ng-model="channelData.descriptionLong" aria-label="first name" title="first name"
+                      autocomplete="off" rows="4">
+            </textarea>
+        </item>
+
+    </scroll-view>
+</div>

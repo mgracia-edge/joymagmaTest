@@ -45,7 +45,7 @@
                                 break;
                             }
                             default: {
-                                $location.path("/s/n/a")
+                                $location.path("/s/ott/products/new")
                             }
                         }
 
