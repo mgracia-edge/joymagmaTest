@@ -17,6 +17,7 @@
 
             const HOST = "";
             const LOGIN_PATH = "/api/1.0/user/login";
+            const LOGIN_AS_USER_PATH = "/api/1.0/user/login_as_user";
             const CHECK_SESSION = "/api/1.0/user/check-session";
             const GET_ACCOUNT = "/api/1.0/account/get";
 
@@ -94,6 +95,47 @@
 
             }
 
+            function loginAsUser(email, password) {
+
+                return $q((success, reject) => {
+
+                    $http.post(getURI(LOGIN_AS_USER_PATH), {
+                        "email": email,
+                        "password": password
+                    },{
+                        headers: {
+                            "Authorization": "Bearer " + session.token
+                        }
+                    }).then((response) => {
+                        preSuccess(response.data)
+                    }).catch((error) => {
+                        reject(error)
+                    });
+
+                    function preSuccess(response) {
+
+                        session.user = response.content.user
+                        session.data = response.content.session
+
+                        localStorage.setItem("token", session.data.token);
+
+                        let account = null;
+
+                        getAccount(response.content.user.account).then((data) => {
+                            account = data;
+                        }).catch((b) => {
+                        }).finally(() => {
+                            $NxNav.loadRootLevel(session.user, account);
+                            success(response.content.user);
+                            if (afterLoginCallback) afterLoginCallback();
+                        })
+
+                    }
+
+                })
+
+            }
+
             function setAfterLogin(callback) {
                 afterLoginCallback = callback;
             }
@@ -122,6 +164,33 @@
                 })
             }
 
+            function Account($http, $q){
+
+                function update(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/account/update", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                return {
+                    update,
+                }
+            }
+
             function Users($http, $q) {
 
                 function create(params) {
@@ -141,8 +210,8 @@
 
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/user/read", {
-                            id:params._id,
-                            data:params
+                            id: params._id,
+                            data: params
                         }, {
                             headers: {
                                 "Authorization": "Bearer " + session.token
@@ -164,8 +233,8 @@
 
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/user/update", {
-                            id:params._id,
-                            data:params
+                            id: params._id,
+                            data: params
                         }, {
                             headers: {
                                 "Authorization": "Bearer " + session.token
@@ -183,7 +252,7 @@
                 function remove(params) {
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/user/delete", {
-                            id:params._id
+                            id: params._id
                         }, {
                             headers: {
                                 "Authorization": "Bearer " + session.token
@@ -242,11 +311,13 @@
 
             return {
                 login: login,
+                loginAsUser: loginAsUser,
                 setAfterLogin: setAfterLogin,
                 getUser: getUser,
                 getAccount: getAccount,
-                users: Users($http, $q),
-                subscribers: Subscribers($http, $q)
+                subscribers: Subscribers($http, $q),
+                account: Account($http, $q),
+                users: Users($http, $q)
             }
         }]);
 

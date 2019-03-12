@@ -25,6 +25,12 @@ exports.resourceList = [
         protected: false
     },
     {
+        path: "login_as_user",
+        callback: _loginAsUser,
+        method: "post",
+        protected: true
+    },
+    {
         path: "check-session",
         callback: _checkSession,
         method: "post",
@@ -129,6 +135,86 @@ function _login(req, res) {
 
 }
 
+function _loginAsUser(req, res) {
+
+    const {email, password} = req.body;
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    if (dc.db) {
+
+        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+
+            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+            return;
+        }
+
+        if (email && password) {
+
+            dc.db.User.findOne({
+                email: email,
+                "authentication.password": password
+            }, function (error, user) {
+
+                if (error) {
+                    res.status(codes.error.database.ERROR.httpCode)
+                        .send(new api.Error(codes.error.database.ERROR));
+                } else if (!user) {
+                    res.status(codes.error.userRights.BAD_AUTHENTICATION.httpCode)
+                        .send(new api.Error(codes.error.userRights.BAD_AUTHENTICATION));
+                } else {
+
+                    const session = {
+                        date: new Date(),
+                        expires: new Date(Date.now() + 3600000 * 6),
+                        lastAccess: new Date(),
+                        ip: ip,
+                        token: api.newToken()
+                    };
+
+
+                    let sessions = [];
+
+                    if (Array.isArray(user.authentication.sessions)) {
+                        for (let session of user.authentication.sessions) {
+                            if (session.expires.getTime() > Date.now()) {
+                                sessions.push(session);
+                            }
+                        }
+                    }
+                    sessions.push(session);
+
+                    dc.db.User.update({email: email}, {
+                        $set: {
+                            "authentication.sessions": sessions
+                        }
+                    }, (error, data) => {
+
+                    });
+
+
+                    res.send(new api.Success({
+                        session: session,
+                        user: user
+                    }))
+
+                }
+
+            })
+        } else {
+            console.error(new Error(codes.error.operation.OPERATION_INVALID_PARAMETERS.message));
+            res.status(codes.error.operation.OPERATION_INVALID_PARAMETERS.httpCode)
+                .send(new api.Error(codes.error.operation.OPERATION_INVALID_PARAMETERS));
+        }
+    } else {
+        console.error(new Error(codes.error.database.DISCONNECTED.message));
+        res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+
+}
+
 function _checkSession(req, res) {
 
     res.send(new api.Success({
@@ -161,7 +247,7 @@ function _create(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
@@ -243,7 +329,7 @@ function _read(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
@@ -299,14 +385,14 @@ function _update(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
 
         const {id, data} = req.body;
 
-        const {firstName, lastName, password, permissions, photo} = data;
+        const {firstName, lastName, password, permissions, photo, email} = data;
 
         let query = {
             find: {
@@ -321,6 +407,7 @@ function _update(req, res) {
         if (typeof lastName !== 'undefined') query.update.$set["lastName"] = lastName;
         if (typeof password !== 'undefined') query.update.$set["authentication.password"] = api.passHash(password);
         if (typeof permissions !== 'undefined') query.update.$set["permissions"] = permissions;
+        if (typeof email !== 'undefined') query.update.$set["email"] = email;
 
         if(typeof photo !== 'undefined' && photo.update === true){
             cloudinary.uploader.upload(photo.url, (result) => {
@@ -361,7 +448,7 @@ function _delete(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
