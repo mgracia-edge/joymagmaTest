@@ -184,7 +184,6 @@ md-menu-content {
 
 }
 
-
 table {
 
   border-spacing: 0px;
@@ -199,7 +198,23 @@ table {
       margin: 0;
       padding: 8px;
       font-size: 14px;
+      text-align: left;
+      font-weight: bold;
     }
   }
 
+  td {
+    min-height: 35px;
+    height: 35px;
+  }
+
+}
+
+.glove {
+  display: inline-flex;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #42516e;
+  color: white;
+  font-size: 11px;
 }

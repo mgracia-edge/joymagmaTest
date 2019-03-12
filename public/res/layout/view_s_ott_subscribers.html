@@ -6,7 +6,7 @@
             <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
         </search-box>
     </div>
-    <scroll-view orientation="vertical" flex>
+    <scroll-view orientation="vertical" layout="column" flex>
         <table>
             <thead>
                 <tr>
@@ -28,7 +28,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="subscriber in subscribers | filter by ">
+                <tr ng-repeat="subscriber in subscribers | filter : search ">
                     <td>
                         {{subscriber.subscriberId}}
                     </td>
@@ -36,13 +36,15 @@
                         {{subscriber.email}}
                     </td>
                     <td>
-                        {{subscriber.email}}
+                        <div class="glove" ng-repeat="product in subscriber.products">
+                            {{product}}
+                        </div>
                     </td>
                     <td>
-                        {{subscriber.creationDate}}
+                        {{subscriber.creationDate | date:'MMMMdd, yyyy'}}
                     </td>
                     <td>
-                        {{subscriber.lastUpdate}}
+                        {{subscriber.lastUpdate | date:'MMMMdd, yyyy'}}
                     </td>
                 </tr>
             </tbody>

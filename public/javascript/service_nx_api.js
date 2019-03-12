@@ -283,17 +283,14 @@
 
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/subscriber/read", {
-                            id:params._id,
-                            data:params
                         }, {
                             headers: {
                                 "Authorization": "Bearer " + session.token
                             }
                         })
                             .then(({data}) => {
-
                                 resolve({
-                                    users: data.content
+                                    subscribers: data.content
                                 });
                             })
                             .catch((error) => {

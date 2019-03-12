@@ -23,35 +23,18 @@
 
             function channel(name) {
 
-                const publishing = Math.random() < 0.75 ? true : false,
-                    online = Math.random() < 0.75 ? true : false;
-
-                let c = [];
-
-                for (let i = 0; i < 15; i++) {
-                    c.push({
-                        timestamp: Date.now() + 1 * 1000,
-                        concurrency: Math.round(10 + Math.random() * 10 + Math.random() * 10),
-                        users: Math.round(Math.random() * 1000)
-                    });
-                }
-
-
-                $interval(() => {
-                    stats = [{
-                        timestamp: Date.now() + 1 * 1000,
-                        concurrency: Math.round(10 + Math.random() * 10 + Math.random() * 10),
-                        users: Math.round(Math.random() * 1000)
-                    }]
-                }, 1000)
-
+                let c = [{
+                    timestamp: Date.now(),
+                    concurrency: 0,
+                    users: 0
+                }];
 
                 return {
                     logo: 'https://is5-ssl.mzstatic.com/image/thumb/Purple118/v4/e0/4d/be/e04dbe0a-748d-ba79-bae0-1c0b23c937a5/source/512x512bb.jpg',
-                    stats: online && publishing ? c : [],
+                    stats: c,
                     name: name,
-                    online: online,
-                    publishing: publishing
+                    online: false,
+                    publishing: false
                 }
 
             }

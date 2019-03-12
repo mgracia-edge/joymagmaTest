@@ -14,8 +14,14 @@
     angular.module('NxStudio')
         .controller("sOttSubscribersCtrl", ['$scope', '$NxApi', '$mdToast','$location', function ($scope, $NxApi, $mdToast,$location) {
 
+            $scope.subscribers = [];
+
             function init(){
-                $NxApi
+                $NxApi.subscribers.read().then((data)=>{
+                    $scope.subscribers = data.subscribers;
+                }).catch((e)=>{
+                    console.error(e);
+                })
             }
 
 
