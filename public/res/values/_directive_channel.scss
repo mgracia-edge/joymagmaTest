@@ -1,6 +1,11 @@
 nx-channel {
 
   display: inline-block;
+  outline: none;
+  &:hover{
+    cursor: pointer;
+    opacity: .5;
+  }
 
   .online,
   .offline {
@@ -41,6 +46,7 @@ nx-channel {
     box-sizing: border-box;
 
 
+
     @include border-radius;
     @include box-shadow;
 
@@ -61,7 +67,11 @@ nx-channel {
       width: 32px;
       height: 32px;
       border-radius: 4px;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
     }
+
 
     &_online {
       //position: absolute;

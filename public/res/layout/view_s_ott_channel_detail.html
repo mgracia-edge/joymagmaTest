@@ -1,12 +1,13 @@
 <div secction layout-fill layout="column">
-    <h1>{{isNew?"New Channel":"Channel Detail"}}</h1>
+    <h1>{{isNew ? "New Channel" : "Channel Detail"}}</h1>
     <scroll-view class="form" orientation="vertical" flex>
         <item>
             <label>Logo</label>
             <div layout="row">
-                <div style="background-image: url({{userData.photo.url}});"
-                     ng-click="uploadImage()"
-                     class="channel-logo">
+                <div flex layout="row" layout-align="start center">
+                    <div class="channel-logo"
+                         ng-style='getUrlPoster(channelData)'
+                         ng-click="uploadImage()"></div>
                 </div>
             </div>
         </item>
@@ -35,6 +36,11 @@
                       autocomplete="off" rows="4">
             </textarea>
         </item>
+
+        <md-button ng-click="updateChannel()" class="md-raised md-warn" layout="row" layout-align="center center">
+            <md-progress-circular ng-show="loading" class="md-warn md-hue-3" md-diameter="30"></md-progress-circular>
+            <span ng-show="!loading">Save</span>
+        </md-button>
 
 
 

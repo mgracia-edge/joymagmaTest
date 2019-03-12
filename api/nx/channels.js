@@ -1,6 +1,7 @@
 const api = require('../support');
 const codes = require('../codes');
 const dc = require('../../lib/dataConnection');
+const cloudinary = require('cloudinary');
 
 exports.resourceList = [
     {
@@ -33,7 +34,7 @@ function _create(req, res) {
 
     if (db) {
 
-        if(!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)){
+        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.DISCONNECTED));
@@ -41,7 +42,7 @@ function _create(req, res) {
             return;
         }
 
-        const {channelEPGId, name, descriptionShort, descriptionLong, publishing} = req.body;
+        const {channelEPGId, name, descriptionShort, descriptionLong,poster} = req.body;
 
         db.Channels
             .findOne({"name": name}, (error, data) => {
@@ -59,35 +60,59 @@ function _create(req, res) {
                             name: name,
                             descriptionShort: descriptionShort,
                             descriptionLong: descriptionLong,
-                            publishing: publishing,
-                            updateHistory: [{
-                                date: new Date(),
-                                payload: {
-                                    channelEPGId: channelEPGId,
-                                    name: name,
-                                    descriptionShort: descriptionShort,
-                                    descriptionLong: descriptionLong,
-                                    publishing: publishing,
-                                }
-                            }]
+                            publishing: {
+                                type: db.Channels.publishingType.HLS,
+                                streamName: api.newStreamKeyCode()
+                            },
+                            entryPoint: {
+                                type: db.Channels.entryPoint.RTMP,
+                                streamName: api.newStreamKeyCode()
+                            }
                         };
+
+                        json.updateHistory = [{
+                            date: new Date(),
+                            payload: {
+                                ...json
+                            }
+                        }];
 
                         if (typeof descriptionShort === 'undefined') delete json.descriptionShort;
                         if (typeof descriptionLong === 'undefined') delete json.descriptionLong;
 
-                        let Channels = new db.Channels(json);
+                        if(typeof poster !== 'undefined' && poster[0].update === true){
+                            cloudinary.uploader.upload(poster[0].url, (result) => {
 
-                        Channels.save(json, (err) => {
-                            if (err) {
-                                console.log(err)
-                                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                            } else {
-                                res.status(200).send(new api.Success({}));
+                                let poster = {
+                                    url:result.url,
+                                    type:db.Channels.poster.LANDSCAPE
+                                };
 
-                            }
+                                json.poster = [poster];
 
-                        });
+                                _create();
+                            });
+
+                        }else{
+                            _create()
+                        }
+
+                        function _create(){
+                            let Channels = new db.Channels(json);
+
+                            Channels.save(json, (err) => {
+                                if (err) {
+                                    console.log(err)
+                                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+                                } else {
+                                    res.status(200).send(new api.Success({}));
+
+                                }
+
+                            });
+                        }
+
                     }
                 }
             });
@@ -105,7 +130,7 @@ function _read(req, res) {
 
     if (db) {
 
-        if(!req.user.permissions.includes(codes.users_permissions.CHANNELS_READ)){
+        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_READ)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.DISCONNECTED));
@@ -166,7 +191,7 @@ function _update(req, res) {
 
     if (db) {
 
-        if(!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)){
+        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.DISCONNECTED));
@@ -176,7 +201,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {channelEPGId, name, descriptionShort, descriptionLong, publishing} = data;
+        const {channelEPGId, name, descriptionShort, descriptionLong, poster} = data;
 
         let query = {
             find: {
@@ -187,8 +212,7 @@ function _update(req, res) {
                     channelEPGId: channelEPGId,
                     name: name,
                     descriptionShort: descriptionShort,
-                    descriptionLong: descriptionLong,
-                    publishing: publishing
+                    descriptionLong: descriptionLong
                 },
                 $push: {
                     updateHistory: {
@@ -203,19 +227,39 @@ function _update(req, res) {
         if (typeof name === 'undefined') delete query.update.$set.name;
         if (typeof descriptionShort === 'undefined') delete query.update.$set.descriptionShort;
         if (typeof descriptionLong === 'undefined') delete query.update.$set.descriptionLong;
-        if (typeof publishing === 'undefined') delete query.update.$set.publishing;
 
         query.update.$push.updateHistory.payload = query.update.$set;
 
-        db.Channels.updateOne(query.find, query.update, (error, products) => {
-            if (error) {
-                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-            } else {
-                res.status(200).send(new api.Success(products));
-            }
+        if(typeof poster !== 'undefined' && poster[0].update === true){
+            cloudinary.uploader.upload(poster[0].url, (result) => {
 
-        });
+                let poster = {
+                    url:result.url,
+                    type:db.Channels.poster.LANDSCAPE
+                };
+
+                query["$set"].poster = [poster];
+
+                _update();
+            });
+
+        }else{
+            _update()
+        }
+
+        function _update(){
+            db.Channels.updateOne(query.find, query.update, (error, products) => {
+                if (error) {
+                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+                } else {
+                    res.status(200).send(new api.Success(products));
+                }
+
+            });
+        }
+
+
 
     } else {
 
@@ -230,7 +274,7 @@ function _delete(req, res) {
 
     if (db) {
 
-        if(!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)){
+        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.DISCONNECTED));
