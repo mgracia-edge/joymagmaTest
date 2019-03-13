@@ -1,0 +1,49 @@
+.table-products{
+  width: 100%;
+  thead{
+    th{
+
+    }
+  }
+
+  tbody{
+
+  }
+}
+
+
+.package{
+
+  &__channels{
+
+    display: flex;
+  }
+
+  &__channel{
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 5px;
+    margin-right: 5px;
+    border-radius: 8px;
+
+    label{
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: capitalize;
+
+    }
+
+    .logo {
+      height: 25px;
+      width: 25px;
+      background-image: url("http://res.cloudinary.com/hus16zuq6/image/upload/v1552412211/dd8bjsqwhb3dbuzmmnhd.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin: 4px;
+    }
+
+  }
+
+}

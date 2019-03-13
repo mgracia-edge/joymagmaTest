@@ -15,7 +15,8 @@
 /* Views */
 @import "view_login";
 @import "view_account_settings";
-@import "view_ott_channel";
+@import "view_s_ott_channel";
+@import "view_s_ott_products";
 /* Fragments */
 @import "main_bar";
 @import "nav_panel";
@@ -24,6 +25,7 @@
 /* Dialogs */
 @import "dialog_change_password";
 @import "dialog_add";
+@import "dialog_channel_selector";
 @import "dialog_alert";
 
 

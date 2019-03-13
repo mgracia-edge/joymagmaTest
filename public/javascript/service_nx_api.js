@@ -234,7 +234,7 @@
                 }
             }
 
-            function Channels($http, $q) {
+            function channelsDelegation($http, $q) {
 
                 function create(params) {
                     return $q((resolve, reject) => {
@@ -307,6 +307,92 @@
                                 resolve({});
                             })
                             .catch(({error}) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                return {
+                    create,
+                    read,
+                    update,
+                    delete: remove,
+                }
+            }
+
+            function Products($http, $q) {
+
+                function create(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/product/create", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+
+                                resolve(data.content);
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function read(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/product/read", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve(data.content);
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function update(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/product/update", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function remove(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/product/delete", {
+                            id: params._id
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch((error) => {
                                 reject(error)
                             });
                     });
@@ -436,8 +522,9 @@
                 subscribers: Subscribers($http, $q),
                 account: Account($http, $q),
                 users: Users($http, $q),
-                channels: Channels($http, $q),
-                programmes:Programmes($http, $q)
+                programmes:Programmes($http, $q),
+                channels: channelsDelegation($http, $q),
+                products: Products($http, $q)
             }
         }]);
 

@@ -1,0 +1,53 @@
+<div secction layout-fill layout="column">
+    <h1>{{isNew ? "New Package" : "Package Detail"}}</h1>
+    <div class="form" layout="row">
+
+        <div layout="column">
+            <item>
+                <label>Name</label>
+                <input type="text" ng-model="productData.name" aria-label="first name" title="first name"
+                       autocomplete="off">
+            </item>
+
+            <item>
+                <label>Description</label>
+                <textarea type="text" ng-model="productData.description" aria-label="first name" title="first name"
+                          autocomplete="off" rows="4">
+                </textarea>
+            </item>
+
+            <item>
+                <label>Channels</label>
+
+                <div class="bar">
+                    <md-button class="md-raised md-primary" ng-click="addChannel()">add</md-button>
+                    <div flex></div>
+                    <md-button class="md-raised md-primary" ng-click="clearAllChannels()">clear all</md-button>
+                </div>
+                <div class="channel-container">
+                    <div class="item" ng-repeat="channel in productData.channels">
+                        <div class="logo" style="background-image: url({{channel.poster[0].url}})"></div>
+                        <label>{{channel.name}}</label>
+                        <md-button class="md-icon-button" ng-click="removeChannel(channel)">
+                            <md-icon md-svg-src="/res/drawable/ic_cross.svg"></md-icon>
+                        </md-button>
+                    </div>
+                </div>
+
+            </item>
+
+
+
+            <md-button ng-click="update()" class="md-raised md-primary" layout="row" layout-align="center center">
+                <md-progress-circular ng-show="loading" class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
+                <span ng-show="!loading">Save</span>
+            </md-button>
+
+        </div>
+        <div layout="column" style="margin-left: 20px;">
+            <md-button md-no-ink class="md-raised md-primary" ng-click="remove()">Remove Package</md-button>
+        </div>
+
+    </div>
+
+</div>

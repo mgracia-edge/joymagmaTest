@@ -89,10 +89,17 @@ function _read(req, res) {
 
         }
 
+
+        let today = new Date().setHours(0, 0, 0);
+        let todayAtNight = new Date().setHours(23, 59, 59);
+
+        query.find.start = { $gte : today};
+        query.find.stop = { $lte : todayAtNight};
+
         db.Programme
             .find(query.find, query.projection)
-            .sort(query.sort)
             .limit(1000)
+            .sort(query.sort)
             .then((channels) => {
 
                 res.status(200).send(new api.Success(channels));

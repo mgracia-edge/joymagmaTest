@@ -39,6 +39,10 @@
                     templateUrl: '/res/layout/view_s_ott_products.html',
                     controller: 'sOttProductsCtrl'
                 })
+                .when('/s/ott/products/:id', {
+                    templateUrl: '/res/layout/view_s_ott_products_detail.html',
+                    controller: 'sOttProductsDetailCtrl'
+                })
                 .when('/s/ott/epg_monitor', {
                     templateUrl: '/res/layout/view_s_ott_epg_monitor.html',
                     controller: 'sOttEPGMonitorCtrl'

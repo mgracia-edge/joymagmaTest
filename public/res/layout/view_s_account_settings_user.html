@@ -40,16 +40,16 @@
 
             </div>
 
-            <md-button ng-click="updateUser()" class="md-raised md-warn" layout="row" layout-align="center center">
-                <md-progress-circular ng-show="loading" class="md-warn md-hue-3" md-diameter="30"></md-progress-circular>
+            <md-button ng-click="updateUser()" class="md-raised md-primary" layout="row" layout-align="center center">
+                <md-progress-circular ng-show="loading" class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
                 <span ng-show="!loading">Save</span>
             </md-button>
 
         </div>
         <div layout="column" style="margin-left: 50px;">
-            <md-button md-no-ink class="md-raised md-warn" ng-click="dialog_alert()">Remove User</md-button>
-            <md-button md-no-ink class="md-raised md-warn" ng-click="dialog_changePassword()">Reset Password</md-button>
-            <md-button md-no-ink class="md-raised md-warn" ng-click="logAsUser(user)">Log as user</md-button>
+            <md-button md-no-ink class="md-raised md-primary" ng-click="dialog_alert()">Remove User</md-button>
+            <md-button md-no-ink class="md-raised md-primary" ng-click="dialog_changePassword()">Reset Password</md-button>
+            <md-button md-no-ink class="md-raised md-primary" ng-click="logAsUser(user)">Log as user</md-button>
 
         </div>
 

@@ -33,12 +33,12 @@ function _create(req, res) {
 
     if (db) {
 
-        const {name, channels} = req.body;
+        const {name, channels,description} = req.body;
 
         if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
@@ -55,6 +55,7 @@ function _create(req, res) {
                     } else {
                         let json = {
                             name: name,
+                            description:description,
                             creationDate: new Date(),
                             lastUpdate: new Date(),
                             channels: channels,
@@ -171,7 +172,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, channels} = data;
+        const {name, channels,description} = data;
 
         let query = {
             find: {
@@ -180,6 +181,7 @@ function _update(req, res) {
             update: {
                 $set: {
                     name: name,
+                    description:description,
                     lastUpdate: new Date(),
                     channels: channels,
 
@@ -197,6 +199,7 @@ function _update(req, res) {
 
         if (typeof channels === 'undefined') delete query.update.$set.channels;
         if (typeof name === 'undefined') delete query.update.$set.name;
+        if (typeof description === 'undefined') delete query.update.$set.description;
 
         db.Products.updateOne(query.find, query.update, (error, products) => {
             if (error) {

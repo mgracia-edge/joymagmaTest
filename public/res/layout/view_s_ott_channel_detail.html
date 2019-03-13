@@ -2,7 +2,7 @@
     <h1>{{isNew ? "New Channel" : "Channel Detail"}}</h1>
 
     <div class="form" layout="row">
-        <div layout="column">
+        <div layout="column" style="min-width: 300px">
 
             <item>
                 <label>Logo</label>
@@ -40,18 +40,18 @@
                 </textarea>
             </item>
 
-            <md-button ng-click="updateChannel()" class="md-raised md-warn" layout="row" layout-align="center center">
-                <md-progress-circular ng-show="loading" class="md-warn md-hue-3"
+            <md-button ng-click="updateChannel()" class="md-raised md-primary" layout="row" layout-align="center center">
+                <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
                                       md-diameter="30"></md-progress-circular>
                 <span ng-show="!loading">Save</span>
             </md-button>
 
 
         </div>
-
         <div layout="column" style="margin-left: 50px;">
-            <md-button ng-hide="isNew" md-no-ink class="md-raised md-warn"
-                       ng-click="removeChannel()">Remove Channel</md-button>
+            <md-button ng-hide="isNew" md-no-ink class="md-raised md-primary"
+                       ng-click="removeChannel()">Remove Channel
+            </md-button>
 
         </div>
     </div>

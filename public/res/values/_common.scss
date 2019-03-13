@@ -60,6 +60,24 @@ scroll-view {
     margin: 16px 0;
   }
 
+  .bar {
+    display: inline-flex;
+    flex-direction: row;
+    max-width: 309px;
+    box-sizing: border-box;
+    padding: 5px;
+
+    .md-button {
+      margin: 2px 0;
+      min-width: 74px;
+      font-size: 12px;
+      padding: 0 10px;
+      min-height: 0px;
+      height: fit-content;
+    }
+
+  }
+
 }
 
 a {
@@ -217,4 +235,61 @@ table {
   background: #42516e;
   color: white;
   font-size: 11px;
+}
+
+.md-button.md-default-theme.md-primary.md-fab,
+.md-button.md-primary.md-fab,
+.md-button.md-default-theme.md-primary.md-raised,
+.md-button.md-primary.md-raised {
+  color: rgba(255, 255, 255, 0.87);
+  background-color: $accent-color;
+}
+
+
+
+.channel-container {
+  outline: none;
+  background: $light-bg;
+  border: 1.2px solid $border-color-light;
+  padding: 4px;
+  border-radius: 4px;
+  max-width: 300px;
+  min-height: 200px;
+
+  &--auto-height{
+    min-height: auto;
+  }
+
+  .item {
+
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    background: white;
+    border-radius: 8px;
+    margin: 2px;
+
+    .logo {
+      height: 25px;
+      width: 25px;
+      background-image: url("http://res.cloudinary.com/hus16zuq6/image/upload/v1552412211/dd8bjsqwhb3dbuzmmnhd.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin: 4px;
+    }
+
+    .md-icon-button {
+
+      margin: 0;
+
+      md-icon {
+
+      }
+    }
+  }
+
+
+
 }

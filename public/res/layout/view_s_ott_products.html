@@ -1,10 +1,56 @@
-<div secction layout-fill layout="column" layout-align="center center">
-
-
-    <div style="text-align: center">
-        <md-icon md-svg-src="/res/drawable/vc_unavailable.svg" style="height: 110px;width: 110px; margin: 20px">
-        </md-icon>
-        <h1>Action unavailable</h1>
+<div  secction layout-fill layout="column">
+    <h1>Package</h1>
+    <div block layout="row">
+        <search-box layout="row">
+            <input type="search" ng-model="search.name" flex>
+            <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
+        </search-box>
     </div>
+    <div layout="row">
+        <table class="table-products">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Channels</th>
+                    <th>Details</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="product in products | filter:search.name"
+                    class="package">
+                    <td>
+                        {{product.name}}
+                    </td>
+                    <td>
+                        {{shortDescription(product.description)}}
+                    </td>
+                    <td>
+                        <div class="package__channels">
+                            <div class="package__channel" ng-repeat="channel in product.channels">
+                                <div class="logo" style="background-image: url({{channel.poster[0].url}})"></div>
+                                <label>{{channel.name}}</label>
+                            </div>
+                        </div>
 
+                    </td>
+                    <td>
+                        <md-button ng-click="details(product)">more</md-button>
+                    </td>
+                    <td class="table-users__actions">
+                        <md-menu>
+                            <md-button ng-click="$mdMenu.open($event)">
+                                <md-icon>more_horiz</md-icon>
+                            </md-button>
+                            <md-menu-content >
+                                <md-menu-item><md-button ng-click="details(product)" aria-label="details">details</md-button></md-menu-item>
+                                <md-menu-item><md-button ng-click="remove(product)" aria-label="remove">remove</md-button></md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

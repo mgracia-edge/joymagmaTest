@@ -14,12 +14,15 @@
                     <th>Channel</th>
                     <th>channelEPGId</th>
                     <th>Name</th>
+                    <th>Duration</th>
                     <th>Details</th>
 
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="programme in programmes | filter:search.name " class="table-users__user">
+                <tr
+                        style="font-size: 13px"
+                        ng-repeat="programme in programmes | filter:search.name " class="table-users__user">
                     <td>
                         <img style="width: 50px" ng-src="{{getIconChannel(programme.channelEPGId)}}">
                     </td>
@@ -28,6 +31,9 @@
                     </td>
                     <td>
                         {{programme.title}}
+                    </td>
+                    <td style="min-width: 200px;">
+                        {{programme.start | date:'MM/dd/yyyy'}} | {{programme.start | date:'h:mma'}} - {{programme.stop | date:'h:mma'}}
                     </td>
                     <td>
                         {{programme.description}}
