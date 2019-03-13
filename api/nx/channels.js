@@ -138,7 +138,9 @@ function _read(req, res) {
             return;
         }
 
-        let {id, name, includeUpdateHistory} = req.body;
+        let {id,data} = req.body;
+
+        let { name, channelEPGId,includeUpdateHistory} = data;
 
         let query = {
             find: {},
@@ -158,6 +160,8 @@ function _read(req, res) {
 
             query.find = {productName: Array.isArray(name) ? {$in: name} : name}
 
+        }else if(channelEPGId){
+            query.find = {channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : name}
         }
 
         if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {

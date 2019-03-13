@@ -191,6 +191,49 @@
                 }
             }
 
+            function Programmes($http, $q) {
+
+                function channels(params){
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/programmes/channels", {}, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+
+                                resolve(data.content);
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function read(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/programmes/read", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+
+                                resolve(data.content);
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                return {
+                    read,
+                    channels
+                }
+            }
+
             function Channels($http, $q) {
 
                 function create(params) {
@@ -393,7 +436,8 @@
                 subscribers: Subscribers($http, $q),
                 account: Account($http, $q),
                 users: Users($http, $q),
-                channels: Channels($http, $q)
+                channels: Channels($http, $q),
+                programmes:Programmes($http, $q)
             }
         }]);
 

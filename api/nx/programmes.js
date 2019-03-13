@@ -1,40 +1,27 @@
 const api = require('../support');
 const codes = require('../codes');
 const dc = require('../../lib/dataConnection');
-const cloudinary = require('cloudinary');
 
 exports.resourceList = [
-    {
-        path: "create",
-        callback: _create,
-        method: "post",
-        protected: true
-    },
     {
         path: "read",
         callback: _read,
         method: "post",
         protected: true
-    },
-    {
-        path: "update",
-        callback: _update,
-        method: "post",
-        protected: true
-    },
-    {
-        path: "delete",
-        callback: _delete,
+    },{
+        path: "channels",
+        callback: _channels,
         method: "post",
         protected: true
     }];
 
-function _create(req, res) {
+
+function _channels(req, res){
     let db = dc.db;
 
     if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
+        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
@@ -42,81 +29,17 @@ function _create(req, res) {
             return;
         }
 
-        const {channelEPGId, name, descriptionShort, descriptionLong,poster} = req.body;
+        db.Programme
+            .distinct("channelEPGId")
+            .then((channels) => {
 
-        db.Channels
-            .findOne({"name": name}, (error, data) => {
-                if (error) {
-                    res.status(codes.error.database.DISCONNECTED.httpCode)
-                        .send(new api.Error(codes.error.database.DISCONNECTED));
-                } else {
-                    if (data) {
-                        res.status(codes.error.operation.DUPLICATED_ENTITY.httpCode)
-                            .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
-                    } else {
+                res.status(200).send(new api.Success(channels));
 
-                        let json = {
-                            channelEPGId: channelEPGId,
-                            name: name,
-                            descriptionShort: descriptionShort,
-                            descriptionLong: descriptionLong,
-                            publishing: {
-                                type: db.Channels.publishingType.HLS,
-                                streamName: api.newStreamKeyCode()
-                            },
-                            entryPoint: {
-                                type: db.Channels.entryPoint.RTMP,
-                                streamName: api.newStreamKeyCode()
-                            }
-                        };
-
-                        json.updateHistory = [{
-                            date: new Date(),
-                            payload: {
-                                ...json
-                            }
-                        }];
-
-                        if (typeof descriptionShort === 'undefined') delete json.descriptionShort;
-                        if (typeof descriptionLong === 'undefined') delete json.descriptionLong;
-
-                        if(typeof poster !== 'undefined' && poster[0].update === true){
-                            cloudinary.uploader.upload(poster[0].url, (result) => {
-
-                                let poster = {
-                                    url:result.url,
-                                    type:db.Channels.poster.LANDSCAPE
-                                };
-
-                                json.poster = [poster];
-
-                                _create();
-                            });
-
-                        }else{
-                            _create()
-                        }
-
-                        function _create(){
-                            let Channels = new db.Channels(json);
-
-                            Channels.save(json, (err) => {
-                                if (err) {
-                                    console.log(err)
-                                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                                } else {
-                                    res.status(200).send(new api.Success({}));
-
-                                }
-
-                            });
-                        }
-
-                    }
-                }
-            });
-
+            }).catch((error) => {
+            console.log(error)
+            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+        })
 
     } else {
 
@@ -166,138 +89,16 @@ function _read(req, res) {
 
         }
 
-        db.Channels
+        db.Programme
             .find(query.find, query.projection)
             .sort(query.sort)
+            .limit(1000)
             .then((channels) => {
 
                 res.status(200).send(new api.Success(channels));
 
             }).catch((error) => {
             console.log(error)
-            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-        })
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
-}
-
-function _update(req, res) {
-    let db = dc.db;
-
-    if (db) {
-
-        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        const {id, data} = req.body;
-
-        const {channelEPGId, name, descriptionShort, descriptionLong, poster} = data;
-
-        let query = {
-            find: {
-                _id: id
-            },
-            update: {
-                $set: {
-                    channelEPGId: channelEPGId,
-                    name: name,
-                    descriptionShort: descriptionShort,
-                    descriptionLong: descriptionLong
-                },
-                $push: {
-                    updateHistory: {
-                        date: new Date(),
-                        payload: {}
-                    }
-                }
-            }
-        };
-
-        if (typeof channelEPGId === 'undefined') delete query.update.$set.channelEPGId;
-        if (typeof name === 'undefined') delete query.update.$set.name;
-        if (typeof descriptionShort === 'undefined') delete query.update.$set.descriptionShort;
-        if (typeof descriptionLong === 'undefined') delete query.update.$set.descriptionLong;
-
-        query.update.$push.updateHistory.payload = query.update.$set;
-
-        if(typeof poster !== 'undefined' && poster[0].update === true){
-            cloudinary.uploader.upload(poster[0].url, (result) => {
-
-                let poster = {
-                    url:result.url,
-                    type:db.Channels.poster.LANDSCAPE
-                };
-
-                query.update["$set"].poster = [poster];
-
-                _update();
-            });
-
-        }else{
-            _update()
-        }
-
-        function _update(){
-            db.Channels.updateOne(query.find, query.update, (error, products) => {
-                if (error) {
-                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                } else {
-                    res.status(200).send(new api.Success(products));
-                }
-
-            });
-        }
-
-
-
-    } else {
-
-        res.status(codes.error.operation.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
-}
-
-function _delete(req, res) {
-
-    let db = dc.db;
-
-    if (db) {
-
-        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        const {id} = req.body;
-
-        let query = {
-            find: {
-                _id: Array.isArray(id) ? {$in: id} : id
-            }
-        };
-
-        db.Channels
-            .remove(query.find)
-            .then((data) => {
-
-                res.status(200).send(new api.Success({}));
-
-            }).catch((error) => {
-
             res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                 .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         })
