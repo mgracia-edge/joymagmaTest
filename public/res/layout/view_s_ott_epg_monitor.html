@@ -1,10 +1,42 @@
-<div secction layout-fill layout="column" layout-align="center center">
-
-
-    <div style="text-align: center">
-        <md-icon md-svg-src="/res/drawable/vc_unavailable.svg" style="height: 110px;width: 110px; margin: 20px">
-        </md-icon>
-        <h1>Action unavailable</h1>
+<div  secction layout-fill layout="column">
+    <h1>EPG Monitor</h1>
+    <div block layout="row">
+        <search-box layout="row">
+            <input type="search" ng-model="search.name" flex>
+            <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
+        </search-box>
     </div>
+    <scroll-view orientation="vertical" flex>
 
+        <table class="table-users">
+            <thead>
+                <tr>
+                    <th>Channel</th>
+                    <th>channelEPGId</th>
+                    <th>Name</th>
+                    <th>Details</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="programme in programmes | filter:search.name " class="table-users__user">
+                    <td>
+                        <img style="width: 50px" ng-src="{{getIconChannel(programme.channelEPGId)}}">
+                    </td>
+                    <td>
+                        {{programme.channelEPGId}}
+                    </td>
+                    <td>
+                        {{programme.title}}
+                    </td>
+                    <td>
+                        {{programme.description}}
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+
+    </scroll-view>
 </div>

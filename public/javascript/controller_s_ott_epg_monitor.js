@@ -14,12 +14,50 @@
     angular.module('NxStudio')
         .controller("sOttEPGMonitorCtrl", ['$scope', '$NxApi', '$mdToast','$location', function ($scope, $NxApi, $mdToast,$location) {
 
+            $scope.channels = [];
+            $scope.programmes = [];
+
+            $scope.getIconChannel = getIconChannel;
+
+
             function init(){
+
+                $NxApi.programmes.read({}).then((programmes)=>{
+                    $scope.programmes = programmes;
+                    console.log(programmes)
+
+                    $NxApi.programmes.channels({}).then((channelsEPGId)=>{
+
+                        $NxApi.channels.read({channelEPGId:channelsEPGId}).then((channels)=>{
+
+                            $scope.channels = channels;
+
+                        })
+
+                    });
+
+
+                })
 
             }
 
+            function getIconChannel(channelEPGId){
+                let value = '/res/drawable/ph_noimage.png';
+                let out = false;
+                for(let channel of $scope.channels){
+
+                    if(out) break;
+
+                    if(channelEPGId === parseInt(channel.channelEPGId) ) {
+                        out = true;
+                        value =  channel.poster[0].url;
+                    }
+                }
+
+                return value
+            }
 
             $NxApi.setAfterLogin(init);
-
+            init()
         }]);
 })();
