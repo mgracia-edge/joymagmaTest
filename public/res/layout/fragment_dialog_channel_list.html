@@ -1,0 +1,24 @@
+<md-dialog>
+    <md-dialog-content class="nx-dialog-channels-selector">
+        <h1>Channels</h1>
+        <search-box layout="row">
+            <input type="search" ng-model="search" flex>
+            <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
+        </search-box>
+        {{channel}}
+        <div layout="column" class="list">
+            <md-button ng-repeat="channel in channels | filter: search" ng-click="select(channel)" layout="row">
+                <div class="logo" style="background-image: url({{channel.poster[0].url}})"></div>
+                <div flex>
+                    {{channel.name}}
+                </div>
+            </md-button>
+        </div>
+        <div class="line"></div>
+        <div layout="row" layout-align="end">
+            <md-button class="md-raised" ng-click="cancel()">
+                cancel
+            </md-button>
+        </div>
+    </md-dialog-content>
+</md-dialog>

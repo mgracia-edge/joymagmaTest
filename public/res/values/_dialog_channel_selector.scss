@@ -1,0 +1,41 @@
+.nx-dialog-channels-selector {
+
+  min-width: 250px;
+  padding: 16px;
+
+  h1 {
+    color: $primary-color;
+    font-size: 26px;
+    font-weight: 500;
+  }
+
+  .line {
+    height: 1px;
+    background: #ddd;
+  }
+
+  .list {
+
+    .logo {
+      height: 34px;
+      width: 34px;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: inline-flex;
+      vertical-align: middle;
+    }
+
+    .md-button {
+      padding: 10px;
+      border-radius: 0;
+      border-top: 1px solid #dddddd;
+    }
+
+    .md-button:first-child {
+      border-bottom: none;
+    }
+
+  }
+
+}

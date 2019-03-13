@@ -12,18 +12,55 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sOttProductsDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', controller]);
+        .controller("sOttProductsDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', '$NxDialogs', controller]);
 
 
-
-    function controller($scope, $interval, $routeParams, $NxApi) {
+    function controller($scope, $interval, $routeParams, $NxApi, $NxDialogs) {
 
         $scope.isNew = $routeParams.id === "new";
+
+        $scope.productData = {
+            channels: []
+        };
+
+        $scope.addChannel = addChannel;
+        $scope.clearAllChannels = clearAllChannels;
+        $scope.removeChannel = removeChannel;
 
         function init() {
 
         }
 
+
+        function addChannel() {
+            $NxDialogs.showChannelSelector().then((channel) => {
+                for (let item of $scope.productData.channels) {
+                    if (item._id === channel._id) {
+                        return;
+                    }
+                }
+
+                $scope.productData.channels.push(channel);
+            })
+        }
+
+        function clearAllChannels() {
+            $scope.productData.channels = [];
+        }
+
+        function removeChannel(channel) {
+
+            console.log(channel);
+
+            for (let i in $scope.productData.channels) {
+
+                let item = $scope.productData.channels[i];
+
+                if (item._id === channel._id) {
+                    $scope.productData.channels.splice(i, 1);
+                }
+            }
+        }
 
         $NxApi.setAfterLogin(init);
         init();

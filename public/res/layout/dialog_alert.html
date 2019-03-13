@@ -3,10 +3,10 @@
     <div class="dialog_alert__form" flex layout="column" layout-align="center center">
         <p>{{description}}</p>
         <div layout="row">
-            <md-button class="md-warn" ng-click="cancel()">Cancel</md-button>
+            <md-button class="md-primary" ng-click="cancel()">Cancel</md-button>
             <md-button ng-click="ok()"
-                       class="md-raised md-warn" layout="row" layout-align="center center">
-                <md-progress-circular ng-show="loading" class="md-warn md-hue-3" md-diameter="30"></md-progress-circular>
+                       class="md-raised md-primary" layout="row" layout-align="center center">
+                <md-progress-circular ng-show="loading" class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
                 <span ng-show="!loading">ok</span>
             </md-button>
         </div>

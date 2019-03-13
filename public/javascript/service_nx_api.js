@@ -191,7 +191,7 @@
                 }
             }
 
-            function Channels($http, $q) {
+            function channelsDelegation($http, $q) {
 
                 function create(params) {
                     return $q((resolve, reject) => {
@@ -393,7 +393,7 @@
                 subscribers: Subscribers($http, $q),
                 account: Account($http, $q),
                 users: Users($http, $q),
-                channels: Channels($http, $q)
+                channels: channelsDelegation($http, $q)
             }
         }]);
 
