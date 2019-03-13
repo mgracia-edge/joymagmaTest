@@ -26,7 +26,7 @@
 
 
             $NxApi.setAfterLogin(init);
-            init();
+
 
         }]);
 })();

@@ -69,7 +69,7 @@ function _read(req, res) {
                 updateHistory: 0
             },
             sort: {
-                productName: 1
+                start: 1
             }
         };
 
@@ -98,7 +98,7 @@ function _read(req, res) {
 
         db.Programme
             .find(query.find, query.projection)
-            .limit(1000)
+            .limit(100)
             .sort(query.sort)
             .then((channels) => {
 

@@ -17,6 +17,7 @@
                 function ($scope, $NxApi, $mdToast, $location,$q,$mdDialog) {
 
             $scope.products = [];
+            $scope.loading = true;
 
             $scope.details = details;
             $scope.shortDescription = shortDescription;
@@ -106,6 +107,7 @@
             }
 
             function _updateTable(){
+                $scope.loading = true;
                 $NxApi.products.read({}).then((products) => {
                     $scope.products = products;
 
@@ -117,6 +119,7 @@
                             _id:product.channels
                         }).then((channels) => {
                             product.channels = channels;
+                            $scope.loading = false;
                         });
                     }
 
@@ -124,7 +127,7 @@
             }
 
             $NxApi.setAfterLogin(init);
-            init()
+
 
         }]);
 })();

@@ -136,8 +136,15 @@
 
             }
 
+
+
             function setAfterLogin(callback) {
-                afterLoginCallback = callback;
+                if(session.user === null){
+                    afterLoginCallback = callback;
+                }else {
+                    callback()
+                }
+
             }
 
             function getUser() {
@@ -247,8 +254,8 @@
                                 resolve(data);
 
                             })
-                            .catch((error) => {
-                                reject(error)
+                            .catch(({data}) => {
+                                reject(data.error)
                             });
                     });
                 }
@@ -288,8 +295,8 @@
                             .then(({data}) => {
                                 resolve({});
                             })
-                            .catch((error) => {
-                                reject(error)
+                            .catch(({data}) => {
+                                reject(data.error)
                             });
                     });
                 }
@@ -306,8 +313,8 @@
                             .then(({data}) => {
                                 resolve({});
                             })
-                            .catch(({error}) => {
-                                reject(error)
+                            .catch(({data}) => {
+                                reject(data.error)
                             });
                     });
                 }
@@ -334,8 +341,8 @@
 
                                 resolve(data.content);
                             })
-                            .catch((error) => {
-                                reject(error)
+                            .catch(({data}) => {
+                                reject(data.error)
                             });
                     });
                 }
@@ -354,8 +361,8 @@
                             .then(({data}) => {
                                 resolve(data.content);
                             })
-                            .catch((error) => {
-                                reject(error)
+                            .catch(({data}) => {
+                                reject(data.error)
                             });
                     });
                 }
@@ -374,8 +381,8 @@
                             .then(({data}) => {
                                 resolve({});
                             })
-                            .catch((error) => {
-                                reject(error)
+                            .catch(({data}) => {
+                                reject(data.error)
                             });
                     });
                 }
@@ -392,8 +399,8 @@
                             .then(({data}) => {
                                 resolve({});
                             })
-                            .catch((error) => {
-                                reject(error)
+                            .catch(({data}) => {
+                                reject(data.error)
                             });
                     });
                 }

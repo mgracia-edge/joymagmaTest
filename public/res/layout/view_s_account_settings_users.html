@@ -20,7 +20,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="user in users | filter:search.email" class="table-users__user">
+                <tr ng-show="loading">
+                    <td colspan="5">
+                        <div style="padding:20px"
+                             layout="row"
+                             layout-align="center center">
+                            <md-progress-circular
+                                    class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
+
+                        </div>
+
+                    </td>
+                </tr>
+                <tr ng-hide="loading" ng-repeat="user in users | filter:search.email" class="table-users__user">
                     <td>
                         <div class="table-users__user__info">
                             <div class="table-users__user__info__img">

@@ -98,7 +98,7 @@ function _read(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_READ)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
@@ -165,7 +165,7 @@ function _update(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }
@@ -227,7 +227,7 @@ function _delete(req, res) {
         if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.DISCONNECTED));
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
             return;
         }

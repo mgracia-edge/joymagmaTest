@@ -2,7 +2,7 @@
     <h1>{{isNew ? "New Package" : "Package Detail"}}</h1>
     <div class="form" layout="row">
 
-        <div layout="column">
+        <div layout="column" style="min-width:300px">
             <item>
                 <label>Name</label>
                 <input type="text" ng-model="productData.name" aria-label="first name" title="first name"
@@ -45,7 +45,7 @@
 
         </div>
         <div layout="column" style="margin-left: 20px;">
-            <md-button md-no-ink class="md-raised md-primary" ng-click="remove()">Remove Package</md-button>
+            <md-button ng-show="!isNew" md-no-ink class="md-raised md-primary" ng-click="remove()">Remove Package</md-button>
         </div>
 
     </div>

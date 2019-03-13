@@ -197,7 +197,6 @@
 
             }
 
-            init();
 
             $NxApi.setAfterLogin(init);
 

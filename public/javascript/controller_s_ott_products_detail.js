@@ -33,7 +33,6 @@
         $scope.remove = remove;
 
         function init() {
-
             if(!$scope.isNew){
                 $NxApi.products.read({
                     _id:$routeParams.id
@@ -105,6 +104,11 @@
                         $scope.$parent.toast('The product was created');
                         $scope.loading = false;
                         $location.path("/s/ott/products");
+                    }).catch((error) => {
+                        console.log(error);
+                        $scope.$parent.toast(error.message);
+                        $scope.loading = false;
+
                     });
                 }else{
                     $scope.productData["_id"] = $routeParams.id;
@@ -114,6 +118,11 @@
                         channels:$scope.productData.channels.map((item)=>item._id)
                     }).then(()=>{
                         $scope.$parent.toast('The product was update');
+                        $scope.loading = false;
+
+                    }).catch((error) => {
+                        console.log(error);
+                        $scope.$parent.toast(error.message);
                         $scope.loading = false;
 
                     });
@@ -176,6 +185,7 @@
                             })
                             .catch((error) => {
                                 console.log(error);
+                                $mdDialog.cancel(error);
                                 $scope.loading = false;
                             })
 
@@ -195,7 +205,12 @@
                 $scope.loading = false;
                 $mdDialog.hide();
                 $location.path('/s/ott/products');
-            })
+            }).catch((error) => {
+                console.log(error);
+                $scope.$parent.toast(error.message);
+                $scope.loading = false;
+
+            });
         }
 
         function _checkFields(){
@@ -203,7 +218,6 @@
         }
 
         $NxApi.setAfterLogin(init);
-        init();
 
     }
 

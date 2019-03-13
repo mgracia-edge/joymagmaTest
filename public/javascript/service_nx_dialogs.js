@@ -85,12 +85,14 @@
 
                     $scope.cancel = cancel;
                     $scope.select = select;
+                    $scope.loading = true;
                     $scope.channels = [];
 
                     function init() {
 
                         $NxApi.channels.read({}).then((data)=>{
                             $scope.channels = data;
+                            $scope.loading = false;
                         })
 
                     }

@@ -8,7 +8,7 @@
     </div>
     <scroll-view orientation="vertical" flex>
 
-        <table class="table-users">
+        <table class="table-users" style="width: 100%">
             <thead>
                 <tr>
                     <th>Channel</th>
@@ -20,9 +20,21 @@
                 </tr>
             </thead>
             <tbody>
-                <tr
-                        style="font-size: 13px"
-                        ng-repeat="programme in programmes | filter:search.name " class="table-users__user">
+                <tr ng-show="loading">
+                    <td colspan="5">
+                        <div style="padding:20px"
+                             layout="row"
+                             layout-align="center center">
+                            <md-progress-circular
+                                    class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
+
+                        </div>
+
+                    </td>
+                </tr>
+                <tr ng-hide="loading"
+                    style="font-size: 13px"
+                    ng-repeat="programme in programmes | filter:search.name " class="table-users__user">
                     <td>
                         <img style="width: 50px" ng-src="{{getIconChannel(programme.channelEPGId)}}">
                     </td>

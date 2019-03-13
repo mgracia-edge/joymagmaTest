@@ -1,4 +1,4 @@
-<div  secction layout-fill layout="column">
+<div secction layout-fill layout="column">
     <h1>Package</h1>
     <div block layout="row">
         <search-box layout="row">
@@ -18,7 +18,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="product in products | filter:search"
+                <tr ng-show="loading">
+                    <td colspan="5">
+                        <div style="padding:20px"
+                             layout="row"
+                             layout-align="center center">
+                            <md-progress-circular
+                                    class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
+
+                        </div>
+
+                    </td>
+                </tr>
+                <tr ng-hide="loading" ng-repeat="product in products | filter:search"
                     class="package">
                     <td>
                         {{product.name}}
@@ -43,9 +55,13 @@
                             <md-button ng-click="$mdMenu.open($event)">
                                 <md-icon>more_horiz</md-icon>
                             </md-button>
-                            <md-menu-content >
-                                <md-menu-item><md-button ng-click="details(product)" aria-label="details">details</md-button></md-menu-item>
-                                <md-menu-item><md-button ng-click="remove(product)" aria-label="remove">remove</md-button></md-menu-item>
+                            <md-menu-content>
+                                <md-menu-item>
+                                    <md-button ng-click="details(product)" aria-label="details">details</md-button>
+                                </md-menu-item>
+                                <md-menu-item>
+                                    <md-button ng-click="remove(product)" aria-label="remove">remove</md-button>
+                                </md-menu-item>
                             </md-menu-content>
                         </md-menu>
                     </td>

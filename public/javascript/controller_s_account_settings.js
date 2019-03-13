@@ -129,8 +129,6 @@
                 }
             }
 
-            init();
-
             $NxApi.setAfterLogin(init);
 
         }]);

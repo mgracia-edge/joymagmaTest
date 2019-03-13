@@ -109,7 +109,9 @@
             dialog_alert()
                 .then(() => {
                     $location.path('/s/ott/channel');
-                })
+                }).catch((error) => {
+                $scope.$parent.toast(error.message)
+            })
         }
 
         function dialog_alert() {
@@ -159,8 +161,7 @@
                                 $mdDialog.hide();
                             })
                             .catch((error) => {
-                                console.log(error);
-                                $mdDialog.hide();
+                                $mdDialog.cancel(error);
                                 $scope.loading = false;
                             })
 
@@ -190,6 +191,7 @@
                         })
                         .catch((error) => {
                             console.log(error);
+                            $scope.$parent.toast(error.message);
                             $scope.loading = false;
                         })
 
@@ -204,6 +206,7 @@
                         })
                         .catch((error) => {
                             console.log(error);
+                            $scope.$parent.toast(error.message);
                             $scope.loading = false;
 
                         })
@@ -214,7 +217,7 @@
         }
 
         $NxApi.setAfterLogin(init);
-        init();
+
 
     }
 })();

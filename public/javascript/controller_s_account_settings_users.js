@@ -18,6 +18,8 @@
 
             $scope.users = [];
             $scope.accountName = '';
+            $scope.loading = true;
+
             $scope.getUrlProfilePhoto = getUrlProfilePhoto;
             $scope.userDetails = userDetails;
             $scope.removeUser = removeUser;
@@ -30,8 +32,8 @@
                     $NxApi.getAccount(user.account).then((account) => {
                         $scope.accountName = account.name;
                         $NxApi.users.read({account: user.account}).then(({users}) => {
-                            console.log(users);
                             $scope.users = users;
+                            $scope.loading = false;
                         });
                     })
 

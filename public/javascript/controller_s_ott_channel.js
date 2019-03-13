@@ -63,7 +63,6 @@
             }
 
             $NxApi.setAfterLogin(init);
-            init();
 
         }]);
 })();
