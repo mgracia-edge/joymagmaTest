@@ -12,9 +12,12 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sOttSubscribersCtrl", ['$scope', '$NxApi', '$mdToast','$location', function ($scope, $NxApi, $mdToast,$location) {
+        .controller("sOttSubscribersCtrl", ['$scope', '$NxApi', '$mdToast','$location',
+            function ($scope, $NxApi, $mdToast,$location) {
 
             $scope.subscribers = [];
+
+            $scope.details = details;
 
             function init(){
                 $NxApi.subscribers.read().then((data)=>{
@@ -24,6 +27,9 @@
                 })
             }
 
+            function details(subscriber){
+                $location.path('/s/ott/subscribers/' + subscriber._id)
+            }
 
             $NxApi.setAfterLogin(init);
 

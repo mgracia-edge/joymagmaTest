@@ -35,6 +35,10 @@
                     templateUrl: '/res/layout/view_s_ott_subscribers.html',
                     controller: 'sOttSubscribersCtrl'
                 })
+                .when('/s/ott/subscribers/:id', {
+                    templateUrl: '/res/layout/view_s_ott_subscribers_detail.html',
+                    controller: 'sOttSubscribersDetailCtrl'
+                })
                 .when('/s/ott/products', {
                     templateUrl: '/res/layout/view_s_ott_products.html',
                     controller: 'sOttProductsCtrl'

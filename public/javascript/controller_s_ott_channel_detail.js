@@ -35,11 +35,9 @@
                 $NxApi.channels
                     .read({_id: $routeParams.id})
                     .then((channel) => {
-                        console.log(channel);
                         $scope.channelData = channel[0];
                     })
                     .catch((error) => {
-                        console.log(error);
                         $location.path("/s/ott/channel");
                         $scope.$parent.toast('The channel not exist');
 

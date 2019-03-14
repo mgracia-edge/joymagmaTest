@@ -66,7 +66,7 @@ function _create(req, res) {
                             },
                             entryPoint: {
                                 type: db.Channels.entryPoint.RTMP,
-                                streamName: api.newStreamKeyCode()
+                                streamKey: api.newStreamKeyCode()
                             }
                         };
 

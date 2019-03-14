@@ -25,6 +25,9 @@
                     <th>
                         Last Update
                     </th>
+                    <th>
+                        Details
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -41,10 +44,13 @@
                         </div>
                     </td>
                     <td>
-                        {{subscriber.creationDate | date:'MMMMdd, yyyy'}}
+                        {{subscriber.creationDate | date:'MMMM dd, yyyy'}}
                     </td>
                     <td>
-                        {{subscriber.lastUpdate | date:'MMMMdd, yyyy'}}
+                        {{subscriber.lastUpdate | date:'MMMM dd, yyyy'}}
+                    </td>
+                    <td>
+                        <md-button ng-click="details(subscriber)">more</md-button>
                     </td>
                 </tr>
             </tbody>

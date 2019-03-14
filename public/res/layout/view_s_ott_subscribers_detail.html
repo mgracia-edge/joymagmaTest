@@ -1,0 +1,106 @@
+<div secction layout-fill layout="column">
+    <h1>Subscriber Detail</h1>
+    <div class="form" layout="row">
+
+        <scroll-view orientation="vertical" flex>
+
+            <div layout="row">
+
+                <div layout="column" style="min-width:300px">
+
+                    <item>
+                        <label>Email</label>
+                        <div>{{subscriber.email}}</div>
+                    </item>
+                    <item>
+                        <label>Creation Date</label>
+                        {{subscriber.creationDate | date:'MMMM dd, yyyy'}}
+                    </item>
+
+                    <div layout="row">
+                        <item flex>
+                            <label>Subscriber Id</label>
+                            {{subscriber.subscriberId}}
+                        </item>
+
+                    </div>
+
+                    <div layout="row">
+                        <item flex>
+                            <label>operator</label>
+                            {{subscriber.operator}}
+                        </item>
+
+                        <item flex>
+                            <label>System</label>
+                            {{subscriber.system}}
+                        </item>
+
+                    </div>
+
+                    <item>
+                        <label>LastUpdate</label>
+                        {{subscriber.lastUpdate | date:'MMMM dd, yyyy'}}
+                    </item>
+
+                    <item>
+                        <label>Packages</label>
+                        <div ng-show="subscriber.products.length === 0">
+                            No items
+                        </div>
+                        <div ng-show="subscriber.products.length" ng-repeat="product in subscriber.products">
+                            {{product}}
+                        </div>
+                    </item>
+
+                    <item>
+                        <label>Check Password</label>
+                        <input type="password"
+                               ng-model="password"
+                               aria-label="first name" title="first name"
+                               autocomplete="off">
+                    </item>
+                    <md-button
+                            ng-click="checkPassword()"
+                            class="md-raised md-primary"
+                            layout="row"
+                            layout-align="center center">
+                        <md-progress-circular ng-show="loading" class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
+                        <span ng-show="!loading">Check Password</span>
+                    </md-button>
+                    <item ng-show="menssage !== ''"
+                          style="max-width: 300px;font-family: monospace;background: lightgray;padding: 10px;">
+                        <div>{{menssage.code}} {{menssage.message}}</div>
+                    </item>
+
+
+                </div>
+
+                <div layout="column" style="padding-left: 30px">
+
+                    <item flex>
+                        <label>update History</label>
+                        <scroll-view orientation="vertical" flex style="max-height: 500px">
+                        <div ng-repeat="history in subscriber.updateHistory | orderBy:'-date'">
+                            {{history.type}}
+                            {{history.date | date:'MM/dd/yyyy'}}
+                            <div ng-repeat="product in history.products">
+                                {{product}}
+                            </div>
+                            <hr>
+                        </div>
+                        </scroll-view>
+                    </item>
+
+
+
+                </div>
+
+            </div>
+
+
+        </scroll-view>
+
+    </div>
+
+</div>

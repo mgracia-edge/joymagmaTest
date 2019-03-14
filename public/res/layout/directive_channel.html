@@ -6,7 +6,7 @@
         </div>
         <span class="channel_name">{{channel.name}}</span>
         <span>Viewing Now</span>
-        <span>{{channel.stats[channel.stats.length-1].users}}</span>
+        <span>{{channel.stats[channel.stats.length-1].users || 0}}</span>
     </div>
     <div class="channel_panel-right">
 

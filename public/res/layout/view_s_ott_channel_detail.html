@@ -15,30 +15,52 @@
                 </div>
             </item>
 
-            <item>
-                <label>Name</label>
-                <input type="text" ng-model="channelData.name" aria-label="first name" title="first name"
-                       autocomplete="off">
-            </item>
+            <div layout="row">
 
-            <item>
-                <label>Short description</label>
-                <input type="text" ng-model="channelData.descriptionShort" aria-label="first name" title="first name"
-                       autocomplete="off">
-            </item>
+                <div layout="column">
+                    <item>
+                        <label>Name</label>
+                        <input type="text" ng-model="channelData.name" aria-label="first name" title="first name"
+                               autocomplete="off">
+                    </item>
 
-            <item>
-                <label>EPG Source Id</label>
-                <input type="text" ng-model="channelData.channelEPGId" aria-label="first name" title="first name"
-                       autocomplete="off">
-            </item>
+                    <item>
+                        <label>Short description</label>
+                        <input type="text" ng-model="channelData.descriptionShort" aria-label="first name" title="first name"
+                               autocomplete="off">
+                    </item>
 
-            <item>
-                <label>Large description</label>
-                <textarea type="text" ng-model="channelData.descriptionLong" aria-label="first name" title="first name"
-                          autocomplete="off" rows="4">
-                </textarea>
-            </item>
+                    <item>
+                        <label>EPG Source Id</label>
+                        <input type="text" ng-model="channelData.channelEPGId" aria-label="first name" title="first name"
+                               autocomplete="off">
+                    </item>
+
+                    <item>
+                        <label>Large description</label>
+                        <textarea type="text" ng-model="channelData.descriptionLong" aria-label="first name" title="first name"
+                                  autocomplete="off" rows="4">
+                        </textarea>
+                    </item>
+                </div>
+                <div layout="column" style="margin-left: 20px">
+                    <item>
+                        <label>Playing</label>
+                        <div ng-repeat="publishing in channelData.publishing">
+                            {{publishing.type}}: {{publishing.streamName}}
+                        </div>
+                    </item>
+
+                    <item>
+                        <label>Entry Point</label>
+                        {{channelData.entryPoint.type}}
+                        {{channelData.entryPoint.streamKey}}
+                    </item>
+                </div>
+
+            </div>
+
+
 
             <md-button ng-click="updateChannel()" class="md-raised md-primary" layout="row" layout-align="center center">
                 <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
@@ -48,7 +70,7 @@
 
 
         </div>
-        <div layout="column" style="margin-left: 50px;">
+        <div layout="column" >
             <md-button ng-hide="isNew" md-no-ink class="md-raised md-primary"
                        ng-click="removeChannel()">Remove Channel
             </md-button>

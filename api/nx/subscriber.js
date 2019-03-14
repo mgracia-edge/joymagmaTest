@@ -23,7 +23,7 @@ function _read(req, res) {
             return;
         }
 
-        let {id} = req.body;
+        let {id,includeUpdateHistory} = req.body;
 
         let query = {
             find: {},
