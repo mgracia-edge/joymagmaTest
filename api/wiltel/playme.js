@@ -3,11 +3,15 @@ const fs = require('fs');
 const request = require("request");
 const Client = require('ftp');
 const parseString = require('xml2js').parseString;
+const api = require("../support");
+const C = require("../codes");
 
 const REPO_DIR = "../../res/reporttv";
 const WILTEL_KEY_PATH = path.join(__dirname, '../../res/EPA.pfx');
 
 const pdc = require("../../lib/dataConnection");
+
+let currentWiltelToken = null;
 
 exports.resourceList = [
     {
@@ -19,6 +23,12 @@ exports.resourceList = [
     {
         path: "verify",
         callback: LoginWOTT,
+        method: "post",
+        protected: false
+    },
+    {
+        path: "check_subscriber_credentials",
+        callback: checkSubscriberCredentials,
         method: "post",
         protected: false
     },
@@ -53,7 +63,7 @@ exports.resourceList = [
 function listProgramme() {
     return new Promise((resolve, reject) => {
         parseString(fs.readFileSync(path.join(__dirname, '../../res/reporttv/file.xml'), 'latin1'), (err, result) => {
-            if(err) reject(err);
+            if (err) reject(err);
 
             resolve(result.tv.programme)
         });
@@ -66,8 +76,8 @@ function downloadReportTV() {
     console.log('Descargando archivo de programas...');
 
     fs.access(path.join(__dirname, REPO_DIR, 'file.xml'), fs.constants.F_OK, (err) => {
-        if(!err){
-            fs.unlink(path.join(__dirname,  REPO_DIR, 'file.xml'),  (err) => {
+        if (!err) {
+            fs.unlink(path.join(__dirname, REPO_DIR, 'file.xml'), (err) => {
                 if (err) console.log(err);
                 console.log('Archivo descargado Eliminado');
             });
@@ -82,8 +92,8 @@ function downloadReportTV() {
 
         try {
             fs.mkdirSync(path.join(__dirname, REPO_DIR), {recursive: true})
-        }catch(err){
-            if(err.code !== "EEXIST"){
+        } catch (err) {
+            if (err.code !== "EEXIST") {
                 throw err;
             }
         }
@@ -107,7 +117,7 @@ function downloadReportTV() {
 
                     });
 
-                    stream.pipe(fs.createWriteStream(path.join(__dirname,  REPO_DIR, 'file.xml')));
+                    stream.pipe(fs.createWriteStream(path.join(__dirname, REPO_DIR, 'file.xml')));
 
                 });
             });
@@ -171,7 +181,6 @@ function programmeUpdateService() {
                 });
 
 
-
             } else {
                 console.log("error")
             }
@@ -206,7 +215,107 @@ function LoginWOTT(req, res) {
 
     //console.log(result)
 
+}
 
+setInterval(renewWiltelToken, 60 * 3600000);
+
+function renewWiltelToken() {
+    let options = {
+        url: 'https://ws.wiltel.com.ar/WS/CRM.asmx/LoginWOTT',
+        agentOptions: {
+            pfx: fs.readFileSync(WILTEL_KEY_PATH),
+            passphrase: 'Wiltel19',
+            securityOptions: 'SSL_OP_NO_SSLv3'
+        },
+        formData: {
+            Usuario: "epa",
+            Password: "wil2019tel"
+        }
+    };
+
+    request.post(options, (err, httpResponse, body) => {
+        if (err) res.send(err);
+        console.log("token actualizado ", body);
+        currentWiltelToken = body;
+    });
+}
+
+renewWiltelToken();
+
+function checkSubscriberCredentials(req, res) {
+    const {email, password} = req.body;
+
+    if (email && password) {
+
+        let db = pdc.db;
+
+        if (db) {
+
+            db.Subscribers.findOne({email: email}, function (error, storedSubscriber) {
+
+                if (error) {
+
+                    res.status(C.error.database.ERROR.httpCode).send(new
+                    api.Error(C.error.database.ERROR));
+
+                } else {
+                    if (storedSubscriber) {
+                        const subscriberId = storedSubscriber.subscriberId;
+
+                        if (currentWiltelToken) {
+
+                            let options = {
+                                url: 'https://ws.wiltel.com.ar/WS/CRM.asmx/LoginWOTT',
+                                agentOptions: {
+                                    pfx: fs.readFileSync(WILTEL_KEY_PATH),
+                                    passphrase: 'Wiltel19',
+                                    securityOptions: 'SSL_OP_NO_SSLv3'
+                                },
+                                formData: {
+                                    id: subscriberId,
+                                    Password: password,
+                                    auth_usuario: "epa",
+                                    token: currentWiltelToken
+                                }
+                            };
+
+                            request.post(options, (err, httpResponse, response) => {
+                                if (err) {
+                                    res.status(C.error.connection.UNKNOWN.httpCode).send(new // TODO Replace with BAD GATEWAY
+                                    api.Error(C.error.connection.UNKNOWN));
+                                } else {
+                                    if (response.indexOf("NO VÁLIDO") !== -1) {
+                                        res.status(C.error.userRights.BAD_AUTHENTICATION.httpCode).send(new
+                                        api.Error(C.error.userRights.BAD_AUTHENTICATION));
+                                    } else {
+                                        res.status(200).send(new api.Success({subscriber: storedSubscriber}));
+                                    }
+                                }
+
+                            });
+
+                        } else {
+                            res.status(C.error.connection.UNKNOWN.httpCode).send(new // TODO Replace with BAD GATEWAY
+                            api.Error(C.error.connection.UNKNOWN));
+                        }
+
+                    } else {
+                        res.status(C.error.userRights.NON_EXISTENT_USER.httpCode).send(new
+                        api.Error(C.error.userRights.NON_EXISTENT_USER));
+                    }
+                }
+            })
+
+        } else {
+            res.status(C.error.database.DISCONNECTED.httpCode).send(new
+            api.Error(C.error.database.DISCONNECTED));
+        }
+
+    } else {
+
+        res.status(C.error.operation.OPERATION_INVALID_PARAMETERS.httpCode).send(new
+        api.Error(C.error.operation.OPERATION_INVALID_PARAMETERS));
+    }
 }
 
 function ABMPlayme(req, res) {
