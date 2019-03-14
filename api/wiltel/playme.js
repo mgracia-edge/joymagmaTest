@@ -236,7 +236,7 @@ function renewWiltelToken() {
     request.post(options, (err, httpResponse, body) => {
         if (err) res.send(err);
         console.log("token actualizado ", body);
-        currentWiltelToken = body;
+        currentWiltelToken = body.substring(1,body.length-1);
     });
 }
 
@@ -265,17 +265,17 @@ function checkSubscriberCredentials(req, res) {
                         if (currentWiltelToken) {
 
                             let options = {
-                                url: 'https://ws.wiltel.com.ar/WS/CRM.asmx/LoginWOTT',
+                                url: 'https://ws.wiltel.com.ar/WS/CRM.asmx/vpass',
                                 agentOptions: {
                                     pfx: fs.readFileSync(WILTEL_KEY_PATH),
                                     passphrase: 'Wiltel19',
                                     securityOptions: 'SSL_OP_NO_SSLv3'
                                 },
                                 formData: {
-                                    id: subscriberId,
+                                    Id: subscriberId,
                                     Password: password,
                                     auth_usuario: "epa",
-                                    token: currentWiltelToken
+                                    auth_token: currentWiltelToken
                                 }
                             };
 
@@ -284,12 +284,17 @@ function checkSubscriberCredentials(req, res) {
                                     res.status(C.error.connection.UNKNOWN.httpCode).send(new // TODO Replace with BAD GATEWAY
                                     api.Error(C.error.connection.UNKNOWN));
                                 } else {
-                                    if (response.indexOf("NO VÁLIDO") !== -1) {
+
+                                    console.log(options);
+
+                                    res.send(response);
+
+                                    /*if (response.indexOf("NO VÁLIDO") === 0) {
                                         res.status(C.error.userRights.BAD_AUTHENTICATION.httpCode).send(new
-                                        api.Error(C.error.userRights.BAD_AUTHENTICATION));
+                                        api.Error(C.error.userRights.BAD_AUTHENTICATION.UNKNOWN));
                                     } else {
                                         res.status(200).send(new api.Success({subscriber: storedSubscriber}));
-                                    }
+                                    }*/
                                 }
 
                             });
