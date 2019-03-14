@@ -1,0 +1,51 @@
+.config{
+
+  &__tabs{
+
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 10px;
+
+    &__item{
+      outline: none;
+      margin-right: 10px;
+      font-size: 14px;
+      text-align: left;
+      font-weight: bold;
+      &:hover{
+        cursor: pointer;
+
+      }
+
+      &--selected{
+        border-bottom: 2px solid $accent-color;
+      }
+
+
+    }
+  }
+
+}
+
+.avProfile{
+
+  &__label{
+    font-size: 14px;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  &-list{
+    background: white;
+    padding: 15px;
+    min-width: 150px;
+    min-height: 50px;
+
+  }
+
+  &__details{
+    background: white;
+    padding: 15px;
+  }
+
+}

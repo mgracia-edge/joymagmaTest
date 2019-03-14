@@ -1,4 +1,13 @@
-<div secction layout-fill layout="column" layout-align="center center">
+<div ng-show="!true"  secction layout-fill layout="column">
+    <h1>Config</h1>
+    <div class="config__tabs">
+        <div class="config__tabs__item" ng-click="selectTab('domains')">Domains</div>
+        <div class="config__tabs__item config__tabs__item--selected" ng-click="selectTab('avprofiles')">Av Profile</div>
+    </div>
+    <div layout="column" flex ng-include="templateUrl"></div>
+</div>
+
+<div ng-show="!false" secction layout-fill layout="column" layout-align="center center">
 
 
     <div style="text-align: center">

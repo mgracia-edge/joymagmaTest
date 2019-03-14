@@ -22,7 +22,7 @@
             descriptionShort: '',
             channelEPGId: '',
             descriptionLong: '',
-            poster: ''
+            poster: []
         };
 
         $scope.uploadImage = uploadImage;
@@ -91,9 +91,9 @@
 
         function checkForm() {
 
-            let {name, descriptionShort, channelEPGId, descriptionLong} = $scope.channelData;
+            let {name, descriptionShort, channelEPGId, descriptionLong, poster} = $scope.channelData;
 
-            if (name !== '' && descriptionShort !== '' && channelEPGId !== '' && descriptionLong !== '') {
+            if (name !== '' && descriptionShort !== '' && channelEPGId !== '' && descriptionLong !== '' && poster.length !== 0) {
                 return true
             }
 

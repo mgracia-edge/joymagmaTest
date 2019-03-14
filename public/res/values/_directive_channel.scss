@@ -45,7 +45,11 @@ nx-channel {
     padding: 9px;
     box-sizing: border-box;
 
-
+    &_label{
+      color: #42516e;
+      font-size: 12px;
+      font-weight: 700;
+    }
 
     @include border-radius;
     @include box-shadow;

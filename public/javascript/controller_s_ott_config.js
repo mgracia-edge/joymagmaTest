@@ -12,12 +12,45 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sOttConfigCtrl", ['$scope', '$NxApi', '$mdToast','$location', function ($scope, $NxApi, $mdToast,$location) {
+        .controller("sOttConfigCtrl", ['$scope', '$NxApi', '$mdToast', '$location', function ($scope, $NxApi, $mdToast, $location) {
 
-            function init(){
+            $scope.avProfiles = [];
+            $scope.avProfileAction = '';
+            $scope.dataAvProfile = {};
+            $scope.templateUrl = '/res/layout/fragment_config_avprofiles.html';
+
+
+            $scope.selectTab = selectTab;
+            $scope.detailsProfile = detailsProfile;
+
+            function init() {
+
+                $NxApi.avProfiles.read().then((data)=>{
+                    $scope.avProfiles = data.avProfiles;
+                })
+            }
+
+            function selectTab(opt) {
+
+                if(opt === 'domains'){
+                    $scope.templateUrl = '/res/layout/fragment_config_domains.html'
+                }else if(opt === 'avprofiles'){
+                    $scope.templateUrl = '/res/layout/fragment_config_avprofiles.html'
+                }
 
             }
 
+            function detailsProfile(profile){
+
+                $NxApi.avProfiles.read({
+                    id: profile._id
+                }).then((data)=>{
+                    console.log(data.avProfiles[0])
+                    $scope.avProfileAction = 'detail';
+                    $scope.dataAvProfile = data.avProfiles[0];
+                })
+
+            }
 
             $NxApi.setAfterLogin(init);
 

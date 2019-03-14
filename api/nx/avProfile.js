@@ -15,7 +15,7 @@ function _read(req, res) {
 
     if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.SUBSCRIBERS_READ)) {
+        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
@@ -23,7 +23,7 @@ function _read(req, res) {
             return;
         }
 
-        let {id,includeUpdateHistory} = req.body;
+        let {id} = req.body;
 
         let query = {
             find: {},
@@ -39,13 +39,7 @@ function _read(req, res) {
             query.find = {_id: Array.isArray(id) ? {$in: id} : id}
         }
 
-        if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
-
-            delete query.projection.updateHistory;
-
-        }
-
-        db.Subscribers
+        db.AvProfile
             .find(query.find, query.projection)
             .sort(query.sort)
             .then((channels) => {

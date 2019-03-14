@@ -80,7 +80,7 @@ function _create(req, res) {
                         if (typeof descriptionShort === 'undefined') delete json.descriptionShort;
                         if (typeof descriptionLong === 'undefined') delete json.descriptionLong;
 
-                        if(typeof poster !== 'undefined' && poster[0].update === true){
+                        if(typeof poster !== 'undefined' && poster[0].update && poster[0].update === true){
                             cloudinary.uploader.upload(poster[0].url, (result) => {
 
                                 let poster = {

@@ -537,6 +537,55 @@
                 }
             }
 
+            function AvProfiles($http, $q) {
+
+                function read(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/avProfile/read", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({
+                                    avProfiles: data.content
+                                });
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function checkSubscriberCredentials(params){
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/playme/check_subscriber_credentials", params)
+                            .then(({data}) => {
+
+                                if(data.error){
+                                    resolve({
+                                        code:data.error,
+                                        message:data.error_dsc
+                                    });
+                                }else{
+                                    resolve(data);
+                                }
+
+                            })
+                            .catch(({data}) => {
+                                reject(data.error)
+                            });
+                    });
+                }
+
+                return {
+                    read,
+                    checkSubscriberCredentials
+                }
+            }
+
             init();
 
             return {
@@ -550,7 +599,8 @@
                 users: Users($http, $q),
                 programmes:Programmes($http, $q),
                 channels: channelsDelegation($http, $q),
-                products: Products($http, $q)
+                products: Products($http, $q),
+                avProfiles: AvProfiles($http, $q)
             }
         }]);
 

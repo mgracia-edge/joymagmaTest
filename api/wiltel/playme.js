@@ -272,8 +272,8 @@ function checkSubscriberCredentials(req, res) {
                                     securityOptions: 'SSL_OP_NO_SSLv3'
                                 },
                                 formData: {
-                                    Id: subscriberId,
-                                    Password: password,
+                                    id: subscriberId,
+                                    password: password,
                                     auth_usuario: "epa",
                                     auth_token: currentWiltelToken
                                 }
