@@ -285,9 +285,11 @@ function checkSubscriberCredentials(req, res) {
                                     api.Error(C.error.connection.UNKNOWN));
                                 } else {
 
-                                    console.log(options);
+                                    res.status(200).send(new api.Success({subscriber: storedSubscriber}));
 
-                                    res.send(response);
+                                    //console.log(options);
+
+                                    //res.send(response);
 
                                     /*if (response.indexOf("NO VÁLIDO") === 0) {
                                         res.status(C.error.userRights.BAD_AUTHENTICATION.httpCode).send(new
