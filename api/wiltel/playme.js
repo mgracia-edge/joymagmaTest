@@ -603,7 +603,18 @@ function getChannels(req, res) {
 
         let query = {};
 
-        if (!Number.isInteger(channelId) && !Array.isArray(channelId)) {
+        if (req.body.streamKey){
+
+            query = {
+                find: {
+                    "entryPoint.streamKey": req.body.streamKey
+                },
+                sort: {
+                    name: 1
+                }
+            }
+
+        }else if (!Number.isInteger(channelId) && !Array.isArray(channelId)) {
 
             /*res.status(400).send({
                 error: 0x0022,
