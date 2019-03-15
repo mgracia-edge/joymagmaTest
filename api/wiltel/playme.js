@@ -601,24 +601,36 @@ function getChannels(req, res) {
 
         let channelId = req.body.id;
 
+        let query = {};
+
         if (!Number.isInteger(channelId) && !Array.isArray(channelId)) {
 
-            res.status(400).send({
+            /*res.status(400).send({
                 error: 0x0022,
                 error_dsc: "channeId debe ser del tipo INT o [INT]"
             });
 
-            return false
+            return false*/
+
+            query = {
+                find: {
+                },
+                sort: {
+                    name: 1
+                }
+            };
+
+        }else{
+            query = {
+                find: {
+                    _id: Array.isArray(channelId) ? {$in: channelId} : channelId
+                },
+                sort: {
+                    name: 1
+                }
+            };
         }
 
-        let query = {
-            find: {
-                _id: Array.isArray(channelId) ? {$in: channelId} : channelId
-            },
-            sort: {
-                name: 1
-            }
-        };
 
         db.Channels
             .find(query.find)
