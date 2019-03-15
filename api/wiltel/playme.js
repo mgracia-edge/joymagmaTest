@@ -285,7 +285,7 @@ function checkSubscriberCredentials(req, res) {
                                     api.Error(C.error.connection.UNKNOWN));
                                 } else {
 
-                                    res.status(200).send(new api.Success({subscriber: storedSubscriber}));
+                                    res.status(200).send(new api.Success(storedSubscriber));
 
                                     //console.log(options);
 
