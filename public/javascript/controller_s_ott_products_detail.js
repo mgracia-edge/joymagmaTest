@@ -45,6 +45,7 @@
                     }).then((channels)=>{
 
                         $scope.productData = {
+                            id: product._id,
                             name: product.name,
                             description:product.description,
                             channels: channels
