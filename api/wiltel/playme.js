@@ -5,11 +5,13 @@ const Client = require('ftp');
 const parseString = require('xml2js').parseString;
 const api = require("../support");
 const C = require("../codes");
+const pdc = require("../../lib/dataConnection");
+
 
 const REPO_DIR = "../../res/reporttv";
 const WILTEL_KEY_PATH = path.join(__dirname, '../../res/EPA.pfx');
 
-const pdc = require("../../lib/dataConnection");
+const USER_AGENT = "Magma-Agent/4.0 (Linux x86_64)";
 
 let currentWiltelToken = null;
 
@@ -47,6 +49,24 @@ exports.resourceList = [
     {
         path: "get_channels",
         callback: getChannels,
+        method: "post",
+        protected: false
+    },
+    {
+        path: "set_favorite",
+        callback: setFavorite,
+        method: "post",
+        protected: false
+    },
+    {
+        path: "get_favorites",
+        callback: getFavorite,
+        method: "post",
+        protected: false
+    },
+    {
+        path: "get_product_channels",
+        callback: getProductChannels,
         method: "post",
         protected: false
     },
@@ -230,13 +250,16 @@ function renewWiltelToken() {
         formData: {
             Usuario: "epa",
             Password: "wil2019tel"
+        },
+        headers: {
+            "User-Agent": USER_AGENT
         }
     };
 
     request.post(options, (err, httpResponse, body) => {
         if (err) res.send(err);
         console.log("token actualizado ", body);
-        currentWiltelToken = body.substring(1,body.length-1);
+        currentWiltelToken = body.substring(1, body.length - 1);
     });
 }
 
@@ -276,6 +299,9 @@ function checkSubscriberCredentials(req, res) {
                                     password: password,
                                     auth_usuario: "epa",
                                     auth_token: currentWiltelToken
+                                },
+                                headers: {
+                                    "User-Agent": USER_AGENT
                                 }
                             };
 
@@ -285,18 +311,13 @@ function checkSubscriberCredentials(req, res) {
                                     api.Error(C.error.connection.UNKNOWN));
                                 } else {
 
-                                    res.status(200).send(new api.Success(storedSubscriber));
+                                    let responseJson = JSON.parse(response);
 
-                                    //console.log(options);
-
-                                    //res.send(response);
-
-                                    /*if (response.indexOf("NO VÁLIDO") === 0) {
-                                        res.status(C.error.userRights.BAD_AUTHENTICATION.httpCode).send(new
-                                        api.Error(C.error.userRights.BAD_AUTHENTICATION.UNKNOWN));
+                                    if (responseJson.error === 200) {
+                                        res.status(200).send(new api.Success(storedSubscriber));
                                     } else {
-                                        res.status(200).send(new api.Success({subscriber: storedSubscriber}));
-                                    }*/
+                                        res.send(responseJson)
+                                    }
                                 }
 
                             });
@@ -482,16 +503,6 @@ function getCurrentProgramme(req, res) {
 
         let channelEPGId = req.body.channelEPGId;
 
-        if (!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
-
-            res.status(400).send({
-                error: 0x0022,
-                error_dsc: "channelEPGId debe ser del tipo INT o [INT]"
-            });
-
-            return false
-        }
-
         let query = {
             find: {
                 start: {
@@ -603,7 +614,7 @@ function getChannels(req, res) {
 
         let query = {};
 
-        if (req.body.streamKey){
+        if (req.body.streamKey) {
 
             query = {
                 find: {
@@ -614,24 +625,16 @@ function getChannels(req, res) {
                 }
             }
 
-        }else if (!Number.isInteger(channelId) && !Array.isArray(channelId)) {
-
-            /*res.status(400).send({
-                error: 0x0022,
-                error_dsc: "channeId debe ser del tipo INT o [INT]"
-            });
-
-            return false*/
+        } else if (!Number.isInteger(channelId) && !Array.isArray(channelId)) {
 
             query = {
-                find: {
-                },
+                find: {},
                 sort: {
                     name: 1
                 }
             };
 
-        }else{
+        } else {
             query = {
                 find: {
                     _id: Array.isArray(channelId) ? {$in: channelId} : channelId
@@ -667,6 +670,60 @@ function getChannels(req, res) {
     }
 }
 
+function getProductChannels(req, res) {
+    let db = pdc.db;
+
+    let productId = req.body.id;
+
+    if (db) {
+
+        if (!productId && !Array.isArray(productId)) {
+
+            res.status(400).send({
+                error: 0x0022,
+                error_dsc: "productId debe ser del tipo INT o [INT]"
+            });
+
+            return false
+        } else {
+
+            db.Products.findOne({
+                _id: productId
+            }, function (error, product) {
+                if (error) {
+                    console.error(error);
+                    res.status(500).send({
+                        error: 0x0010,
+                        error_dsc: "Error en la base de datos"
+                    });
+                } else {
+                    if (product === null) {
+                        res.send([]);
+                    } else {
+                        db.Channels.find({_id: {$in: product.channels}}, function (error, channels) {
+                            if (channels) {
+                                res.send(channels)
+                            } else {
+                                res.send([]);
+                            }
+                        })
+
+                    }
+                }
+            })
+
+        }
+
+    } else {
+
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+
+    }
+}
+
 function getProducts(req, res) {
 
 
@@ -676,11 +733,13 @@ function getProducts(req, res) {
 
         let productId = req.body.id;
 
-        if (!Number.isInteger(productId) && !Array.isArray(productId)) {
+        console.log(productId)
+
+        if (!productId && !Array.isArray(productId)) {
 
             res.status(400).send({
                 error: 0x0022,
-                error_dsc: "channeId debe ser del tipo INT o [INT]"
+                error_dsc: "productId debe ser del tipo INT o [INT]"
             });
 
             return false
@@ -700,9 +759,14 @@ function getProducts(req, res) {
             .sort(query.sort)
             .then((products) => {
 
-                res.status(200).send(products);
+                if (Array.isArray(productId)) {
+                    res.status(200).send(products);
+                } else {
+                    res.status(200).send(products[0]);
+                }
 
             }).catch((error) => {
+
             res.status(500).send({
                 error: 0x0010,
                 error_dsc: "Error en la base de datos"
@@ -711,11 +775,121 @@ function getProducts(req, res) {
 
     } else {
 
+
         res.status(500).send({
             error: 0x0010,
             error_dsc: "Error en la base de datos"
         });
 
+    }
+}
+
+function setFavorite(req, res) {
+
+    // TODO VEr esto https://stackoverflow.com/questions/41788688/mongo-schema-array-of-string-with-unique-values,
+    // parece ser una mejor forma
+
+    let db = pdc.db;
+
+    let {subscriberId, channelId, favorite} = req.body;
+
+    if (db) {
+        db.Subscribers.findOne({_id: subscriberId}, (error, subscriber) => {
+
+            if (error) {
+                console.error(error);
+                res.status(500).send({
+                    error: 0x0010,
+                    error_dsc: "Error en la base de datos"
+                });
+            } else {
+                if (subscriber) {
+
+                    let newVector = [];
+
+                    if (favorite) {
+                        newVector.push(channelId);
+                    }
+
+                    for (let channel of subscriber.favoriteChannels) {
+                        if (channel.toString() !== channelId) {
+                            newVector.push(channel.toString());
+                        }
+                    }
+
+                    db.Subscribers.update({_id: subscriberId}, {$set: {favoriteChannels: newVector}}, function (error) {
+                        if (error) {
+                            console.error(error);
+                            res.status(500).send({
+                                error: 0x0030,
+                                error_dsc: "Update Error"
+                            });
+                        } else {
+                            res.status(500).send({
+                                error: null
+                            });
+                        }
+                    });
+
+                } else {
+                    res.status(400).send({
+                        error: 0x0020,
+                        error_dsc: "User, not found"
+                    });
+                }
+            }
+
+        });
+    } else {
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    }
+}
+
+function getFavorite(req, res) {
+    let db = pdc.db;
+
+    let {subscriberId, channelId, favorite} = req.body;
+
+    if (db) {
+        db.Subscribers.findOne({_id: subscriberId}, (error, subscriber) => {
+            if (error) {
+                console.error(error);
+                res.status(500).send({
+                    error: 0x0010,
+                    error_dsc: "Error en la base de datos"
+                });
+            } else {
+                if (subscriber) {
+
+                    db.Channels.find({_id: {$in: subscriber.favoriteChannels}}, {updateHistory: 0}, function (error, data) {
+                        if (error) {
+                            res.status(500).send({
+                                error: 0x0010,
+                                error_dsc: "Error en la base de datos"
+                            });
+                        } else {
+                            res.send(data);
+                        }
+                    });
+
+                } else {
+                    res.status(400).send({
+                        error: 0x0020,
+                        error_dsc: "User, not found"
+                    });
+                }
+            }
+
+        });
+    } else {
+        console.error(error);
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
     }
 }
 
