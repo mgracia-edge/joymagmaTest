@@ -133,11 +133,14 @@ function downloadReportTV() {
 
 function programmeUpdateService() {
     function parseDate(string) {
-        return new Date(
+
+        let time = new Date(
             string.substring(0, 4) + "/" +
             string.substring(4, 6) + "/" +
             string.substring(6, 8)
         ).setHours(string.substring(8, 10), string.substring(10, 12), 0);
+
+        return new Date(time).toLocaleString("en-US", {timeZone: "America/Argentina/Buenos_Aires"});
     }
 
     downloadReportTV()
