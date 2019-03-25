@@ -1,10 +1,23 @@
 .config{
 
+
+
   &__tabs{
+
+    input[name="tab-control"]{
+      display: none;
+      @for $i from 1 through 2 {
+        &:nth-of-type(#{$i}):checked {
+          & ~ label:nth-of-type(#{$i}){
+            border-bottom: 2px solid $accent-color;
+          }
+        }
+      }
+    }
 
     display: flex;
     justify-content: flex-end;
-    padding-bottom: 10px;
+
 
     &__item{
       outline: none;
@@ -17,9 +30,6 @@
 
       }
 
-      &--selected{
-        border-bottom: 2px solid $accent-color;
-      }
 
 
     }
@@ -36,12 +46,21 @@
   }
 
   &-list{
-    background: white;
-    padding: 15px;
+    //background: white;
+
     min-width: 150px;
     min-height: 50px;
 
+    table tbody td{
+      padding: 0 10px;
+      &.text-center{
+        text-align: center;
+      }
+    }
+
   }
+
+
 
   &__details{
     background: white;
@@ -49,3 +68,4 @@
   }
 
 }
+

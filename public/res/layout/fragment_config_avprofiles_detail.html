@@ -1,125 +1,99 @@
-<div layout="row">
-    <md-button class="md-raised md-primary">
-        <span>Add</span>
-    </md-button>
-</div>
-<scroll-view orientation="vertical" flex layout="row">
+<scroll-view orientation="vertical" flex layout="row" class="form">
 
-    <div layout="column" style="width: 300px">
+    <div  layout="column" style="width: 300px">
+        <item>
+            <label>Name</label>
+            <input type="email" ng-model="dataAvProfile.name" aria-label="email" title="email" autocomplete="off">
+        </item>
 
-        <label class="avProfile__label">Profiles</label>
+        <item>
+            <label>Description</label>
+            <textarea type="email" ng-model="dataAvProfile.description" aria-label="email" title="email"></textarea>
+        </item>
+        <div layout="row"  layout-align="space-around center">
+            <item>
+                <label>DVR</label>
+                <div class="">
+                    <md-switch ng-model="dataAvProfile.dvr" aria-label="Switch 1"></md-switch>
+                </div>
+            </item>
 
-        <div class="avProfile-list">
+            <item>
+                <label>AES</label>
+                <div class="">
+                    <md-switch ng-model="dataAvProfile.aesEncryption" aria-label="Switch 1"></md-switch>
+                </div>
+            </item>
+            <item>
+                <label>Profile</label>
+                <md-select ng-model="dataAvProfile.profile" placeholder="Profile" class="md-no-underline">
+                    <md-option value="Baseline">Baseline</md-option>
+                    <md-option value="Main">Main</md-option>
+                    <md-option value="High">High</md-option>
+                </md-select>
+            </item>
+            <item>
+                <label>Codec</label>
+                <md-select ng-model="dataAvProfile.codec" placeholder="Encode" class="md-no-underline">
+                    <md-option value="GPU">GPU</md-option>
+                    <md-option value="CPU">CPU</md-option>
+                </md-select>
+            </item>
+        </div>
+
+        <div>
+            <md-button class="md-raised md-primary" ng-click="updateProfile(dataAvProfile._id)">
+                <span>save</span>
+            </md-button>
+        </div>
+    </div>
+    <div layout="column" style="margin-left: 20px">
+
+        <item>
+            <label>Quality</label>
             <table>
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Description</th>
+                        <th>Width</th>
+                        <th>Height</th>
+                        <th>Audio Bitrate</th>
+                        <th>Video Bitrate</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="profile in avProfiles">
-                        <td>{{profile.name}}</td>
-                        <td>{{profile.description}}</td>
-                        <td>
-                            <md-button ng-click="detailsProfile(profile)">more</md-button>
-                        </td>
+                    <tr ng-repeat="quality in dataAvProfile.quality">
+                        <td>{{quality.width}}</td>
+                        <td>{{quality.height}}</td>
+                        <td>{{quality.audioBitrate}}</td>
+                        <td>{{quality.videoBitrate}}</td>
+                        <td>More</td>
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </item>
+        <div layout="row">
+            <item style="margin-right: 10px;">
+                <label>Chunk Size</label>
+                <input type="number" min="1"  ng-model="dataAvProfile.chunkSize" aria-label="email" title="email"
+                       autocomplete="off">
+            </item>
 
+            <item style="margin-right: 10px;">
+                <label>Fps</label>
+                <input type="number" min="1"  ng-model="dataAvProfile.fps" aria-label="email" title="email" autocomplete="off">
+            </item>
+            <item>
+                <label>Key Rate</label>
+                <input type="number" min="1"  ng-model="dataAvProfile.keyRate" aria-label="email" title="email"
+                       autocomplete="off">
+            </item>
+        </div>
     </div>
-    <div layout="column" style="margin-left: 20px" ng-show="dataAvProfile.name">
-        <label class="avProfile__label">Details</label>
-        <div class="avProfile__details form">
 
-            <item>
-                <label>Name</label>
-                <input type="email" ng-model="dataAvProfile.name" aria-label="email" title="email" autocomplete="off">
-            </item>
 
-            <item>
-                <label>Description</label>
-                <input type="email" ng-model="dataAvProfile.description" aria-label="email" title="email" autocomplete="off">
-            </item>
-            <div layout="row">
-                <item>
-                    <label>DVR</label>
-                    <div class="">
-                        <md-switch ng-model="dataAvProfile.dvr" aria-label="Switch 1"></md-switch>
-                    </div>
-                </item>
 
-                <item>
-                    <label>AES</label>
-                    <div class="">
-                        <md-switch ng-model="dataAvProfile.aesEncryption" aria-label="Switch 1"></md-switch>
-                    </div>
-                </item>
-                <item>
-                    <label>Profile</label>
-                    <md-select ng-model="drink" placeholder="Profile" class="md-no-underline" >
-                        <md-option value="Baseline">Baseline</md-option>
-                        <md-option value="Main">Main</md-option>
-                        <md-option value="High">High</md-option>
-                    </md-select>
-                </item>
-                <item>
-                    <label>Encode</label>
-                    <md-select ng-model="d" placeholder="Encode" class="md-no-underline" >
-                        <md-option value="GPU">GPU</md-option>
-                        <md-option value="CPU">CPU</md-option>
-                    </md-select>
-                </item>
-            </div>
-            <div layout="row">
-                <item style="margin-right: 10px;">
-                    <label>Chunk Size</label>
-                    <input type="email" ng-model="dataAvProfile.chunkSize" aria-label="email" title="email" autocomplete="off">
-                </item>
-
-                <item style="margin-right: 10px;">
-                    <label>Fps</label>
-                    <input type="email" ng-model="dataAvProfile.fps" aria-label="email" title="email" autocomplete="off">
-                </item>
-                <item>
-                    <label>Key Rate</label>
-                    <input type="email" ng-model="dataAvProfile.keyRate" aria-label="email" title="email" autocomplete="off">
-                </item>
-            </div>
-
-            <item>
-                <label>Quality</label>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Width</th>
-                            <th>Height</th>
-                            <th>Audio Bitrate</th>
-                            <th>Video Bitrate</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="quality in dataAvProfile.quality">
-                            <td>{{quality.width}}</td>
-                            <td>{{quality.height}}</td>
-                            <td>{{quality.audioBitrate}}</td>
-                            <td>{{quality.videoBitrate}}</td>
-                            <td>More</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </item>
-
-        </div>
-        <div>
-            <md-button class="md-raised md-primary">
-                <span>save</span>
-            </md-button>
-        </div>
-
-    </div>
 </scroll-view>
+
+
+

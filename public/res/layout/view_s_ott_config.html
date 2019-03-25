@@ -1,13 +1,26 @@
-<div ng-show="!true"  secction layout-fill layout="column">
+<div ng-show="true"  secction layout-fill layout="column">
     <h1>Config</h1>
-    <div class="config__tabs">
-        <div class="config__tabs__item" ng-click="selectTab('domains')">Domains</div>
-        <div class="config__tabs__item config__tabs__item--selected" ng-click="selectTab('avprofiles')">Av Profile</div>
+    <div layout="row" layout-align="center center">
+        <h2>{{title}}</h2>
+        <div flex>
+            <div class="config__tabs" >
+                <input type="radio" id="tab1" name="tab-control" >
+                <input type="radio" id="tab2" name="tab-control" checked>
+                <label class="config__tabs__item" for="tab1" role="button" ng-click="selectTab('domains')">
+                    Domains
+                </label>
+                <label class="config__tabs__item" for="tab2" role="button" ng-click="selectTab('avprofiles')">
+                    Av Profile
+                </label>
+            </div>
+        </div>
+
     </div>
+
     <div layout="column" flex ng-include="templateUrl"></div>
 </div>
 
-<div ng-show="!false" secction layout-fill layout="column" layout-align="center center">
+<div ng-show="false" secction layout-fill layout="column" layout-align="center center">
 
 
     <div style="text-align: center">

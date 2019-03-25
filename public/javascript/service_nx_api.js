@@ -539,6 +539,24 @@
 
             function AvProfiles($http, $q) {
 
+                function create(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/avProfile/create", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({
+                                    avProfiles: data.content
+                                });
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
                 function read(params) {
 
                     return $q((resolve, reject) => {
@@ -558,31 +576,49 @@
                     });
                 }
 
-                function checkSubscriberCredentials(params){
+                function update(params) {
 
                     return $q((resolve, reject) => {
-                        $http.post("/api/1.0/playme/check_subscriber_credentials", params)
+                        $http.post("/api/1.0/avProfile/update", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
                             .then(({data}) => {
-
-                                if(data.error){
-                                    resolve({
-                                        code:data.error,
-                                        message:data.error_dsc
-                                    });
-                                }else{
-                                    resolve(data);
-                                }
-
+                                resolve({});
                             })
-                            .catch(({data}) => {
-                                reject(data.error)
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function remove(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/avProfile/delete", {
+                            id: params._id
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch((error) => {
+                                reject(error)
                             });
                     });
                 }
 
                 return {
+                    create,
                     read,
-                    checkSubscriberCredentials
+                    update,
+                    delete: remove,
                 }
             }
 

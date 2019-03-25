@@ -84,9 +84,15 @@ a {
   color: $link_text_color;
 }
 
+md-switch,
+md-select {
+  margin:0
+}
+
 textarea,
 input[type="search"],
 input[type="text"],
+input[type="number"],
 input[type="password"],
 input[type="email"],
 search-box {
@@ -245,8 +251,6 @@ table {
   background-color: $accent-color;
 }
 
-
-
 .channel-container {
   outline: none;
   background: $light-bg;
@@ -293,3 +297,4 @@ table {
 
 
 }
+
