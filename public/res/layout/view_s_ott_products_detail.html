@@ -1,8 +1,13 @@
 <div secction layout-fill layout="column">
     <h1>{{isNew ? "New Package" : "Package Detail"}}</h1>
     <div class="form" layout="row">
-
         <div layout="column" style="min-width:300px">
+            <item>
+                <label>id</label>
+                <input type="text" ng-model="productData.id" aria-label="ID" title="ID" disabled
+                       autocomplete="off">
+            </item>
+
             <item>
                 <label>Name</label>
                 <input type="text" ng-model="productData.name" aria-label="first name" title="first name"
