@@ -1,8 +1,9 @@
 <div secction layout-fill layout="column">
     <h1>{{isNew ? "New Package" : "Package Detail"}}</h1>
-    <div class="form" layout="row">
-        <div layout="column" style="min-width:300px">
-            <item>
+    <scroll-view orientation="vertical" class="form" layout="row">
+
+        <div style="min-width:300px">
+            <item ng-show="!isNew">
                 <label>id</label>
                 <input type="text" ng-model="productData.id" aria-label="ID" title="ID" disabled
                        autocomplete="off">
@@ -48,11 +49,19 @@
                 <span ng-show="!loading">Save</span>
             </md-button>
 
+
+
+        </div>
+        <div layout="column" style="margin-left: 20px;">
+            <item>
+                <label>Notes</label>
+                <textarea ng-model="productData.notes" cols="40" rows="9"></textarea>
+            </item>
         </div>
         <div layout="column" style="margin-left: 20px;">
             <md-button ng-show="!isNew" md-no-ink class="md-raised md-primary" ng-click="remove()">Remove Package</md-button>
+
         </div>
 
-    </div>
-
+    </scroll-view>
 </div>

@@ -8,7 +8,7 @@ exports.resourceList = [
         callback: _read,
         method: "post",
         protected: true
-    },{
+    }, {
         path: "channels",
         callback: _channels,
         method: "post",
@@ -16,7 +16,7 @@ exports.resourceList = [
     }];
 
 
-function _channels(req, res){
+function _channels(req, res) {
     let db = dc.db;
 
     if (db) {
@@ -93,22 +93,36 @@ function _read(req, res) {
         let today = new Date().setHours(0, 0, 0);
         let todayAtNight = new Date().setHours(23, 59, 59);
 
-        query.find.start = { $gte : today};
-        query.find.stop = { $lte : todayAtNight};
+        query.find.start = {$gte: today};
+        query.find.stop = {$lte: todayAtNight};
 
-        db.Programme
-            .find(query.find, query.projection)
-            .limit(100)
-            .sort(query.sort)
+        db.Channels
+            .find({})
             .then((channels) => {
 
-                res.status(200).send(new api.Success(channels));
+                let channelsEPGIds = channels.map((channel) => channel.channelEPGId);
 
-            }).catch((error) => {
-            console.log(error)
-            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-        })
+                query.find.channelEPGId = {$in: channelsEPGIds};
+
+                db.Programme
+                    .find(query.find, query.projection)
+                    //.limit(100)
+                    .sort(query.sort)
+                    .then((channels) => {
+                        res.status(200).send(new api.Success(channels));
+                    })
+                    .catch((error) => {
+                        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+                    })
+
+
+            })
+            .catch((error) => {
+                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+            });
+
 
     } else {
 

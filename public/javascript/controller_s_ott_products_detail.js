@@ -23,7 +23,8 @@
         $scope.productData = {
             name:'',
             description:'',
-            channels: []
+            channels: [],
+            notes:''
         };
 
         $scope.addChannel = addChannel;
@@ -48,6 +49,7 @@
                             id: product._id,
                             name: product.name,
                             description:product.description,
+                            notes:product.notes,
                             channels: channels
                         };
 

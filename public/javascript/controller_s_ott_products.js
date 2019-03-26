@@ -101,7 +101,7 @@
 
             function remove(product){
                 dialog_alert(product).then(()=>{
-                    $scope.$parent.toast('user removed');
+                    $scope.$parent.toast('Package removed');
                     _updateTable();
                 })
             }

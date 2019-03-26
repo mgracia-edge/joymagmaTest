@@ -152,15 +152,17 @@ function downloadReportTV() {
 }
 
 function programmeUpdateService() {
+
+    let hourOfMyTimeZone = new Date().getTimezoneOffset() / 60 - 3;
+
     function parseDate(string) {
 
-        let time = new Date(
+        return new Date(
             string.substring(0, 4) + "/" +
             string.substring(4, 6) + "/" +
             string.substring(6, 8)
-        ).setHours(string.substring(8, 10) - (new Date().getTimezoneOffset() / 60 - 3) , string.substring(10, 12), 0);
+        ).setHours(string.substring(8, 10) - hourOfMyTimeZone , string.substring(10, 12), 0);
 
-        return time;//new Date(time).toLocaleString("en-US", {timeZone: "America/Argentina/Buenos_Aires"});
     }
 
     downloadReportTV()

@@ -8,14 +8,14 @@
     </div>
     <scroll-view orientation="vertical" flex>
 
-        <table class="table-users" style="width: 100%">
+        <table class="table-epg" style="width: 100%">
             <thead>
                 <tr>
-                    <th>Channel</th>
-                    <th>channelEPGId</th>
-                    <th>Name</th>
-                    <th>Duration</th>
-                    <th>Details</th>
+                    <th ng-click="sortBy('channelEPGId')">Channel</th>
+                    <th ng-click="sortBy('channelEPGId')">channelEPGId</th>
+                    <th ng-click="sortBy('title')">Name</th>
+                    <th ng-click="sortBy('start')">Duration</th>
+                    <th ng-click="sortBy('description')">Details</th>
 
                 </tr>
             </thead>
@@ -34,7 +34,7 @@
                 </tr>
                 <tr ng-hide="loading"
                     style="font-size: 13px"
-                    ng-repeat="programme in programmes | filter:search.name " class="table-users__user">
+                    ng-repeat="programme in programmes | filter:search.name | orderBy: order " class="table-users__user">
                     <td>
                         <img style="width: 50px" ng-src="{{getIconChannel(programme.channelEPGId)}}">
                     </td>

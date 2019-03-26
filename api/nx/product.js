@@ -33,7 +33,7 @@ function _create(req, res) {
 
     if (db) {
 
-        const {name, channels,description} = req.body;
+        const {name, channels,description,notes} = req.body;
 
         if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
 
@@ -66,6 +66,8 @@ function _create(req, res) {
                                 }
                             }]
                         };
+
+                        if(typeof notes !== "undefined") json.notes = notes;
 
                         let Products = new db.Products(json);
 
@@ -172,7 +174,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, channels,description} = data;
+        const {name, channels,description,notes} = data;
 
         let query = {
             find: {
@@ -184,6 +186,7 @@ function _update(req, res) {
                     description:description,
                     lastUpdate: new Date(),
                     channels: channels,
+                    notes:notes
 
                 },
                 $push: {
@@ -200,6 +203,7 @@ function _update(req, res) {
         if (typeof channels === 'undefined') delete query.update.$set.channels;
         if (typeof name === 'undefined') delete query.update.$set.name;
         if (typeof description === 'undefined') delete query.update.$set.description;
+        if (typeof notes === 'undefined') delete query.update.$set.notes;
 
         db.Products.updateOne(query.find, query.update, (error, products) => {
             if (error) {

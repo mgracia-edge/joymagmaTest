@@ -2,7 +2,7 @@
     <h1>{{isNew ? "New Channel" : "Channel Detail"}}</h1>
 
     <scroll-view orientation="vertical" class="form" layout="row">
-        <div  style="min-width: 300px">
+        <div>
 
             <item>
                 <label>Logo</label>
@@ -17,7 +17,7 @@
 
             <div layout="row">
 
-                <div layout="column">
+                <div layout="column" style="min-width: 300px">
                     <item>
                         <label>Name</label>
                         <input type="text" ng-model="channelData.name" aria-label="first name" title="first name"
@@ -55,6 +55,11 @@
                         <label>Entry Point</label>
                         {{channelData.entryPoint.type}}
                         {{channelData.entryPoint.streamKey}}
+                    </item>
+
+                    <item>
+                        <label>Notes</label>
+                        <textarea ng-model="channelData.notes" cols="40" rows="8"></textarea>
                     </item>
                 </div>
 

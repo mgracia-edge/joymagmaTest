@@ -42,7 +42,7 @@ function _create(req, res) {
             return;
         }
 
-        const {channelEPGId, name, descriptionShort, descriptionLong,poster} = req.body;
+        const {channelEPGId, name, descriptionShort, descriptionLong,poster,notes} = req.body;
 
         db.Channels
             .findOne({"name": name}, (error, data) => {
@@ -64,6 +64,7 @@ function _create(req, res) {
                                 type: db.Channels.publishingType.HLS,
                                 streamName: api.newStreamKeyCode()
                             },
+                            notes:notes,
                             entryPoint: {
                                 type: db.Channels.entryPoint.RTMP,
                                 streamKey: api.newStreamKeyCode()
@@ -79,6 +80,7 @@ function _create(req, res) {
 
                         if (typeof descriptionShort === 'undefined') delete json.descriptionShort;
                         if (typeof descriptionLong === 'undefined') delete json.descriptionLong;
+                        if (typeof notes === 'undefined') delete json.notes;
 
                         if(typeof poster !== 'undefined' && poster[0].update && poster[0].update === true){
                             cloudinary.uploader.upload(poster[0].url, (result) => {
@@ -205,7 +207,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {channelEPGId, name, descriptionShort, descriptionLong, poster} = data;
+        const {channelEPGId, name, descriptionShort, descriptionLong, poster,notes} = data;
 
         let query = {
             find: {
@@ -216,7 +218,8 @@ function _update(req, res) {
                     channelEPGId: channelEPGId,
                     name: name,
                     descriptionShort: descriptionShort,
-                    descriptionLong: descriptionLong
+                    descriptionLong: descriptionLong,
+                    notes:notes
                 },
                 $push: {
                     updateHistory: {
@@ -231,6 +234,7 @@ function _update(req, res) {
         if (typeof name === 'undefined') delete query.update.$set.name;
         if (typeof descriptionShort === 'undefined') delete query.update.$set.descriptionShort;
         if (typeof descriptionLong === 'undefined') delete query.update.$set.descriptionLong;
+        if (typeof notes === 'undefined') delete query.update.$set.notes;
 
         query.update.$push.updateHistory.payload = query.update.$set;
 
