@@ -47,6 +47,12 @@ exports.resourceList = [
         protected: false
     },
     {
+        path: "get_a_day",
+        callback: getADay,
+        method: "post",
+        protected: false
+    },
+    {
         path: "get_channels",
         callback: getChannels,
         method: "post",
@@ -564,6 +570,66 @@ function getAWeek(req, res) {
 
         let today = new Date().setHours(0, 0, 0);
         let week = new Date(today).setDate(new Date().getDate() + 6);
+        week = new Date(week).setHours(23, 59, 59);
+
+        let query = {
+            find: {
+                start: {
+                    $lt: week,
+                    $gte: today
+                },
+                channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : channelEPGId
+            },
+            sort: {
+                channelEPGId: 1,
+                start: 1
+            }
+        };
+
+        db.Programme
+            .find(query.find)
+            .sort(query.sort)
+            .then((programmes) => {
+
+                res.status(200).send(programmes);
+
+            }).catch((error) => {
+            res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        })
+
+    } else {
+
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+
+    }
+}
+
+function getADay(req, res) {
+
+    let db = pdc.db;
+
+    if (db) {
+
+        let channelEPGId = req.body.channelEPGId;
+
+        if (!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
+
+            res.status(400).send({
+                error: 0x0022,
+                error_dsc: "channelEPGId debe ser del tipo INT o [INT]"
+            });
+
+            return false
+        }
+
+        let today = new Date().setHours(0, 0, 0);
+        let week = new Date(today).setDate(new Date().getDate());
         week = new Date(week).setHours(23, 59, 59);
 
         let query = {
