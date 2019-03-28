@@ -167,7 +167,7 @@ function programmeUpdateService() {
             string.substring(0, 4) + "/" +
             string.substring(4, 6) + "/" +
             string.substring(6, 8)
-        ).setHours(string.substring(8, 10) - hourOfMyTimeZone , string.substring(10, 12), 0);
+        ).setHours(string.substring(8, 10) - hourOfMyTimeZone, string.substring(10, 12), 0);
 
     }
 
@@ -654,10 +654,34 @@ function getADay(req, res) {
         db.Programme
             .find(query.find)
             .sort(query.sort)
+            .lean()
             .then((programmes) => {
 
-                res.status(200).send(programmes);
+                for (let i in  programmes) {
 
+                    let p = programmes[i];
+
+                    p.deltaStart = Math.round((p.start.getTime() - today) / 60000);
+                    p.deltaStop = Math.round((p.stop.getTime() - today) / 60000);
+
+                    p.last = p.deltaStop - p.deltaStart;
+
+                    if (i == 0) {
+
+                        console.log(p.deltaStart, p.deltaStart > 0);
+
+                        if (p.deltaStart > 0) {
+                            p.deltaStart = 0;
+                        }
+                    }
+
+                    if (i == (programmes.length - 1)) {
+                        p.deltaStop = 1440;
+                    }
+
+                }
+
+                res.status(200).send(programmes);
             }).catch((error) => {
             res.status(500).send({
                 error: 0x0010,
