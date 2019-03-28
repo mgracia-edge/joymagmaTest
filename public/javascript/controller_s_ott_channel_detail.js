@@ -22,7 +22,8 @@
             descriptionShort: '',
             channelEPGId: '',
             descriptionLong: '',
-            poster: []
+            poster: [],
+            notes: ''
         };
 
         $scope.uploadImage = uploadImage;

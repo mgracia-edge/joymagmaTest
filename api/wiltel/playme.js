@@ -158,12 +158,17 @@ function downloadReportTV() {
 }
 
 function programmeUpdateService() {
+
+    let hourOfMyTimeZone = new Date().getTimezoneOffset() / 60 - 3;
+
     function parseDate(string) {
+
         return new Date(
             string.substring(0, 4) + "/" +
             string.substring(4, 6) + "/" +
             string.substring(6, 8)
-        ).setHours(string.substring(8, 10), string.substring(10, 12), 0);
+        ).setHours(string.substring(8, 10) - hourOfMyTimeZone , string.substring(10, 12), 0);
+
     }
 
     downloadReportTV()

@@ -17,9 +17,10 @@
             $scope.channels = [];
             $scope.programmes = [];
             $scope.loading = true;
+            $scope.order = 'channelEPGId';
 
+            $scope.sortBy = sortBy;
             $scope.getIconChannel = getIconChannel;
-
 
             function init() {
 
@@ -33,14 +34,14 @@
 
                             $scope.channels = channels;
                             $scope.loading = false;
-
                         })
-
                     });
-
-
                 })
 
+            }
+
+            function sortBy(order){
+                $scope.order = order;
             }
 
             function getIconChannel(channelEPGId) {
