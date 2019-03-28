@@ -664,8 +664,6 @@ function getADay(req, res) {
                     p.deltaStart = Math.round((p.start.getTime() - today) / 60000);
                     p.deltaStop = Math.round((p.stop.getTime() - today) / 60000);
 
-                    p.last = p.deltaStop - p.deltaStart;
-
                     if (i == 0) {
 
                         console.log(p.deltaStart, p.deltaStart > 0);
@@ -678,6 +676,8 @@ function getADay(req, res) {
                     if (i == (programmes.length - 1)) {
                         p.deltaStop = 1440;
                     }
+
+                    p.last = p.deltaStop - p.deltaStart;
 
                 }
 
