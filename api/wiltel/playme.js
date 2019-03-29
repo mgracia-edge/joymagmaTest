@@ -634,8 +634,11 @@ function getADay(req, res) {
         }
 
         let today = (new Date()).setHours(0, 0, 0, 0);
-        today = new Date(today - (today.getTimezoneOffset() - 180) * 3600000);
-        let day = new Date(today + 24 * 3600000);
+        today = new Date(today - ((new Date()).getTimezoneOffset() - 180) * 3600000);
+        let day = new Date(today.getTime() + 24 * 3600000);
+
+        console.log(today)
+        console.log(day)
 
         let query = {
             find: {
