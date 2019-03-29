@@ -633,14 +633,14 @@ function getADay(req, res) {
             return false
         }
 
-        let today = new Date().setHours(0, 0, 0);
-        let week = new Date(today).setDate(new Date().getDate());
-        week = new Date(week).setHours(23, 59, 59);
+        let today = (new Date()).setHours(0, 0, 0);
+        today = new Date(today - 3 * 3600000);
+        let day = new Date(today).setDate(new Date().getDate() + 24 * 3600000);
 
         let query = {
             find: {
                 start: {
-                    $lt: week,
+                    $lt: day,
                     $gte: today
                 },
                 channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : channelEPGId
@@ -654,10 +654,32 @@ function getADay(req, res) {
         db.Programme
             .find(query.find)
             .sort(query.sort)
+            .lean()
             .then((programmes) => {
 
-                res.status(200).send(programmes);
+                for (let i in  programmes) {
 
+                    let p = programmes[i];
+
+                    p.deltaStart = Math.round((p.start.getTime() - today -3600000*24) / 60000 );
+                    p.deltaStop = Math.round((p.stop.getTime() - today-3600000*24) / 60000);
+
+                    if (i == 0) {
+
+                        if (p.deltaStart > 0) {
+                            p.deltaStart = 0;
+                        }
+                    }
+
+                    if (i == (programmes.length - 1)) {
+                        p.deltaStop = 1440;
+                    }
+
+                    p.last = p.deltaStop - p.deltaStart;
+
+                }
+
+                res.status(200).send(programmes);
             }).catch((error) => {
             res.status(500).send({
                 error: 0x0010,
