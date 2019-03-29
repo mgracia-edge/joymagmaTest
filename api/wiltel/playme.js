@@ -711,7 +711,8 @@ function getChannels(req, res) {
 
             query = {
                 find: {
-                    "entryPoint.streamKey": req.body.streamKey
+                    "entryPoint.streamKey": req.body.streamKey,
+                    enabled: true
                 },
                 sort: {
                     name: 1
@@ -793,7 +794,12 @@ function getProductChannels(req, res) {
                     if (product === null) {
                         res.send([]);
                     } else {
-                        db.Channels.find({_id: {$in: product.channels}}, function (error, channels) {
+                        db.Channels.find({
+                            _id: {
+                                $in: product.channels
+                            },
+                            enabled: true
+                        }, function (error, channels) {
                             if (channels) {
                                 res.send(channels)
                             } else {

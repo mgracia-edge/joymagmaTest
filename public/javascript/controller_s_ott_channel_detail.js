@@ -23,7 +23,8 @@
             channelEPGId: '',
             descriptionLong: '',
             poster: [],
-            notes: ''
+            notes: '',
+            enabled: false
         };
 
         $scope.uploadImage = uploadImage;

@@ -12,30 +12,43 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sOttChannelCtrl", ['$scope', '$interval','$NxApi','$location'
-            , function ($scope, $interval,$NxApi,$location) {
+        .controller("sOttChannelCtrl", ['$scope', '$interval', '$NxApi', '$location'
+            , function ($scope, $interval, $NxApi, $location) {
 
-            $scope.channels = [];
-            $scope.channelDetails = channelDetails;
+                $scope.search = '';
+                $scope.channels = [];
+                $scope.channelDetails = channelDetails;
+                $scope.customFilter = customFilter;
 
-            function init() {
+                function init() {
 
-                $NxApi.channels
-                    .read({})
-                    .then((channels) => {
-                        $scope.channels = channels;
-                    })
-                    .catch((error) => {
-                        console.log(error);
+                    $NxApi.channels
+                        .read({})
+                        .then((channels) => {
+                            $scope.channels = channels;
+                        })
+                        .catch((error) => {
+                            console.log(error);
 
-                    })
-            }
+                        })
+                }
 
-            function channelDetails(channel){
-                $location.path('/s/ott/channel/'+channel._id)
-            }
+                function channelDetails(channel) {
+                    $location.path('/s/ott/channel/' + channel._id)
+                }
 
-            $NxApi.setAfterLogin(init);
+                function customFilter() {
+                    return function (item) {
 
-        }]);
+                        if($scope.search === '') return true;
+
+                        return !item.name.toLowerCase().indexOf($scope.search.toLowerCase()) ||
+                            !item.channelEPGId.toLowerCase().indexOf($scope.search.toLowerCase()) ||
+                            !item.entryPoint.streamKey.toLowerCase().indexOf($scope.search.toLowerCase())
+                    }
+                }
+
+                $NxApi.setAfterLogin(init);
+
+            }]);
 })();

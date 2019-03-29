@@ -1,15 +1,15 @@
-<div  secction layout-fill layout="column">
+<div secction layout-fill layout="column">
     <h1>Channels</h1>
     <div block layout="row">
         <search-box layout="row">
-            <input type="search" ng-model="search.name" flex>
+            <input type="search" ng-model="search" flex>
             <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
         </search-box>
     </div>
     <scroll-view orientation="vertical" flex>
         <nx-channel
                 ng-click="channelDetails(item)"
-                ng-repeat="item in channels | filter:search"
+                ng-repeat="item in channels | filter:customFilter()"
                 ng-model="item"></nx-channel>
     </scroll-view>
 </div>
