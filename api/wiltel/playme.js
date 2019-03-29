@@ -661,8 +661,8 @@ function getADay(req, res) {
 
                     let p = programmes[i];
 
-                    p.deltaStart = Math.round((p.start.getTime() - today) / 60000);
-                    p.deltaStop = Math.round((p.stop.getTime() - today) / 60000);
+                    p.deltaStart = Math.round((p.start.getTime() - today -3600000*24) / 60000 );
+                    p.deltaStop = Math.round((p.stop.getTime() - today-3600000*24) / 60000);
 
                     if (i == 0) {
 
