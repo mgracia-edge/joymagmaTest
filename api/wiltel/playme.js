@@ -220,7 +220,7 @@ function programmeUpdateService() {
 
 let intervalID = setInterval(programmeUpdateService, 1000 * 3600 * 24);
 
-programmeUpdateService();
+//programmeUpdateService();
 
 /** API Interface Wiltel ***/
 
@@ -633,9 +633,9 @@ function getADay(req, res) {
             return false
         }
 
-        let today = (new Date()).setHours(0, 0, 0);
-        today = new Date(today - 3 * 3600000);
-        let day = new Date(today).setDate(new Date().getDate() + 24 * 3600000);
+        let today = (new Date()).setHours(0, 0, 0, 0);
+        today = new Date(today - (today.getTimezoneOffset() - 180) * 3600000);
+        let day = new Date(today + 24 * 3600000);
 
         let query = {
             find: {
@@ -661,8 +661,8 @@ function getADay(req, res) {
 
                     let p = programmes[i];
 
-                    p.deltaStart = Math.round((p.start.getTime() - today -3600000*24) / 60000 );
-                    p.deltaStop = Math.round((p.stop.getTime() - today-3600000*24) / 60000);
+                    p.deltaStart = Math.round((p.start.getTime() - today) / 60000);
+                    p.deltaStop = Math.round((p.stop.getTime() - today) / 60000);
 
                     if (i == 0) {
 
