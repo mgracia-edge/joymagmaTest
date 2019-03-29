@@ -167,7 +167,7 @@ function programmeUpdateService() {
             string.substring(0, 4) + "/" +
             string.substring(4, 6) + "/" +
             string.substring(6, 8)
-        ).setHours(string.substring(8, 10) - hourOfMyTimeZone , string.substring(10, 12), 0);
+        ).setHours(string.substring(8, 10) - hourOfMyTimeZone, string.substring(10, 12), 0);
 
     }
 
@@ -689,7 +689,8 @@ function getChannels(req, res) {
 
             query = {
                 find: {
-                    "entryPoint.streamKey": req.body.streamKey
+                    "entryPoint.streamKey": req.body.streamKey,
+                    enabled: true
                 },
                 sort: {
                     name: 1
@@ -771,7 +772,12 @@ function getProductChannels(req, res) {
                     if (product === null) {
                         res.send([]);
                     } else {
-                        db.Channels.find({_id: {$in: product.channels}}, function (error, channels) {
+                        db.Channels.find({
+                            _id: {
+                                $in: product.channels
+                            },
+                            enabled: true
+                        }, function (error, channels) {
                             if (channels) {
                                 res.send(channels)
                             } else {

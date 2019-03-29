@@ -11,7 +11,8 @@
     <div class="channel_panel-right">
 
         <div class="channel_online">
-            <span class="{{true ? 'online' : 'offline'}}">on line</span>
+            <span ng-show="channel.enabled" class="online">enabled</span>
+            <span ng-show="!channel.enabled" class="offline">diseabled</span>
         </div>
         <div class="channel_publishing">
             <span class="{{false ? 'online' : 'offline'}}">published</span>
