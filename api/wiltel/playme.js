@@ -220,7 +220,7 @@ function programmeUpdateService() {
 
 let intervalID = setInterval(programmeUpdateService, 1000 * 3600 * 24);
 
-//programmeUpdateService();
+programmeUpdateService();
 
 /** API Interface Wiltel ***/
 
