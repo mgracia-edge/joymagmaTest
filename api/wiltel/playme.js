@@ -198,9 +198,14 @@ function programmeUpdateService() {
                             "channelEPGId": parseInt(item["$"]['channel'])
                         };
 
+
                         arr.push(json);
 
                     });
+
+                    // Elimino elementos duplicados del array.
+                    let set = new Set(arr.map(JSON.stringify));
+                    arr = Array.from(set).map(JSON.parse);
 
                     db.Programme.insertMany(arr, (err) => {
                         if (err) {
@@ -635,7 +640,7 @@ function getADay(req, res) {
         }
 
         let today = (new Date()).setHours(0, 0, 0, 0);
-        today = new Date(today - ((new Date()).getTimezoneOffset() - 180)/60 * 3600000);
+        today = new Date(today - ((new Date()).getTimezoneOffset() - 180) / 60 * 3600000);
         let day = new Date(today.getTime() + 24 * 3600000);
 
         console.log(today)
