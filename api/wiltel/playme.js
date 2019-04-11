@@ -136,7 +136,7 @@ function downloadReportTV() {
             ftp.list((err, list) => {
                 if (err) reject();
 
-                let lastFile = list[list.length - 1].name;
+                let lastFile = list[list.length - 2].name;
 
                 ftp.get(lastFile, function (err, stream) {
                     if (err) reject();
@@ -160,6 +160,7 @@ function downloadReportTV() {
             user: 'NexTV',
             password: 'nextvepg123'
         });
+
     });
 }
 
@@ -203,9 +204,14 @@ function programmeUpdateService() {
                             "channelEPGId": parseInt(item["$"]['channel'])
                         };
 
+
                         arr.push(json);
 
                     });
+
+                    // Elimino elementos duplicados del array.
+                    let set = new Set(arr.map(JSON.stringify));
+                    arr = Array.from(set).map(JSON.parse);
 
                     db.Programme.insertMany(arr, (err) => {
                         if (err) {

@@ -90,8 +90,13 @@ function _read(req, res) {
         }
 
 
-        let today = new Date().setHours(0, 0, 0);
-        let todayAtNight = new Date().setHours(23, 59, 59);
+        //let today = new Date().setHours(0, 0, 0);
+        //let todayAtNight = new Date().setHours(23, 59, 59);
+
+        let today = (new Date()).setHours(0, 0, 0, 0);
+        today = new Date(today - ((new Date()).getTimezoneOffset() - 180)/60 * 3600000);
+        let todayAtNight = new Date(today.getTime() + 24 * 3600000);
+
 
         query.find.start = {$gte: today};
         query.find.stop = {$lte: todayAtNight};

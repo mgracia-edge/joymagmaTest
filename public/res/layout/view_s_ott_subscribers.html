@@ -31,7 +31,20 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="subscriber in subscribers | filter : search ">
+                <tr ng-show="loading">
+                    <td colspan="5">
+                        <div style="padding:20px"
+                             layout="row"
+                             layout-align="center center">
+                            <md-progress-circular
+                                    class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
+
+                        </div>
+
+                    </td>
+                </tr>
+                <tr ng-hide="loading"
+                    ng-repeat="subscriber in subscribers | filter : search ">
                     <td>
                         {{subscriber.subscriberId}}
                     </td>
@@ -40,7 +53,7 @@
                     </td>
                     <td>
                         <div class="glove" ng-repeat="product in subscriber.products">
-                            {{product}}
+                            {{product.name}}
                         </div>
                     </td>
                     <td>
