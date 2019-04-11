@@ -30,6 +30,15 @@
                             includeUpdateHistory: true
                         }).then(({subscribers}) => {
                             $scope.subscriber = subscribers[0];
+
+
+                            $NxApi.products.read({
+                                _id:$scope.subscriber.products
+                            }).then((products)=>{
+                                $scope.subscriber.products = products;
+                            })
+
+
                         }).catch((e) => {
                             console.error(e);
                         })

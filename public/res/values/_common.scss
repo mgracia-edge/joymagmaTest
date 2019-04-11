@@ -216,6 +216,14 @@ table {
     margin: 0;
   }
 
+  td {
+    padding: 7px 4px 7px 0;
+  }
+  tr:nth-child(2n) {
+    background: #eee;
+    /* margin: 10px; */
+  }
+
   thead {
     th {
       border-bottom: 2px solid #ddd;
@@ -236,11 +244,12 @@ table {
 
 .glove {
   display: inline-flex;
-  padding: 1px 6px;
+  padding: 4px 6px;
   border-radius: 5px;
   background: #42516e;
   color: white;
   font-size: 11px;
+  margin-right: 8px;
 }
 
 .md-button.md-default-theme.md-primary.md-fab,

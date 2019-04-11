@@ -16,12 +16,27 @@
             function ($scope, $NxApi, $mdToast,$location) {
 
             $scope.subscribers = [];
+            $scope.loading = true;
 
             $scope.details = details;
 
             function init(){
                 $NxApi.subscribers.read().then((data)=>{
                     $scope.subscribers = data.subscribers;
+
+                    $scope.subscribers.map((subscriber)=>{
+
+                        $NxApi.products.read({
+                            _id:subscriber.products
+                        }).then((products)=>{
+                            subscriber.products = products;
+                        })
+
+                    });
+
+                    setTimeout(()=> $scope.loading = false,1000);
+
+
                 }).catch((e)=>{
                     console.error(e);
                 })

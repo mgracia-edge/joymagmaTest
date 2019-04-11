@@ -130,7 +130,7 @@ function downloadReportTV() {
             ftp.list((err, list) => {
                 if (err) reject();
 
-                let lastFile = list[list.length - 1].name;
+                let lastFile = list[list.length - 2].name;
 
                 ftp.get(lastFile, function (err, stream) {
                     if (err) reject();
@@ -154,6 +154,7 @@ function downloadReportTV() {
             user: 'NexTV',
             password: 'nextvepg123'
         });
+
     });
 }
 
