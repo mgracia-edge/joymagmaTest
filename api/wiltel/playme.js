@@ -634,9 +634,12 @@ function getADay(req, res) {
             return false
         }
 
-        let today = (new Date()).setHours(0, 0, 0);
-        today = new Date(today - 3 * 3600000);
-        let day = new Date(today).setDate(new Date().getDate() + 24 * 3600000);
+        let today = (new Date()).setHours(0, 0, 0, 0);
+        today = new Date(today - ((new Date()).getTimezoneOffset() - 180)/60 * 3600000);
+        let day = new Date(today.getTime() + 24 * 3600000);
+
+        console.log(today)
+        console.log(day)
 
         let query = {
             find: {
@@ -662,8 +665,8 @@ function getADay(req, res) {
 
                     let p = programmes[i];
 
-                    p.deltaStart = Math.round((p.start.getTime() - today -3600000*24) / 60000 );
-                    p.deltaStop = Math.round((p.stop.getTime() - today-3600000*24) / 60000);
+                    p.deltaStart = Math.round((p.start.getTime() - today) / 60000);
+                    p.deltaStop = Math.round((p.stop.getTime() - today) / 60000);
 
                     if (i == 0) {
 
