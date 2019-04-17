@@ -122,9 +122,9 @@ function newToken() {
 }
 
 function newStreamKeyCode() {
-    const N = Math.pow(26,5);
-    return  Math.round(Math.random()*N).toString(26) + "-" +
-            Math.round(Math.random()*N).toString(26) + "-" +
-            Math.round(Math.random()*N).toString(26) + "-" +
-            Math.round(Math.random()*N).toString(26);
+    const N = Math.pow(26, 5);
+    return Math.round(Math.random() * N).toString(26) + "-" +
+        Math.round(Math.random() * N).toString(26) + "-" +
+        Math.round(Math.random() * N).toString(26) + "-" +
+        Math.round(Math.random() * N).toString(26);
 }

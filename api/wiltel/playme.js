@@ -81,6 +81,12 @@ exports.resourceList = [
         callback: getProducts,
         method: "post",
         protected: false
+    },
+    {
+        path: "send_logs",
+        callback: sendLogs,
+        method: "post",
+        protected: false
     }
 ];
 
@@ -623,6 +629,8 @@ function getAWeek(req, res) {
 
 function getADay(req, res) {
 
+
+
     let db = pdc.db;
 
     if (db) {
@@ -643,8 +651,8 @@ function getADay(req, res) {
         today = new Date(today - ((new Date()).getTimezoneOffset() - 180) / 60 * 3600000);
         let day = new Date(today.getTime() + 24 * 3600000);
 
-        console.log(today)
-        console.log(day)
+        let tail = Math.floor(24 - ((Date.now() - today.getTime()) / 3600000));
+        today = new Date(today.getTime() - tail * 3600000);
 
         let query = {
             find: {
@@ -665,7 +673,7 @@ function getADay(req, res) {
             .sort(query.sort)
             .lean()
             .then((programmes) => {
-
+                let check = 0;
                 for (let i in  programmes) {
 
                     let p = programmes[i];
@@ -681,11 +689,12 @@ function getADay(req, res) {
                     }
 
                     if (i == (programmes.length - 1)) {
-                        p.deltaStop = 1440;
+                        p.deltaStop = (24+tail)*60;
                     }
 
                     p.last = p.deltaStop - p.deltaStart;
 
+                    check += p.last
                 }
 
                 res.status(200).send(programmes);
@@ -1001,3 +1010,7 @@ function getFavorite(req, res) {
     }
 }
 
+function sendLogs(req, res) {
+    //console.log(req.body);
+    res.send({});
+}
