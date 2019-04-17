@@ -44,6 +44,7 @@
 
                         return !item.name.toLowerCase().indexOf($scope.search.toLowerCase()) ||
                             !item.channelEPGId.toLowerCase().indexOf($scope.search.toLowerCase()) ||
+                            !item.publishing[0].streamName.toLowerCase().indexOf($scope.search.toLowerCase()) ||
                             !item.entryPoint.streamKey.toLowerCase().indexOf($scope.search.toLowerCase())
                     }
                 }
