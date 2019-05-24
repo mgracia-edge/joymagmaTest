@@ -63,9 +63,14 @@
                                 path: "/s/ott/channel"
                             },
                             {
-                                iconURL: "/res/drawable/ic_channel.svg",
+                                iconURL: "/res/drawable/ic_package.svg",
                                 name: "Package",
                                 path: "/s/ott/products"
+                            },
+                            {
+                                iconURL: "/res/drawable/ic_channel.svg",
+                                name: "Categories",
+                                path: "/s/ott/categories"
                             }
                         ]
                     },

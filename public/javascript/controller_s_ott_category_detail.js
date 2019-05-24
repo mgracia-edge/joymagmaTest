@@ -12,102 +12,42 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sOttChannelDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', '$q', '$location', '$mdDialog', controller]);
+        .controller("sCategoriesDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', '$q', '$location', '$mdDialog', controller]);
 
     function controller($scope, $interval, $routeParams, $NxApi, $q, $location, $mdDialog) {
 
         $scope.isNew = $routeParams.id === "new";
-        $scope.channelData = {
+        $scope.categoryData = {
             name: '',
             descriptionShort: '',
-            channelEPGId: '',
             descriptionLong: '',
-            poster: [],
-            notes: '',
             enabled: false
         };
 
-        $scope.uploadImage = uploadImage;
-        $scope.getUrlPoster = getUrlPoster;
-        $scope.updateChannel = updateChannel;
-        $scope.removeChannel = removeChannel;
-        $scope.categories = []
+        $scope.updateCategory = updateCategory;
+        $scope.removeCategory = removeCategory;
 
         function init() {
             if (!$scope.isNew) {
-
                 $NxApi.categories
-                    .read({})
-                    .then((categories) => {
-                        $scope.categories = categories;
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-
-
-                $NxApi.channels
                     .read({_id: $routeParams.id})
-                    .then((channel) => {
-                        $scope.channelData = channel[0];
+                    .then((category) => {
+                        $scope.categoryData = category[0];
                     })
                     .catch((error) => {
-                        $location.path("/s/ott/channel");
-                        $scope.$parent.toast('The channel not exist');
+                        $location.path("/s/ott/categories");
+                        $scope.$parent.toast('The category doesn\'t exist');
 
                     })
             }
 
-        }
-
-        function getUrlPoster(channel) {
-            if (channel && channel.poster && channel.poster.length) {
-                return {'background-image': 'url(' + channel.poster[0].url + ')'}
-            }
-
-            return {'background-image': 'url(/res/drawable/ph_noimage.png)'}
-        }
-
-        function _getImage() {
-            return $q((resolve, reject) => {
-                let file = document.createElement('input');
-                let maxSize = 500; //kb
-                file.type = 'file';
-                file.click();
-
-                file.addEventListener('change', function () {
-
-                    if (file.files[0].size / 1000 > maxSize) {
-                        reject(`The image can not be larger than ${maxSize}kb`)
-                    }
-
-                    let reader = new FileReader();
-
-                    reader.onloadend = function () {
-                        resolve(reader.result)
-                    };
-
-                    reader.readAsDataURL(file.files[0]);
-                })
-            })
-        }
-
-        function uploadImage() {
-            _getImage().then((img) => {
-                $scope.channelData.poster = [{
-                    update: true,
-                    url: img
-                }];
-            }).catch((error) => {
-                $scope.$parent.toast(error);
-            })
         }
 
         function checkForm() {
 
-            let {name, descriptionShort, channelEPGId, descriptionLong, poster} = $scope.channelData;
+            let {name, descriptionShort, descriptionLong} = $scope.categoryData;
 
-            if (name !== '' && descriptionShort !== '' && channelEPGId !== '' && descriptionLong !== '' && poster.length !== 0) {
+            if (name !== '' && descriptionShort !== '' && descriptionLong !== '' ) {
                 return true
             }
 
@@ -116,11 +56,11 @@
             return false
         }
 
-        function removeChannel() {
+        function removeCategory() {
 
             dialog_alert()
                 .then(() => {
-                    $location.path('/s/ott/channel');
+                    $location.path('/s/ott/categories');
                 }).catch((error) => {
                 $scope.$parent.toast(error.message)
             })
@@ -128,8 +68,8 @@
 
         function dialog_alert() {
 
-            let title = 'Remove Channel';
-            let description = 'You are sure to delete the current Channel?';
+            let title = 'Remove Category';
+            let description = 'You are sure you want to delete the current category?';
             let templateUrl = "/res/layout/dialog_alert.html";
             let channelId = $routeParams.id;
 
@@ -165,7 +105,7 @@
 
                     function ok() {
                         $scope.loading = true;
-                        $NxApi.channels
+                        $NxApi.categories
                             .delete({
                                 _id: channelId
                             })
@@ -186,19 +126,19 @@
 
         }
 
-        function updateChannel() {
+        function updateCategory() {
             if (checkForm()) {
 
                 $scope.loading = true;
 
                 if ($scope.isNew) {
 
-                    $NxApi.channels
-                        .create($scope.channelData)
+                    $NxApi.categories
+                        .create($scope.categoryData)
                         .then(() => {
-                            $scope.$parent.toast('The channel was created');
+                            $scope.$parent.toast('The category was created');
                             $scope.loading = false;
-                            $location.path("/s/ott/channel");
+                            $location.path("/s/ott/categories");
 
                         })
                         .catch((error) => {
@@ -208,10 +148,10 @@
                         })
 
                 } else {
-                    $NxApi.channels
-                        .update($scope.channelData)
+                    $NxApi.categories
+                        .update($scope.categoryData)
                         .then(() => {
-                            $scope.$parent.toast('The channel was update');
+                            $scope.$parent.toast('The category was update');
                             $scope.loading = false;
                             if ($scope.channelData.poster) $scope.channelData.poster.update = false;
 

@@ -42,9 +42,9 @@ function _create(req, res) {
             return;
         }
 
-        const {channelEPGId, name, descriptionShort, descriptionLong,category,poster,notes,enabled} = req.body;
+        const {name, descriptionShort, descriptionLong} = req.body;
 
-        db.Channels
+        db.Category
             .findOne({"name": name}, (error, data) => {
                 if (error) {
                     res.status(codes.error.database.DISCONNECTED.httpCode)
@@ -56,21 +56,9 @@ function _create(req, res) {
                     } else {
 
                         let json = {
-                            channelEPGId: channelEPGId,
                             name: name,
                             descriptionShort: descriptionShort,
-                            descriptionLong: descriptionLong,
-                            publishing: {
-                                type: db.Channels.publishingType.HLS,
-                                streamName: api.newStreamKeyCode()
-                            },
-                            enabled:enabled,
-                            notes:notes,
-                            category:category,
-                            entryPoint: {
-                                type: db.Channels.entryPoint.RTMP,
-                                streamKey: api.newStreamKeyCode()
-                            }
+                            descriptionLong: descriptionLong
                         };
 
                         json.updateHistory = [{
@@ -82,30 +70,14 @@ function _create(req, res) {
 
                         if (typeof descriptionShort === 'undefined') delete json.descriptionShort;
                         if (typeof descriptionLong === 'undefined') delete json.descriptionLong;
-                        if (typeof notes === 'undefined') delete json.notes;
-                        if (typeof enabled === 'undefined') delete json.enabled;
 
-                        if(typeof poster !== 'undefined' && poster[0].update && poster[0].update === true){
-                            cloudinary.uploader.upload(poster[0].url, (result) => {
 
-                                let poster = {
-                                    url:result.url,
-                                    type:db.Channels.poster.LANDSCAPE
-                                };
+                        _create();
 
-                                json.poster = [poster];
+                        function _create() {
+                            let category = new db.Category(json);
 
-                                _create();
-                            });
-
-                        }else{
-                            _create()
-                        }
-
-                        function _create(){
-                            let Channels = new db.Channels(json);
-
-                            Channels.save(json, (err) => {
+                            category.save(json, (err) => {
                                 if (err) {
                                     console.log(err)
                                     res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
@@ -143,9 +115,9 @@ function _read(req, res) {
             return;
         }
 
-        let {id,data} = req.body;
+        let {id, data} = req.body;
 
-        let { name, channelEPGId,includeUpdateHistory} = data;
+        let {name, includeUpdateHistory} = data;
 
         let query = {
             find: {},
@@ -165,8 +137,6 @@ function _read(req, res) {
 
             query.find = {productName: Array.isArray(name) ? {$in: name} : name}
 
-        }else if(channelEPGId){
-            query.find = {channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : name}
         }
 
         if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
@@ -175,7 +145,7 @@ function _read(req, res) {
 
         }
 
-        db.Channels
+        db.Category
             .find(query.find, query.projection)
             .sort(query.sort)
             .then((channels) => {
@@ -210,7 +180,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {channelEPGId, name, descriptionShort, descriptionLong,category, poster,notes,enabled} = data;
+        const {name, descriptionShort, descriptionLong} = data;
 
         let query = {
             find: {
@@ -218,13 +188,9 @@ function _update(req, res) {
             },
             update: {
                 $set: {
-                    channelEPGId: channelEPGId,
                     name: name,
-                    enabled: enabled,
                     descriptionShort: descriptionShort,
-                    descriptionLong: descriptionLong,
-                    category: category,
-                    notes:notes
+                    descriptionLong: descriptionLong
                 },
                 $push: {
                     updateHistory: {
@@ -235,35 +201,16 @@ function _update(req, res) {
             }
         };
 
-        if (typeof channelEPGId === 'undefined') delete query.update.$set.channelEPGId;
         if (typeof name === 'undefined') delete query.update.$set.name;
         if (typeof descriptionShort === 'undefined') delete query.update.$set.descriptionShort;
         if (typeof descriptionLong === 'undefined') delete query.update.$set.descriptionLong;
-        if (typeof notes === 'undefined') delete query.update.$set.notes;
-        if (typeof enabled === 'undefined') delete query.update.$set.enabled;
-        if (typeof category === 'undefined') delete query.update.$set.enabled;
 
         query.update.$push.updateHistory.payload = query.update.$set;
 
-        if(typeof poster !== 'undefined' && poster[0].update === true){
-            cloudinary.uploader.upload(poster[0].url, (result) => {
+        _update();
 
-                let poster = {
-                    url:result.url,
-                    type:db.Channels.poster.LANDSCAPE
-                };
-
-                query.update["$set"].poster = [poster];
-
-                _update();
-            });
-
-        }else{
-            _update()
-        }
-
-        function _update(){
-            db.Channels.updateOne(query.find, query.update, (error, products) => {
+        function _update() {
+            db.Category.updateOne(query.find, query.update, (error, products) => {
                 if (error) {
                     res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                         .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
@@ -273,7 +220,6 @@ function _update(req, res) {
 
             });
         }
-
 
 
     } else {
@@ -305,7 +251,7 @@ function _delete(req, res) {
             }
         };
 
-        db.Channels
+        db.Category
             .remove(query.find)
             .then((data) => {
 

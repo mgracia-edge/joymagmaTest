@@ -53,6 +53,10 @@
                             $location.path("/s/ott/channel/new");
                             break;
                         }
+                        case "category": {
+                            $location.path("/s/ott/categories/new");
+                            break;
+                        }
                         default: {
                             $location.path("/s/ott/products/new")
                         }

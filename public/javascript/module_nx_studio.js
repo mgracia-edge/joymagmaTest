@@ -47,6 +47,14 @@
                     templateUrl: '/res/layout/view_s_ott_products_detail.html',
                     controller: 'sOttProductsDetailCtrl'
                 })
+                .when('/s/ott/categories', {
+                    templateUrl: '/res/layout/view_s_ott_categories.html',
+                    controller: 'sCategoriesCtrl'
+                })
+                .when('/s/ott/categories/:id', {
+                    templateUrl: '/res/layout/view_s_ott_category_detail.html',
+                    controller: 'sCategoriesDetailCtrl'
+                })
                 .when('/s/ott/epg_monitor', {
                     templateUrl: '/res/layout/view_s_ott_epg_monitor.html',
                     controller: 'sOttEPGMonitorCtrl'

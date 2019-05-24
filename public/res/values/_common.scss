@@ -86,7 +86,7 @@ a {
 
 md-switch,
 md-select {
-  margin:0
+  margin: 0
 }
 
 textarea,
@@ -161,6 +161,7 @@ md-menu-content {
 .form {
 
   margin: 4px 0;
+
   item {
     flex-direction: column;
     box-sizing: border-box;
@@ -195,6 +196,7 @@ md-menu-content {
     background-size: cover;
     box-shadow: 0 0 7px 0 black;
     @include margin-left(20px);
+
     &:hover {
       cursor: pointer;
       opacity: .7;
@@ -219,6 +221,7 @@ table {
   td {
     padding: 7px 4px 7px 0;
   }
+
   tr:nth-child(2n) {
     background: #eee;
     /* margin: 10px; */
@@ -269,7 +272,7 @@ table {
   max-width: 300px;
   min-height: 200px;
 
-  &--auto-height{
+  &--auto-height {
     min-height: auto;
   }
 
@@ -303,7 +306,40 @@ table {
     }
   }
 
+}
 
 
+.data-box {
+  margin: 5px;
+  display: inline-flex;
+  width: 363px;
+  height: 116px;
+  background: #F8F8F8;
+  padding: 9px;
+  box-sizing: border-box;
+
+
+  @include border-radius;
+  @include box-shadow;
+
+
+  outline: none;
+
+  &:hover {
+    cursor: pointer;
+    opacity: .5;
+  }
+
+
+  h1 {
+    display: inline-flex;
+    margin: 0;
+  }
+
+  p {
+    display: inline-flex;
+    margin: 0;
+    overflow: hidden;
+  }
 }
 

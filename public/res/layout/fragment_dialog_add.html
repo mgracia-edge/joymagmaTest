@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="item" layout="row" ng-click="add('package')">
-                        <md-icon md-svg-src="/res/drawable/ic_channel.svg">
+                        <md-icon md-svg-src="/res/drawable/ic_package.svg">
                         </md-icon>
                         <div layout="column">
                             <label>
@@ -32,6 +32,19 @@
                             </label>
                             <description>
                                 An OTT package is a set of channels grouped by topics and properties.
+                            </description>
+                        </div>
+                    </div>
+                    <br> <!-- todo eliminar esta porquería -->
+                    <div class="item" layout="row" ng-click="add('category')">
+                        <md-icon md-svg-src="/res/drawable/ic_channel.svg">
+                        </md-icon>
+                        <div layout="column">
+                            <label>
+                                Category
+                            </label>
+                            <description>
+                                Usually used to group channels by kind, render carousels, etc.
                             </description>
                         </div>
                     </div>

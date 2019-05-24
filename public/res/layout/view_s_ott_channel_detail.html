@@ -3,7 +3,6 @@
 
     <scroll-view orientation="vertical" class="form" layout="row">
         <div>
-
             <item>
                 <label>Logo</label>
                 <div layout="row">
@@ -30,6 +29,16 @@
                         <label>Name</label>
                         <input type="text" ng-model="channelData.name" aria-label="first name" title="first name"
                                autocomplete="off">
+                    </item>
+
+                    <item>
+                        <label>Category</label>
+                        <md-select ng-model="channelData.category">
+                            <md-option><em>None</em></md-option>
+                            <md-option ng-repeat="category in categories" ng-value="category._id">
+                                {{category.name}}
+                            </md-option>
+                        </md-select>
                     </item>
 
                     <item>

@@ -12,19 +12,20 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sOttChannelCtrl", ['$scope', '$interval', '$NxApi', '$location'
+        .controller("sCategoriesCtrl", ['$scope', '$interval', '$NxApi', '$location'
             , function ($scope, $interval, $NxApi, $location) {
 
                 $scope.search = '';
-                $scope.channels = [];
+                $scope.categories = [];
                 $scope.channelDetails = channelDetails;
                 $scope.customFilter = customFilter;
 
                 function init() {
-                    $NxApi.channels
+
+                    $NxApi.categories
                         .read({})
                         .then((channels) => {
-                            $scope.channels = channels;
+                            $scope.categories = channels;
                         })
                         .catch((error) => {
                             console.log(error);
@@ -32,14 +33,14 @@
                         })
                 }
 
-                function channelDetails(channel) {
-                    $location.path('/s/ott/channel/' + channel._id)
+                function channelDetails(category) {
+                    $location.path('/s/ott/categories/' + category._id)
                 }
 
                 function customFilter() {
                     return function (item) {
 
-                        if ($scope.search === '') return true;
+                        if($scope.search === '') return true;
 
                         return !item.name.toLowerCase().indexOf($scope.search.toLowerCase()) ||
                             !item.channelEPGId.toLowerCase().indexOf($scope.search.toLowerCase()) ||

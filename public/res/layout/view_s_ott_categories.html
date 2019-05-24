@@ -1,0 +1,17 @@
+<div secction layout-fill layout="column">
+    <h1>Categories</h1>
+    <div block layout="row">
+        <search-box layout="row">
+            <input type="search" ng-model="search" flex>
+            <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
+        </search-box>
+    </div>
+    <scroll-view orientation="vertical" flex>
+
+        <div layout="column" class="data-box" ng-repeat="item in categories | filter:customFilter()" ng-click="channelDetails(item)">
+            <h1>{{item.name}}</h1>
+            <p flex>{{item.descriptionShort}}</p>
+        </div>
+
+    </scroll-view>
+</div>

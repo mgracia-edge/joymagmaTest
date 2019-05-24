@@ -1,0 +1,51 @@
+<div secction layout-fill layout="column">
+    <h1>{{isNew ? "New Category" : "Category"}}</h1>
+
+    <scroll-view orientation="vertical" class="form" layout="row">
+        <div layout="row">
+            <div layout="column">
+                <div layout="row">
+
+                    <div layout="column" style="min-width: 300px">
+                        <item>
+                            <label>Name</label>
+                            <input type="text" ng-model="categoryData.name" aria-label="Category Name"
+                                   title="Category Name"
+                                   autocomplete="off">
+                        </item>
+
+                        <item>
+                            <label>Short description</label>
+                            <input type="text" ng-model="categoryData.descriptionShort" aria-label="Short Description"
+                                   title="Short Description"
+                                   autocomplete="off">
+                        </item>
+
+                        <item>
+                            <label>Large description</label>
+                            <textarea ng-model="categoryData.descriptionLong" aria-label="Large Description"
+                                      title="Large Description"
+                                      autocomplete="off" rows="4">
+                            </textarea>
+                        </item>
+                    </div>
+
+                </div>
+
+                <md-button ng-click="updateCategory()" class="md-raised md-primary" layout="row"
+                           layout-align="center center">
+                    <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                          md-diameter="30"></md-progress-circular>
+                    <span ng-show="!loading">Save</span>
+                </md-button>
+
+            </div>
+            <div style="padding:16px">
+                <!--todo unify this using classes-->
+                <md-button ng-hide="isNew" md-no-ink class="md-raised md-primary"
+                           ng-click="removeCategory()">Remove Channel
+                </md-button>
+            </div>
+        </div>
+    </scroll-view>
+</div>

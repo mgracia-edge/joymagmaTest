@@ -325,6 +325,92 @@
                 }
             }
 
+            function categoriesDelegation($http, $q) {
+
+                function create(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/category/create", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve(data);
+
+                            })
+                            .catch(({data}) => {
+                                reject(data.error)
+                            });
+                    });
+                }
+
+                function read(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/category/read", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+
+                                resolve(data.content);
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function update(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/category/update", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch(({data}) => {
+                                reject(data.error)
+                            });
+                    });
+                }
+
+                function remove(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/category/delete", {
+                            id: params._id
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch(({data}) => {
+                                reject(data.error)
+                            });
+                    });
+                }
+
+                return {
+                    create,
+                    read,
+                    update,
+                    delete: remove,
+                }
+            }
+
             function Products($http, $q) {
 
                 function create(params) {
@@ -635,6 +721,7 @@
                 users: Users($http, $q),
                 programmes:Programmes($http, $q),
                 channels: channelsDelegation($http, $q),
+                categories: categoriesDelegation($http, $q),
                 products: Products($http, $q),
                 avProfiles: AvProfiles($http, $q)
             }
