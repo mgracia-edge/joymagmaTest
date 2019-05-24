@@ -83,6 +83,12 @@ exports.resourceList = [
         protected: false
     },
     {
+        path: "get_subscriber_contents",
+        callback: getSubscriberContents,
+        method: "post",
+        protected: false
+    },
+    {
         path: "send_logs",
         callback: sendLogs,
         method: "post",
@@ -630,7 +636,6 @@ function getAWeek(req, res) {
 function getADay(req, res) {
 
 
-
     let db = pdc.db;
 
     if (db) {
@@ -689,7 +694,7 @@ function getADay(req, res) {
                     }
 
                     if (i == (programmes.length - 1)) {
-                        p.deltaStop = (24+tail)*60;
+                        p.deltaStop = (24 + tail) * 60;
                     }
 
                     p.last = p.deltaStop - p.deltaStart;
@@ -841,6 +846,112 @@ function getProductChannels(req, res) {
     }
 }
 
+function getSubscriberContents(req, res) {
+
+    let db = pdc.db;
+
+    let {subscriberId} = req.body;
+
+    if (db) {
+        db.Subscribers.findOne({_id: subscriberId}, (error, subscriber) => {
+
+            let categories = [];
+            let channels = [];
+            let p = [];
+
+            for (let product of subscriber.products) {
+                p.push(getChannelsFor(product))
+            }
+
+            Promise.all(p).then((products) => {
+
+                for (let product of products) {
+                    for (let channelId of product.channels) {
+                        channels[channelId] = 1
+                    }
+                }
+
+                let p = [];
+
+                for (let channelId in channels) {
+                    p.push(getChannel(channelId));
+                }
+
+                Promise.all(p).then((channels) => {
+
+                    for (let channel of channels) {
+
+                        if (categories[channel.category]) {
+                            categories[channel.category].push(channel)
+                        } else {
+                            categories[channel.category] = [channel]
+                        }
+                    }
+
+                    renderResponse(categories)
+
+                });
+
+            })
+
+        });
+    } else {
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    }
+
+
+    function renderResponse(categories) {
+
+        db.Category.find({}, function (error, catData) {
+            let response = [];
+
+            for (let cid in categories) {
+
+                let data = null;
+
+                for (let cat of catData) {
+                    if (cat._id.toString() === cid) {
+                        data = cat;
+                    }
+                }
+
+                response.push({
+                    name: data !== null ? data.name : "",
+                    descriptionShort: data !== null ? data.descriptionShort : "",
+                    categoryId: cid,
+                    channels: categories[cid]
+                })
+            }
+
+            res.status(200).send(response);
+
+        });
+
+
+    }
+
+
+    function getChannelsFor(id) {
+        return new Promise(resolve => {
+            db.Products.findOne({_id: id}, {updateHistory: 0}, function (error, product) {
+                resolve(product)
+            })
+        })
+    }
+
+    function getChannel(id) {
+        return new Promise(resolve => {
+            db.Channels.findOne({_id: id}, {updateHistory: 0}, function (error, channel) {
+                resolve(channel)
+            })
+        })
+    }
+}
+
+
 function getProducts(req, res) {
 
 
@@ -850,7 +961,7 @@ function getProducts(req, res) {
 
         let productId = req.body.id;
 
-        console.log(productId)
+        console.log(req.body)
 
         if (!productId && !Array.isArray(productId)) {
 
@@ -1014,3 +1125,4 @@ function sendLogs(req, res) {
     //console.log(req.body);
     res.send({});
 }
+
