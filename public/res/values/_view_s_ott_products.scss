@@ -11,12 +11,13 @@
   }
 }
 
-
 .package{
 
   &__channels{
-
     display: flex;
+    width: 250px;
+    overflow: hidden;
+    overflow-x: auto;
   }
 
   &__channel{
@@ -26,6 +27,8 @@
     padding: 5px;
     margin-right: 5px;
     border-radius: 8px;
+
+
 
     label{
       display: none;
