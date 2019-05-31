@@ -1,32 +1,19 @@
-<div ng-show="false"  secction layout-fill layout="column">
-    <h1>Config</h1>
-    <div layout="row" layout-align="center center">
-        <h2>{{title}}</h2>
-        <div flex>
-            <div class="config__tabs" >
-                <input type="radio" id="tab1" name="tab-control" >
-                <input type="radio" id="tab2" name="tab-control" checked>
-                <label class="config__tabs__item" for="tab1" role="button" ng-click="selectTab('domains')">
-                    Domains
-                </label>
-                <label class="config__tabs__item" for="tab2" role="button" ng-click="selectTab('avprofiles')">
-                    Av Profile
-                </label>
-            </div>
-        </div>
+<div secction layout-fill layout="column">
+    <h1>OTT Configuration</h1>
+    <div class="form form-acount-settings" layout="column">
+        <item>
+            <label>keep watching warning</label>
+            <input type="number" min="0" ng-model="ottConfigurations.keepWatchingWarning" aria-label="keep"
+                   title="keep">
+        </item>
+
+        <md-button ng-click="save()" class="md-raised md-primary form-acount-settings__save"
+                   layout="row" layout-align="center center">
+            <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                  md-diameter="30"></md-progress-circular>
+            <span ng-show="!loading">Save</span>
+        </md-button>
 
     </div>
-
-    <div layout="column" flex ng-include="templateUrl"></div>
 </div>
 
-<div ng-show="true" secction layout-fill layout="column" layout-align="center center">
-
-
-    <div style="text-align: center">
-        <md-icon md-svg-src="/res/drawable/vc_unavailable.svg" style="height: 110px;width: 110px; margin: 20px">
-        </md-icon>
-        <h1>Action unavailable</h1>
-    </div>
-
-</div>

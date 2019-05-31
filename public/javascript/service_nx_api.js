@@ -708,6 +708,54 @@
                 }
             }
 
+            function OttConfigurations($http, $q) {
+
+                function read(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/ottConfigurations/read", {}, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+
+                                resolve({
+                                    ottConfigurations: data.content
+                                });
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function update(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/ottConfigurations/update", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                return {
+                    read,
+                    update
+                }
+            }
+
             init();
 
             return {
@@ -723,7 +771,8 @@
                 channels: channelsDelegation($http, $q),
                 categories: categoriesDelegation($http, $q),
                 products: Products($http, $q),
-                avProfiles: AvProfiles($http, $q)
+                avProfiles: AvProfiles($http, $q),
+                ottConfigurations: OttConfigurations($http, $q)
             }
         }]);
 
