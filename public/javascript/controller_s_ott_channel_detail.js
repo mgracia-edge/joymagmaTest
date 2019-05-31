@@ -31,20 +31,19 @@
         $scope.getUrlPoster = getUrlPoster;
         $scope.updateChannel = updateChannel;
         $scope.removeChannel = removeChannel;
-        $scope.categories = []
+        $scope.categories = [];
 
         function init() {
+            $NxApi.categories
+                .read({})
+                .then((categories) => {
+                    $scope.categories = categories;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
             if (!$scope.isNew) {
-
-                $NxApi.categories
-                    .read({})
-                    .then((categories) => {
-                        $scope.categories = categories;
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-
 
                 $NxApi.channels
                     .read({_id: $routeParams.id})
