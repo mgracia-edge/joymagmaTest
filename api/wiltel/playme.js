@@ -93,6 +93,12 @@ exports.resourceList = [
         callback: sendLogs,
         method: "post",
         protected: false
+    },
+    {
+        path: "get_ott_configurations",
+        callback: getOttConfigurations,
+        method: "post",
+        protected: false
     }
 ];
 
@@ -951,6 +957,39 @@ function getSubscriberContents(req, res) {
     }
 }
 
+function getOttConfigurations(req, res) {
+
+
+    let db = pdc.db;
+
+    if (db) {
+
+        let query = {
+            find: {}
+        };
+
+        db.OttConfigurations
+            .findOne(query.find)
+            .then((ottConfigurations) => {
+                res.status(200).send(ottConfigurations);
+            }).catch((error) => {
+
+            res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        })
+
+    } else {
+
+
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+
+    }
+}
 
 function getProducts(req, res) {
 

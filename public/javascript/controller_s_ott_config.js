@@ -21,9 +21,7 @@
             function save() {
                 $scope.loading = true;
 
-                $NxApi.ottConfigurations.update({
-                    ...$scope.keepWatchingWarning
-                }).then(data => {
+                $NxApi.ottConfigurations.update($scope.ottConfigurations).then(data => {
 
                     $scope.loading = false;
                     $scope.$parent.toast('The OTT Configurations was update');
@@ -37,8 +35,8 @@
 
             function init() {
 
-                $NxApi.ottConfigurations.read().then(data => {
-                    console.log(data)
+                $NxApi.ottConfigurations.read().then(({ottConfigurations}) => {
+                    $scope.ottConfigurations = ottConfigurations;
                 })
 
             }

@@ -34,10 +34,10 @@ function _read(req, res) {
             find: {}
         };
 
-        db.ottConfigurations
+        db.OttConfigurations
             .findOne(query.find)
             .then((ottConfigurations) => {
-                console.log(ottConfigurations)
+
                 res.status(200).send(new api.Success(ottConfigurations));
             }).catch((error) => {
 
@@ -80,8 +80,7 @@ function _update(req, res) {
             }
         };
 
-
-        db.ottConfigurations.updateOne(query.find, query.update, (error, ottConfigurations) => {
+        db.OttConfigurations.updateOne(query.find, query.update, (error, ottConfigurations) => {
             if (error) {
                 res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                     .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
