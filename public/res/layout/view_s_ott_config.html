@@ -3,8 +3,12 @@
     <div class="form form-acount-settings" layout="column">
         <item>
             <label>keep watching warning</label>
-            <input type="number" min="0" ng-model="ottConfigurations.keepWatchingWarning" aria-label="keep"
-                   title="keep">
+            <div>
+                <input type="number" min="0" ng-model="ottConfigurations.keepWatchingWarning" aria-label="keep"
+                       title="keep" style="max-width: 50px;text-align:center">
+                <span>minutes</span>
+            </div>
+
         </item>
 
         <md-button ng-click="save()" class="md-raised md-primary form-acount-settings__save"
