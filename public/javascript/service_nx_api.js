@@ -602,17 +602,20 @@
                             .then(({data}) => {
 
                                 if(data.error){
-                                    resolve({
+                                    reject({
                                         code:data.error,
                                         message:data.error_dsc
                                     });
                                 }else{
-                                    resolve(data);
+                                    resolve({message:"Correct Password"});
                                 }
 
                             })
                             .catch(({data}) => {
-                                reject(data.error)
+                                reject({
+                                    code:data.error,
+                                    message:data.error_dsc
+                                })
                             });
                     });
                 }

@@ -69,7 +69,8 @@
                         <span ng-show="!loading">Check Password</span>
                     </md-button>
                     <item ng-show="menssage !== ''"
-                          style="max-width: 300px;font-family: monospace;background: lightgray;padding: 10px;">
+                          style="max-width: 300px;font-family: monospace;background: lightgray;padding: 10px;"
+                            ng-style="backgroundAlert">
                         <div>{{menssage.code}} {{menssage.message}}</div>
                     </item>
 

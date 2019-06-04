@@ -13,11 +13,12 @@
 (function () {
     angular.module('NxStudio')
         .controller("sOttSubscribersDetailCtrl",
-            ['$scope', '$NxApi', '$mdToast', '$location', '$routeParams',
-                function ($scope, $NxApi, $mdToast, $location, $routeParams) {
+            ['$scope', '$NxApi', '$mdToast', '$location', '$routeParams','$timeout',
+                function ($scope, $NxApi, $mdToast, $location, $routeParams,$timeout) {
 
                     $scope.menssage = '';
                     $scope.loading = false;
+                    $scope.promise = null;
 
                     $scope.checkPassword = checkPassword;
 
@@ -53,8 +54,19 @@
                             password: $scope.password
                         }).then((data) => {
                             $scope.menssage = data;
+                            $scope.backgroundAlert = {
+                                background: '#c9ffc9'
+                            };
+                            $timeout.cancel($scope.promise);
+                            $scope.promise = $timeout(()=>$scope.menssage = '',3000);
+
                         }).catch((error) => {
                             $scope.menssage = error;
+                            $timeout.cancel($scope.promise);
+                            $scope.promise = $timeout(()=>$scope.menssage = '',3000);
+                            $scope.backgroundAlert = {
+                                background: 'tomato'
+                            };
                         }).finally(()=>{
                             $scope.loading = false;
                         })
