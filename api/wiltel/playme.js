@@ -861,44 +861,52 @@ function getSubscriberContents(req, res) {
     if (db) {
         db.Subscribers.findOne({_id: subscriberId}, (error, subscriber) => {
 
-            let categories = [];
-            let channels = [];
-            let p = [];
-
-            for (let product of subscriber.products) {
-                p.push(getChannelsFor(product))
-            }
-
-            Promise.all(p).then((products) => {
-
-                for (let product of products) {
-                    for (let channelId of product.channels) {
-                        channels[channelId] = 1
-                    }
-                }
-
+            if(subscriber){
+                let categories = [];
+                let channels = [];
                 let p = [];
 
-                for (let channelId in channels) {
-                    p.push(getChannel(channelId));
+                for (let product of subscriber.products) {
+                    p.push(getChannelsFor(product))
                 }
 
-                Promise.all(p).then((channels) => {
+                Promise.all(p).then((products) => {
 
-                    for (let channel of channels) {
-
-                        if (categories[channel.category]) {
-                            categories[channel.category].push(channel)
-                        } else {
-                            categories[channel.category] = [channel]
+                    for (let product of products) {
+                        for (let channelId of product.channels) {
+                            channels[channelId] = 1
                         }
                     }
 
-                    renderResponse(categories)
+                    let p = [];
 
+                    for (let channelId in channels) {
+                        p.push(getChannel(channelId));
+                    }
+
+                    Promise.all(p).then((channels) => {
+
+                        for (let channel of channels) {
+
+                            if (categories[channel.category]) {
+                                categories[channel.category].push(channel)
+                            } else {
+                                categories[channel.category] = [channel]
+                            }
+                        }
+
+                        renderResponse(categories)
+
+                    });
+
+                })
+            }else{
+                res.status(500).send({
+                    error: 0x0010,
+                    error_dsc: "Error en la base de datos"
                 });
+            }
 
-            })
 
         });
     } else {
