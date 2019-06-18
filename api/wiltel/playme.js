@@ -1169,7 +1169,7 @@ function getFavorite(req, res) {
 }
 
 function sendLogs(req, res) {
-    //console.log(req.body);
+    console.log(req.body);
     res.send({});
 }
 
