@@ -311,7 +311,9 @@ function checkSubscriberCredentials(req, res) {
 
             db.Subscribers.findOne({email: email}, function (error, storedSubscriber) {
 
-                if (error) {
+                if (storedSubscriber && storedSubscriber.password && storedSubscriber.password === password) {
+                    res.status(200).send(new api.Success(storedSubscriber));
+                } else if (error) {
 
                     res.status(C.error.database.ERROR.httpCode).send(new
                     api.Error(C.error.database.ERROR));
@@ -861,7 +863,7 @@ function getSubscriberContents(req, res) {
     if (db) {
         db.Subscribers.findOne({_id: subscriberId}, (error, subscriber) => {
 
-            if(subscriber){
+            if (subscriber) {
                 let categories = [];
                 let channels = [];
                 let p = [];
@@ -900,7 +902,7 @@ function getSubscriberContents(req, res) {
                     });
 
                 })
-            }else{
+            } else {
                 res.status(500).send({
                     error: 0x0010,
                     error_dsc: "Error en la base de datos"
