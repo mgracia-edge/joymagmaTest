@@ -11,6 +11,16 @@
 
         </item>
 
+        <item>
+            <label>Screens Limit</label>
+            <div>
+                <input type="number" min="0" ng-model="ottConfigurations.screens" aria-label="keep"
+                       title="keep" style="max-width: 50px;text-align:center">
+                <span>screens</span>
+            </div>
+
+        </item>
+
         <md-button ng-click="save()" class="md-raised md-primary form-acount-settings__save"
                    layout="row" layout-align="center center">
             <md-progress-circular ng-show="loading" class="md-primary md-hue-3"

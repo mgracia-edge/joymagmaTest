@@ -67,7 +67,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {keepWatchingWarning} = data;
+        const {keepWatchingWarning, screens} = data;
 
         let query = {
             find: {
@@ -75,7 +75,8 @@ function _update(req, res) {
             },
             update: {
                 $set: {
-                    keepWatchingWarning
+                    keepWatchingWarning,
+                    screens
                 }
             }
         };

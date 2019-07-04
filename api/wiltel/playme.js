@@ -301,6 +301,7 @@ function renewWiltelToken() {
 renewWiltelToken();
 
 function checkSubscriberCredentials(req, res) {
+
     const {email, password} = req.body;
 
     if (email && password) {
@@ -310,6 +311,8 @@ function checkSubscriberCredentials(req, res) {
         if (db) {
 
             db.Subscribers.findOne({email: email}, function (error, storedSubscriber) {
+
+                console.log(storedSubscriber , storedSubscriber.password , storedSubscriber.password === password);
 
                 if (storedSubscriber && storedSubscriber.password && storedSubscriber.password === password) {
                     res.status(200).send(new api.Success(storedSubscriber));
