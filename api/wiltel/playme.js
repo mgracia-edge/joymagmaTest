@@ -318,8 +318,6 @@ function checkSubscriberCredentials(req, res) {
 
             db.Subscribers.findOne({email: email}, function (error, storedSubscriber) {
 
-                console.log(storedSubscriber , storedSubscriber.password , storedSubscriber.password === password);
-
                 if (storedSubscriber && storedSubscriber.password && storedSubscriber.password === password) {
                     res.status(200).send(new api.Success(storedSubscriber));
                 } else if (error) {
