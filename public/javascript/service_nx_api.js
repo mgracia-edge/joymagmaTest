@@ -455,10 +455,25 @@
                     });
                 }
 
+                function getPackagerCondition(serverIp) {
+                    return $q((resolve, reject) => {
+                        $http.post(`/api/1.0/privateCloud/packager/get`, {ip:serverIp}, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        }).then(({data}) => {
+                            resolve(data);
+                        }).catch(({data}) => {
+                            reject(data.error)
+                        });
+                    });
+                }
+
                 return {
                     getConfig,
                     getEntrypointCondition,
-                    getTranscoderCondition
+                    getTranscoderCondition,
+                    getPackagerCondition
                 }
             }
 

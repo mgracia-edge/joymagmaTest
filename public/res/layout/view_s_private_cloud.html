@@ -6,12 +6,13 @@
             <h3>Entrypoints</h3>
             <div class="server-holder" ng-repeat="server in privateCloudConfig.entrypoint" layout="column"
                  layout-align="start, start">
-                <div layout="column">
+                <div layout="column" ng-click="openServer(server)" class="server-box">
                     <label>
                         {{server.name}}
                     </label>
                     <img src="/res/drawable/vc_server_ok.svg">
                     <label class="ip">{{server.ip}}</label>
+                    <md-progress-linear md-mode="indeterminate" ng-show="server.loading"></md-progress-linear>
                 </div>
                 <div class="stats-item" ng-repeat="item in entryPointItems(server)">
                     <label class="name">{{item.label}}</label>
@@ -23,12 +24,13 @@
             <h3>Transcoders</h3>
             <div class="server-holder" ng-repeat="server in privateCloudConfig.transcoder" layout="column"
                  layout-align="start, start">
-                <div layout="column">
+                <div layout="column" ng-click="openServer(server)" class="server-box">
                     <label>
                         {{server.name}}
                     </label>
                     <img src="/res/drawable/vc_server_ok.svg">
                     <label class="ip">{{server.ip}}</label>
+                    <md-progress-linear md-mode="indeterminate" ng-show="server.loading"></md-progress-linear>
                 </div>
                 <div class="stats-item" ng-repeat="item in transcoderItems(server)">
                     <label class="name">{{item.label}}</label>
@@ -40,24 +42,24 @@
             <h3>Packagers</h3>
             <div class="server-holder" ng-repeat="server in privateCloudConfig.packager" layout="column"
                  layout-align="start, start">
-                <div layout="column">
+                <div layout="column" ng-click="openServer(server)" class="server-box">
                     <label>
                         {{server.name}}
                     </label>
                     <img src="/res/drawable/vc_server_ok.svg">
                     <label class="ip">{{server.ip}}</label>
                 </div>
-            </div>
-            <div class="stats-item" ng-repeat="item in packagerItems(server)">
-                <label class="name">{{item.label}}</label>
-                <label class="data">{{item.data}}</label>
+                <div class="stats-item" ng-repeat="item in packagerItems(server)">
+                    <label class="name">{{item.label}}</label>
+                    <label class="data">{{item.data}}</label>
+                </div>
             </div>
         </div>
         <div flex>
             <h3>Edge Servers</h3>
             <div class="server-holder" ng-repeat="server in privateCloudConfig.edgeserver" layout="column"
                  layout-align="start, start">
-                <div layout="column">
+                <div layout="column" ng-click="openServer(server)" class="server-box">
                     <label>
                         {{server.name}}
                     </label>

@@ -18,6 +18,11 @@ exports.resourceList = [
         callback: transcoder_get,
         method: "post",
         protected: true
+    }, {
+        path: "packager/get",
+        callback: packager_get,
+        method: "post",
+        protected: true
     }
 ];
 
@@ -36,6 +41,12 @@ function entrypoint_get(req, res) {
 
 function transcoder_get(req, res) {
     request.get(ROOT + `transcoder/get/${req.body.ip}`, function (error, query, response) {
+        res.send(JSON.parse(response))
+    })
+}
+
+function packager_get(req, res) {
+    request.get(ROOT + `packager/get/${req.body.ip}`, function (error, query, response) {
         res.send(JSON.parse(response))
     })
 }

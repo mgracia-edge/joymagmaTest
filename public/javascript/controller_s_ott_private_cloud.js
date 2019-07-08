@@ -22,6 +22,7 @@
                 $scope.transcoderItems = transcoderItems;
                 $scope.edgeserverItems = edgeserverItems;
                 $scope.packagerItems = packagerItems;
+                $scope.openServer = openServer;
 
                 function init() {
 
@@ -43,9 +44,14 @@
                     if (typeof server.resumeItems === "undefined") {
                         server.resumeItems = [];
 
+                        server.loading = true;
+
                         $NxApi.privateCloud
                             .getEntrypointCondition(server.ip)
                             .then((privateCloudConfig) => {
+
+
+                                server.loading = false;
                                 server.resumeItems = [
                                     {
                                         label: "Up Time",
@@ -90,12 +96,14 @@
 
                     if (typeof server.resumeItems === "undefined") {
                         server.resumeItems = [];
-
+                        server.loading = true;
 
 
                         $NxApi.privateCloud
                             .getTranscoderCondition(server.ip)
                             .then((privateCloudConfig) => {
+
+                                server.loading = false;
 
                                 let gpu_enc = 0,
                                     gpu_dec = 0,
@@ -103,7 +111,7 @@
 
                                 for (let task of privateCloudConfig.transcoderTasks) {
 
-                                    if(task.gpu){
+                                    if (task.gpu) {
                                         gpu_enc += task.gpu.enc;
                                         gpu_dec += task.gpu.dec;
                                         gpu_mem += task.gpu.fb;
@@ -134,7 +142,7 @@
                                     },
                                     {
                                         label: "GPU Memory",
-                                        data: Math.round(100 * gpu_mem ) / 100 + " MB"
+                                        data: Math.round(100 * gpu_mem) / 100 + " MB"
                                     },
                                     {
                                         label: "I/O Waits",
@@ -165,8 +173,65 @@
                     return [];
                 }
 
-                function packagerItems() {
-                    return [];
+                function packagerItems(server) {
+
+
+                    if (!server) return [];
+
+                    if (typeof server.resumeItems === "undefined") {
+                        server.resumeItems = [];
+
+                        server.loading = true;
+
+                        $NxApi.privateCloud
+                            .getPackagerCondition(server.ip)
+                            .then((privateCloudConfig) => {
+
+                                server.loading = false;
+                                server.resumeItems = [
+                                    {
+                                        label: "Up Time",
+                                        data: formatUptime(privateCloudConfig.serverStats.uptime.uptime)
+                                    },
+                                    {
+                                        label: "CPU Load",
+                                        data: Math.round(100 * privateCloudConfig.serverStats.ioStats.cpuLoad.total) / 100 + " %"
+                                    },
+                                    {
+                                        label: "I/O Waits",
+                                        data: Math.round(100 * privateCloudConfig.serverStats.ioStats.cpuLoad.iowait) / 100 + " %"
+                                    },
+                                    {
+                                        label: "Disk Reading",
+                                        data: Math.round(100 * privateCloudConfig.serverStats.ioStats.diskStats.totals.readRatio) / 100 + " kB/s"
+                                    },
+                                    {
+                                        label: "Disk Writing",
+                                        data: Math.round(100 * privateCloudConfig.serverStats.ioStats.diskStats.totals.writeRatio) / 100 + " kB/s"
+                                    },
+                                    {
+                                        label: "Nginx CPU Load",
+                                        data: Math.round(100 * privateCloudConfig.packagerStats.nginx.cpu) / 100 + " %"
+                                    },
+                                    {
+                                        label: "Nginx Mem",
+                                        data: Math.round(100 * privateCloudConfig.packagerStats.nginx.mem / 1024) / 100 + " kB/s"
+                                    }
+
+                                ];
+                            })
+                            .catch((error) => {
+                                console.log(error);
+
+                            })
+
+                    }
+
+                    return server.resumeItems;
+                }
+
+                function openServer(server) {
+                    console.log(server)
                 }
 
                 $NxApi.setAfterLogin(init);
