@@ -12,8 +12,8 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sPrivateCloudCtrl", ['$scope', '$interval', '$NxApi', '$location'
-            , function ($scope, $interval, $NxApi, $location) {
+        .controller("sPrivateCloudCtrl", ['$scope', '$interval', '$NxApi', '$location', '$routeParams'
+            , function ($scope, $interval, $NxApi, $location, $routeParams) {
 
                 $scope.loading = true;
                 $scope.privateCloudConfig = {};
@@ -35,6 +35,8 @@
                             console.log(error);
 
                         })
+
+
                 }
 
                 function entryPointItems(server) {
@@ -231,7 +233,150 @@
                 }
 
                 function openServer(server) {
-                    console.log(server)
+                    $location.path(`/s/infra/private-cloud/${server.role}/${server.ip}`)
+                }
+
+                $NxApi.setAfterLogin(init);
+
+            }]);
+
+    angular.module('NxStudio')
+        .controller("sPrivateCloudDetailCtrl", ['$scope', '$interval', '$NxApi', '$location', '$routeParams'
+            , function ($scope, $interval, $NxApi, $location, $routeParams) {
+
+                $scope.role = $routeParams.role;
+                $scope.ip = $routeParams.ip;
+                $scope.privateCloudConfig = null;
+                $scope.templateURL = null;
+                $scope.server = null;
+                $scope.channels = [];
+
+
+                $scope.transcoderItems = transcoderItems;
+                $scope.getChannel = getChannel;
+                $scope.getTranscoderName = getTranscoderName;
+
+                function init() {
+
+                    $NxApi.channels.read({}).then(channels => {
+                        $scope.channels = channels;
+                    });
+
+                    $NxApi.privateCloud
+                        .getConfig()
+                        .then((privateCloudConfig) => {
+
+                            $scope.privateCloudConfig = privateCloudConfig;
+
+                            for (let server of $scope.privateCloudConfig[$scope.role]) {
+                                if (server.ip === $scope.ip) {
+                                    $scope.server = server;
+                                }
+                            }
+
+                            switch ($routeParams.role) {
+                                case "entrypoint": {
+                                    $NxApi.privateCloud.getEntrypointCondition($routeParams.ip).then(initEntrypoint);
+                                    break;
+                                }
+
+                                case "transcoder": {
+                                    $NxApi.privateCloud.getTranscoderCondition($routeParams.ip).then(initTranscoder);
+                                    break;
+                                }
+
+                                case "packager": {
+                                    $NxApi.privateCloud.getPackagerCondition($routeParams.ip).then(initPackager);
+                                    break;
+                                }
+
+                                case "edgeserver": {
+                                    $NxApi.privateCloud.getEdgeserverCondition($routeParams.ip).then(initEdgeserver);
+                                    break;
+                                }
+                            }
+
+                        })
+                        .catch((error) => {
+
+                        })
+
+
+                }
+
+                function getChannel(hash) {
+                    for (let channel of $scope.channels) {
+
+                        if (channel.entryPoint.streamKey === hash || channel.publishing[0].streamName === hash) {
+                            return channel;
+                        }
+                    }
+
+                    return null
+                }
+
+                function getTranscoderName(ip) {
+                    for (let t of $scope.privateCloudConfig.transcoder) {
+                        console.log(t.ip, ip);
+                        if (t.ip === ip || t.ip2 === ip)
+                            return t.name;
+                    }
+
+                    return "-";
+                }
+
+                function transcoderItems() {
+                    if ($scope.server && $scope.server.resumeItems) {
+                        return $scope.server.resumeItems;
+                    } else {
+                        return [];
+                    }
+                }
+
+                function initEntrypoint(serverCondition) {
+                    $scope.templateURL = "/res/layout/view_s_private_cloud_entrypoint.html";
+
+                    $scope.serverCondition = serverCondition;
+
+                    $scope.server.resumeItems = [
+                        {
+                            label: "Up Time",
+                            data: formatUptime(serverCondition.serverStats.uptime.uptime)
+                        },
+                        {
+                            label: "Incoming Feeds",
+                            data: serverCondition.entryPointTasks.length + " channels"
+                        },
+                        {
+                            label: "CPU Load",
+                            data: Math.round(100 * serverCondition.serverStats.ioStats.cpuLoad.total) / 100 + " %"
+                        },
+                        {
+                            label: "I/O Waits",
+                            data: Math.round(100 * serverCondition.serverStats.ioStats.cpuLoad.iowait) / 100 + " %"
+                        },
+                        {
+                            label: "Disk Reading",
+                            data: Math.round(100 * serverCondition.serverStats.ioStats.diskStats.totals.readRatio) / 100 + " kB/s"
+                        },
+                        {
+                            label: "Disk Writing",
+                            data: Math.round(100 * serverCondition.serverStats.ioStats.diskStats.totals.writeRatio) / 100 + " kB/s"
+                        }
+                    ];
+
+                }
+
+                function initTranscoder(serverCondition) {
+
+                }
+
+                function initPackager(serverCondition) {
+
+                }
+
+                function initEdgeserver(serverCondition) {
+
                 }
 
                 $NxApi.setAfterLogin(init);

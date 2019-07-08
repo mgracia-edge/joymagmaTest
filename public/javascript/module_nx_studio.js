@@ -83,9 +83,9 @@
                     templateUrl: '/res/layout/view_s_private_cloud.html',
                     controller: 'sPrivateCloudCtrl'
                 })
-                .when('/s/infra/private-cloud/server/:serverId', {
+                .when('/s/infra/private-cloud/:role/:ip', {
                     templateUrl: '/res/layout/view_s_private_cloud_server.html',
-                    controller: 'sPrivateCloudCtrl'
+                    controller: 'sPrivateCloudDetailCtrl'
                 })
                 .when('/s/infra/private-cloud/channel/:channelId', {
                     templateUrl: '/res/layout/view_s_private_cloud_channel.html',

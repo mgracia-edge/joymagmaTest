@@ -1,0 +1,68 @@
+<div style="display: inline-block">
+    <label style="display: block; margin-bottom: 12px">
+        {{server.name}}
+    </label>
+    <img src="/res/drawable/vc_server_ok.svg">
+</div>
+
+<h3 style="margin-bottom: 12px">Server Status:</h3>
+<div class="row" layout="row">
+    <div class="stats-item" ng-repeat="item in transcoderItems()">
+        <label class="name">{{item.label}}</label>
+        <label class="data">{{item.data}}</label>
+    </div>
+</div>
+<h3 style="margin-bottom: 12px">Current Tasks:</h3>
+<table class="table-server-tasks">
+    <thead>
+        <tr>
+            <th>PID</th>
+            <th>CPU</th>
+            <th>In Steam</th>
+            <th>Out Stream</th>
+            <th>Target TX</th>
+            <th>Target App</th>
+            <th>Channel</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="font-size: 13px"
+            ng-repeat="task in serverCondition.entryPointTasks" class="table-users__user">
+            <td>
+                {{task.pid}}
+            </td>
+            <td>
+                {{task.cpu}} %
+            </td>
+            <td>
+                <md-button class="md-primary" ng-click="restart(task)">
+                    {{task.inStream}}
+                </md-button>
+            </td>
+            <td>
+                <md-button class="md-primary" ng-click="restart(task)">
+                    {{task.outStream}}
+                </md-button>
+
+            </td>
+            <td>
+                <md-button class="md-primary" ng-click="restart(task)">
+                    {{getTranscoderName(task.targetServer)}}({{task.targetServer}})
+                </md-button>
+            </td>
+            <td>
+                {{task.targetApp}}
+            </td>
+            <td>
+                {{getChannel(task.inStream)?getChannel(task.inStream).name:"loading..."}}
+            </td>
+            <td>
+                <md-button class="md-warn" ng-click="restart(task)">
+                    restart
+                </md-button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+

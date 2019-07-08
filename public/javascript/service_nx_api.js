@@ -259,7 +259,6 @@
                 }
 
                 function read(params) {
-
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/channels/read", {
                             id: params._id,
@@ -429,7 +428,7 @@
 
                 function getEntrypointCondition(serverIp) {
                     return $q((resolve, reject) => {
-                        $http.post(`/api/1.0/privateCloud/entrypoint/get`, {ip:serverIp}, {
+                        $http.post(`/api/1.0/privateCloud/entrypoint/get`, {ip: serverIp}, {
                             headers: {
                                 "Authorization": "Bearer " + session.token
                             }
@@ -443,7 +442,7 @@
 
                 function getTranscoderCondition(serverIp) {
                     return $q((resolve, reject) => {
-                        $http.post(`/api/1.0/privateCloud/transcoder/get`, {ip:serverIp}, {
+                        $http.post(`/api/1.0/privateCloud/transcoder/get`, {ip: serverIp}, {
                             headers: {
                                 "Authorization": "Bearer " + session.token
                             }
@@ -457,7 +456,7 @@
 
                 function getPackagerCondition(serverIp) {
                     return $q((resolve, reject) => {
-                        $http.post(`/api/1.0/privateCloud/packager/get`, {ip:serverIp}, {
+                        $http.post(`/api/1.0/privateCloud/packager/get`, {ip: serverIp}, {
                             headers: {
                                 "Authorization": "Bearer " + session.token
                             }
