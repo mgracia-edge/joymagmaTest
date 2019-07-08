@@ -50,7 +50,7 @@
                             {
                                 iconURL: "/res/drawable/ic_playlist.svg",
                                 name: "Private Cloud",
-                                path: "/s/n/a"
+                                path: "/s/infra/private-cloud"
                             }
                         ],
                     },

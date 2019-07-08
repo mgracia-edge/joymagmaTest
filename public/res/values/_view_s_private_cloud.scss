@@ -1,0 +1,53 @@
+.private-cloud-resume {
+
+  h1 {
+    margin-bottom: 0;
+  }
+
+  h3 {
+    margin: 7px 0 0 0;
+  }
+
+  .server-holder {
+    padding: 8px;
+
+    label {
+      font-size: 15px;
+      padding: 2px;
+      font-weight: 900;
+      color: #6b6b6b;
+
+      &.ip {
+        text-align: right;
+        font-size: 12px;
+        padding-right: 8px;
+      }
+    }
+
+    .stats-item {
+      label {
+
+        display: block;
+        margin: 0;
+
+        &.name {
+          font-size: 12px;
+          font-weight: 800;
+          color: #41506e;
+          line-height: 0;
+          padding: 4px 0px;
+        }
+
+        &.data {
+          font-size: 16px;
+          padding-left: 12px;
+          font-weight: 300;
+          margin-bottom: 4px;
+          color: black;
+        }
+
+      }
+    }
+
+  }
+}

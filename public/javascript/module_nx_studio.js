@@ -79,6 +79,18 @@
                     templateUrl: '/res/layout/view_s_account_settings_user.html',
                     controller: 'sAccountSettingsUserCtrl'
                 })
+                .when('/s/infra/private-cloud', {
+                    templateUrl: '/res/layout/view_s_private_cloud.html',
+                    controller: 'sPrivateCloudCtrl'
+                })
+                .when('/s/infra/private-cloud/server/:serverId', {
+                    templateUrl: '/res/layout/view_s_private_cloud_server.html',
+                    controller: 'sPrivateCloudCtrl'
+                })
+                .when('/s/infra/private-cloud/channel/:channelId', {
+                    templateUrl: '/res/layout/view_s_private_cloud_channel.html',
+                    controller: 'sPrivateCloudCtrl'
+                })
                 .when('/s/n/a', {
                     templateUrl: '/res/layout/view_n_a.html',
                     controller: 'sNACtrl'

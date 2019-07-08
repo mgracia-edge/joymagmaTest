@@ -1,0 +1,80 @@
+<div secction class="private-cloud-resume" layout-fill layout="column" style="overflow: scroll">
+
+    <h1>Private Cloud</h1>
+    <div layout="row" style="min-width: 850px">
+        <div flex>
+            <h3>Entrypoints</h3>
+            <div class="server-holder" ng-repeat="server in privateCloudConfig.entrypoint" layout="column"
+                 layout-align="start, start">
+                <div layout="column">
+                    <label>
+                        {{server.name}}
+                    </label>
+                    <img src="/res/drawable/vc_server_ok.svg">
+                    <label class="ip">{{server.ip}}</label>
+                </div>
+                <div class="stats-item" ng-repeat="item in entryPointItems(server)">
+                    <label class="name">{{item.label}}</label>
+                    <label class="data">{{item.data}}</label>
+                </div>
+            </div>
+        </div>
+        <div flex>
+            <h3>Transcoders</h3>
+            <div class="server-holder" ng-repeat="server in privateCloudConfig.transcoder" layout="column"
+                 layout-align="start, start">
+                <div layout="column">
+                    <label>
+                        {{server.name}}
+                    </label>
+                    <img src="/res/drawable/vc_server_ok.svg">
+                    <label class="ip">{{server.ip}}</label>
+                </div>
+                <div class="stats-item" ng-repeat="item in transcoderItems(server)">
+                    <label class="name">{{item.label}}</label>
+                    <label class="data">{{item.data}}</label>
+                </div>
+            </div>
+        </div>
+        <div flex>
+            <h3>Packagers</h3>
+            <div class="server-holder" ng-repeat="server in privateCloudConfig.packager" layout="column"
+                 layout-align="start, start">
+                <div layout="column">
+                    <label>
+                        {{server.name}}
+                    </label>
+                    <img src="/res/drawable/vc_server_ok.svg">
+                    <label class="ip">{{server.ip}}</label>
+                </div>
+            </div>
+            <div class="stats-item" ng-repeat="item in packagerItems(server)">
+                <label class="name">{{item.label}}</label>
+                <label class="data">{{item.data}}</label>
+            </div>
+        </div>
+        <div flex>
+            <h3>Edge Servers</h3>
+            <div class="server-holder" ng-repeat="server in privateCloudConfig.edgeserver" layout="column"
+                 layout-align="start, start">
+                <div layout="column">
+                    <label>
+                        {{server.name}}
+                    </label>
+                    <img src="/res/drawable/vc_server_ok.svg">
+                    <label class="ip">{{server.ip}}</label>
+                </div>
+            </div>
+            <div class="stats-item" ng-repeat="item in edgeserverItems(server)">
+                <label class="name">{{item.label}}</label>
+                <label class="data">{{item.data}}</label>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+

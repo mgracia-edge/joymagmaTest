@@ -99,6 +99,12 @@ exports.resourceList = [
         callback: getOttConfigurations,
         method: "post",
         protected: false
+    },
+    {
+        path: "check_asset_access",
+        callback: check_asset_access,
+        method: "post",
+        protected: false
     }
 ];
 
@@ -1062,6 +1068,10 @@ function getProducts(req, res) {
         });
 
     }
+}
+
+function check_asset_access(req, res){
+
 }
 
 function setFavorite(req, res) {

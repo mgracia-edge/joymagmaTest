@@ -102,7 +102,7 @@
                     $http.post(getURI(LOGIN_AS_USER_PATH), {
                         "email": email,
                         "password": password
-                    },{
+                    }, {
                         headers: {
                             "Authorization": "Bearer " + session.token
                         }
@@ -137,9 +137,9 @@
             }
 
             function setAfterLogin(callback) {
-                if(session.user === null){
+                if (session.user === null) {
                     afterLoginCallback = callback;
-                }else {
+                } else {
                     callback()
                 }
 
@@ -169,7 +169,7 @@
                 })
             }
 
-            function Account($http, $q){
+            function Account($http, $q) {
 
                 function update(params) {
 
@@ -198,7 +198,7 @@
 
             function Programmes($http, $q) {
 
-                function channels(params){
+                function channels(params) {
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/programmes/channels", {}, {
                             headers: {
@@ -411,6 +411,57 @@
                 }
             }
 
+            function privateCloudDelegation($http, $q) {
+
+                function getConfig() {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/privateCloud/config/get", {}, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        }).then(({data}) => {
+                            resolve(data);
+                        }).catch(({data}) => {
+                            reject(data.error)
+                        });
+                    });
+                }
+
+                function getEntrypointCondition(serverIp) {
+                    return $q((resolve, reject) => {
+                        $http.post(`/api/1.0/privateCloud/entrypoint/get`, {ip:serverIp}, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        }).then(({data}) => {
+                            resolve(data);
+                        }).catch(({data}) => {
+                            reject(data.error)
+                        });
+                    });
+                }
+
+                function getTranscoderCondition(serverIp) {
+                    return $q((resolve, reject) => {
+                        $http.post(`/api/1.0/privateCloud/transcoder/get`, {ip:serverIp}, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        }).then(({data}) => {
+                            resolve(data);
+                        }).catch(({data}) => {
+                            reject(data.error)
+                        });
+                    });
+                }
+
+                return {
+                    getConfig,
+                    getEntrypointCondition,
+                    getTranscoderCondition
+                }
+            }
+
             function Products($http, $q) {
 
                 function create(params) {
@@ -595,26 +646,26 @@
                     });
                 }
 
-                function checkSubscriberCredentials(params){
+                function checkSubscriberCredentials(params) {
 
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/playme/check_subscriber_credentials", params)
                             .then(({data}) => {
 
-                                if(data.error){
+                                if (data.error) {
                                     reject({
-                                        code:data.error,
-                                        message:data.error_dsc
+                                        code: data.error,
+                                        message: data.error_dsc
                                     });
-                                }else{
-                                    resolve({message:"Correct Password"});
+                                } else {
+                                    resolve({message: "Correct Password"});
                                 }
 
                             })
                             .catch(({data}) => {
                                 reject({
-                                    code:data.error,
-                                    message:data.error_dsc
+                                    code: data.error,
+                                    message: data.error_dsc
                                 })
                             });
                     });
@@ -770,9 +821,10 @@
                 subscribers: Subscribers($http, $q),
                 account: Account($http, $q),
                 users: Users($http, $q),
-                programmes:Programmes($http, $q),
+                programmes: Programmes($http, $q),
                 channels: channelsDelegation($http, $q),
                 categories: categoriesDelegation($http, $q),
+                privateCloud: privateCloudDelegation($http, $q),
                 products: Products($http, $q),
                 avProfiles: AvProfiles($http, $q),
                 ottConfigurations: OttConfigurations($http, $q)
