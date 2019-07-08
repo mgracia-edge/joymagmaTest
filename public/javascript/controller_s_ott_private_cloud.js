@@ -60,6 +60,10 @@
                                         data: Math.round(100 * privateCloudConfig.serverStats.ioStats.cpuLoad.total) / 100 + " %"
                                     },
                                     {
+                                        label: "I/O Waits",
+                                        data: Math.round(100 * privateCloudConfig.serverStats.ioStats.cpuLoad.iowait) / 100 + " %"
+                                    },
+                                    {
                                         label: "Disk Reading",
                                         data: Math.round(100 * privateCloudConfig.serverStats.ioStats.diskStats.totals.readRatio) / 100 + " kB/s"
                                     },
@@ -87,9 +91,26 @@
                     if (typeof server.resumeItems === "undefined") {
                         server.resumeItems = [];
 
+
+
                         $NxApi.privateCloud
                             .getTranscoderCondition(server.ip)
                             .then((privateCloudConfig) => {
+
+                                let gpu_enc = 0,
+                                    gpu_dec = 0,
+                                    gpu_mem = 0;
+
+                                for (let task of privateCloudConfig.transcoderTasks) {
+
+                                    if(task.gpu){
+                                        gpu_enc += task.gpu.enc;
+                                        gpu_dec += task.gpu.dec;
+                                        gpu_mem += task.gpu.fb;
+                                    }
+
+                                }
+
                                 server.resumeItems = [
                                     {
                                         label: "Up Time",
@@ -102,6 +123,22 @@
                                     {
                                         label: "CPU Load",
                                         data: Math.round(100 * privateCloudConfig.serverStats.ioStats.cpuLoad.total) / 100 + " %"
+                                    },
+                                    {
+                                        label: "GPU Encoding",
+                                        data: Math.round(100 * gpu_enc) / 100 + " %"
+                                    },
+                                    {
+                                        label: "GPU Decoding",
+                                        data: Math.round(100 * gpu_dec) / 100 + " %"
+                                    },
+                                    {
+                                        label: "GPU Memory",
+                                        data: Math.round(100 * gpu_mem ) / 100 + " MB"
+                                    },
+                                    {
+                                        label: "I/O Waits",
+                                        data: Math.round(100 * privateCloudConfig.serverStats.ioStats.cpuLoad.iowait) / 100 + " %"
                                     },
                                     {
                                         label: "Disk Reading",
