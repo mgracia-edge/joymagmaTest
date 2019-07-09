@@ -32,7 +32,6 @@
                             $scope.privateCloudConfig = privateCloudConfig;
                         })
                         .catch((error) => {
-                            console.log(error);
 
                         })
 
@@ -82,7 +81,7 @@
                                 ];
                             })
                             .catch((error) => {
-                                console.log(error);
+                                console.error(error);
 
                             })
 
@@ -161,8 +160,7 @@
                                 ];
                             })
                             .catch((error) => {
-                                console.log(error);
-
+                                console.error(error);
                             })
 
                     }
@@ -223,7 +221,7 @@
                                 ];
                             })
                             .catch((error) => {
-                                console.log(error);
+                                console.error(error);
 
                             })
 
@@ -241,8 +239,8 @@
             }]);
 
     angular.module('NxStudio')
-        .controller("sPrivateCloudDetailCtrl", ['$scope', '$interval', '$NxApi', '$location', '$routeParams'
-            , function ($scope, $interval, $NxApi, $location, $routeParams) {
+        .controller("sPrivateCloudDetailCtrl", ['$scope', '$interval', '$NxApi', '$location', '$routeParams', '$mdDialog'
+            , function ($scope, $interval, $NxApi, $location, $routeParams, $mdDialog) {
 
                 $scope.role = $routeParams.role;
                 $scope.ip = $routeParams.ip;
@@ -255,6 +253,7 @@
                 $scope.transcoderItems = transcoderItems;
                 $scope.getChannel = getChannel;
                 $scope.getTranscoderName = getTranscoderName;
+                $scope.restartEntrypoint = restartEntrypoint;
 
                 function init() {
 
@@ -317,7 +316,6 @@
 
                 function getTranscoderName(ip) {
                     for (let t of $scope.privateCloudConfig.transcoder) {
-                        console.log(t.ip, ip);
                         if (t.ip === ip || t.ip2 === ip)
                             return t.name;
                     }
@@ -331,6 +329,24 @@
                     } else {
                         return [];
                     }
+                }
+
+                function restartEntrypoint(task, $event) {
+
+                    let confirm = $mdDialog.confirm()
+                        .title(`Restarting ${getChannel(task.inStream).name}.`)
+                        .textContent(`Confirm you want to restart de connection between the 
+                        Entrypoint and the Transcoder for the channel ${getChannel(task.inStream).name}.`)
+                        .ariaLabel('Restarting Entrypoint')
+                        .targetEvent($event)
+                        .ok('Restart Connection')
+                        .cancel('Cancel');
+
+                    $mdDialog.show(confirm).then(function () {
+                        console.log("CONFIRM")
+                    }, function () {
+
+                    });
                 }
 
                 function initEntrypoint(serverCondition) {

@@ -36,12 +36,12 @@
                 {{task.cpu}} %
             </td>
             <td>
-                <md-button class="md-primary" ng-click="restart(task)">
+                <md-button class="md-primary" ng-click="testEntrypointInput(task)">
                     {{task.inStream}}
                 </md-button>
             </td>
             <td>
-                <md-button class="md-primary" ng-click="restart(task)">
+                <md-button class="md-primary" ng-click="testTxInput(task)">
                     {{task.outStream}}
                 </md-button>
 
@@ -58,7 +58,7 @@
                 {{getChannel(task.inStream)?getChannel(task.inStream).name:"loading..."}}
             </td>
             <td>
-                <md-button class="md-warn" ng-click="restart(task)">
+                <md-button class="md-warn" ng-click="restartEntrypoint(task, $event)">
                     restart
                 </md-button>
             </td>
