@@ -16,61 +16,41 @@
 <table class="table-server-tasks">
     <thead>
         <tr>
-            <th>PID</th>
-            <th>CPU</th>
-            <th style="min-width: 54px;">Mem</th>
-            <th style="min-width: 92px;">Elapsed Time</th>
-            <th>In Steam</th>
-            <th>Out Stream</th>
-            <th>Target TX</th>
-            <th>Target App</th>
+            <th>hash</th>
             <th>Channel</th>
+            <th>N. Chunks</th>
+            <th>Last Chunk</th>
+            <th>L. Chunk Duration</th>
+            <th>Discontinuities</th>
+            <th>Playlist Status</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         <tr style="font-size: 13px"
-            ng-repeat="task in serverCondition.entryPointTasks" class="table-users__user">
+            ng-repeat="task in serverCondition.packagerStats.chunks" class="table-users__user">
             <td>
-                {{task.pid}}
-            </td>
-            <td>
-                {{task.cpu}} %
-            </td>
-            <td>
-                {{task.mem / 1024 | number: 1}} KB
-            </td>
-            <td>
-                {{formatUptime(task.etime)}}
-            </td>
-            <td>
-                <md-button class="md-primary" ng-click="testEntrypointInput(task, $event)">
-                    {{task.inStream}}
-                </md-button>
-            </td>
-            <td>
-                <md-button class="md-primary" ng-click="testTxInput(task, $event)">
-                    {{task.outStream}}
-                </md-button>
-
-            </td>
-            <td>
-                <md-button class="md-primary" ng-click="openTranscoder(task, $event)">
-                    {{getTranscoder(task.targetServer)?getTranscoder(task.targetServer).name:"loading..."}}({{task.targetServer}})
-                </md-button>
-            </td>
-            <td>
-                {{task.targetApp}}
+                {{task.hash}}
             </td>
             <td>
                 <md-button class="md-primary" ng-click="openChannel(task, $event)">
-                    {{getChannel(task.inStream)?getChannel(task.inStream).name:"loading..."}}
+                    {{getChannel(task.hash)?getChannel(task.hash).name:"loading..."}}
                 </md-button>
             </td>
             <td>
-                <md-button class="md-warn" ng-click="restartEntrypoint(task, $event)">
-                    restart
-                </md-button>
+                {{task.numberOfChunks}}
+            </td>
+            <td>
+                {{task.lastChunk}}
+            </td>
+            <td>
+                {{task.lastChunkDuration}} sec
+            </td>
+            <td>
+                {{task.discontinuities}}
+            </td>
+            <td>
+                {{task.playlistUpdates}}
             </td>
         </tr>
     </tbody>

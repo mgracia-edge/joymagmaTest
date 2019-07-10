@@ -211,11 +211,11 @@
                                     },
                                     {
                                         label: "Nginx CPU Load",
-                                        data: Math.round(100 * privateCloudConfig.packagerStats.nginx.cpu) / 100 + " %"
+                                        data: Math.round(100 * privateCloudConfig.packagerStats.serverStats.nginx.cpu) / 100 + " %"
                                     },
                                     {
                                         label: "Nginx Mem",
-                                        data: Math.round(100 * privateCloudConfig.packagerStats.nginx.mem / 1024) / 100 + " kB/s"
+                                        data: Math.round(100 * privateCloudConfig.packagerStats.serverStats.nginx.mem / 1024) / 100 + " kB/s"
                                     }
 
                                 ];
@@ -533,11 +533,11 @@
                         },
                         {
                             label: "Nginx CPU Load",
-                            data: Math.round(100 * serverCondition.packagerStats.nginx.cpu) / 100 + " %"
+                            data: Math.round(100 * serverCondition.packagerStats.serverStats.nginx.cpu) / 100 + " %"
                         },
                         {
                             label: "Nginx Mem",
-                            data: Math.round(100 * serverCondition.packagerStats.nginx.mem / 1024) / 100 + " kB/s"
+                            data: Math.round(100 * serverCondition.packagerStats.serverStats.nginx.mem / 1024) / 100 + " kB/s"
                         }
                     ];
                 }
