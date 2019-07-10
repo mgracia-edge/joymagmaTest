@@ -49,19 +49,34 @@ function config_get(req, res) {
 
 function entrypoint_get(req, res) {
     request.get(ROOT + `entrypoint/get/${req.body.ip}`, function (error, query, response) {
-        res.send(JSON.parse(response))
+        try {
+            res.send(JSON.parse(response))
+        } catch (e) {
+            res.send({})
+
+        }
     })
 }
 
 function transcoder_get(req, res) {
     request.get(ROOT + `transcoder/get/${req.body.ip}`, function (error, query, response) {
-        res.send(JSON.parse(response))
+        try {
+            res.send(JSON.parse(response))
+        } catch (e) {
+            res.send({})
+
+        }
     })
 }
 
 function packager_get(req, res) {
     request.get(ROOT + `packager/get/${req.body.ip}`, function (error, query, response) {
-        res.send(JSON.parse(response))
+        try {
+            res.send(JSON.parse(response))
+        } catch (e) {
+            res.send({})
+
+        }
     })
 }
 
@@ -75,6 +90,11 @@ function test_mediainfo(req, res) {
 
 function kill_pid(req, res) {
     request.get(ROOT + `${req.body.role}/${req.body.ip}/kill/${req.body.pid}`, function (error, query, response) {
-        res.send(response)
+        try {
+            res.send(JSON.parse(response))
+        } catch (e) {
+            res.send({})
+
+        }
     })
 }
