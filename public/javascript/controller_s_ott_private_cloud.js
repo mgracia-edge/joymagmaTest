@@ -261,6 +261,7 @@
                 $scope.testTxInput = testTxInput;
                 $scope.testTxStream = testTxStream;
                 $scope.openTranscoder = openTranscoder;
+                $scope.openPackager = openPackager;
                 $scope.openChannel = openChannel;
                 $scope.formatUptime = formatUptime;
                 $scope.gpuResume = gpuResume;
@@ -505,7 +506,40 @@
                 }
 
                 function initPackager(serverCondition) {
+                    $scope.templateURL = "/res/layout/view_s_private_cloud_packager.html";
 
+                    $scope.serverCondition = serverCondition;
+
+                    $scope.server.resumeItems = [
+                        {
+                            label: "Up Time",
+                            data: formatUptime(serverCondition.serverStats.uptime.uptime)
+                        },
+                        {
+                            label: "CPU Load",
+                            data: Math.round(100 * serverCondition.serverStats.ioStats.cpuLoad.total) / 100 + " %"
+                        },
+                        {
+                            label: "I/O Waits",
+                            data: Math.round(100 * serverCondition.serverStats.ioStats.cpuLoad.iowait) / 100 + " %"
+                        },
+                        {
+                            label: "Disk Reading",
+                            data: Math.round(100 * serverCondition.serverStats.ioStats.diskStats.totals.readRatio) / 100 + " kB/s"
+                        },
+                        {
+                            label: "Disk Writing",
+                            data: Math.round(100 * serverCondition.serverStats.ioStats.diskStats.totals.writeRatio) / 100 + " kB/s"
+                        },
+                        {
+                            label: "Nginx CPU Load",
+                            data: Math.round(100 * serverCondition.packagerStats.nginx.cpu) / 100 + " %"
+                        },
+                        {
+                            label: "Nginx Mem",
+                            data: Math.round(100 * serverCondition.packagerStats.nginx.mem / 1024) / 100 + " kB/s"
+                        }
+                    ];
                 }
 
                 function initEdgeserver(serverCondition) {
@@ -514,6 +548,10 @@
 
                 function openTranscoder(task) {
                     $location.path(`s/infra/private-cloud/transcoder/${getTranscoder(task.targetServer).ip}`)
+                }
+
+                function openPackager(task) {
+                    $location.path(`s/infra/private-cloud/packager/${getPackager(task.target.server).ip}`)
                 }
 
                 function openChannel(task) {
