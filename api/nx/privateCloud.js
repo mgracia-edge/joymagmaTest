@@ -39,7 +39,11 @@ exports.resourceList = [
 
 function config_get(req, res) {
     request.get(ROOT + "config/get", function (error, query, response) {
-        res.send(JSON.parse(response))
+        try {
+            res.send(JSON.parse(response));
+        } catch (e) {
+            res.send({});
+        }
     })
 }
 
