@@ -642,7 +642,12 @@
                         $scope.doPlayback = doPlayback;
 
                         function doPlayback() {
+                            let element = document.getElementById("dialog-result-display");
 
+                            let serverPart = `rtmp://${source.host}/${source.app}`,
+                                streamname = source.streamname;
+
+                            element.innerHTML = `<object type="application/x-shockwave-flash" id="VideoPlayer" data="/lib/JarisFLVPlayer.swf" width="640px" height="360px"><param name="menu" value="false"><param name="scale" value="noScale"><param name="allowFullscreen" value="true"><param name="allowScriptAccess" value="always"><param name="bgcolor" value="#000000"><param name="quality" value="high"><param name="wmode" value="opaque"><param name="flashvars" value="source=${streamname}&amp;type=video&amp;streamtype=rtmp&amp;controltype=1&amp;duration=3600&amp;aspectratio=auto&amp;autostart=true&amp;hardwarescaling=true&amp;controls=true&amp;darkcolor=000000&amp;brightcolor=4c4c4c&amp;controlcolor=FFFFFF&amp;hovercolor=67A8C1&amp;seekcolor=D3D3D3&amp;jsapi=flase&amp;server=${serverPart}"></object>`
 
                         }
 
