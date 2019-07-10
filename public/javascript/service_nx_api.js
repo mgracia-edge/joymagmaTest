@@ -468,11 +468,45 @@
                     });
                 }
 
+                function mediainfo(source, format) {
+                    return $q((resolve, reject) => {
+                        $http.post(`/api/1.0/privateCloud/test/mediainfo`, {media: source, format: format}, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        }).then(({data}) => {
+                            resolve(data);
+                        }).catch(({data}) => {
+                            reject(data.error)
+                        });
+                    });
+                }
+
+                function killPid(params) {
+                    return $q((resolve, reject) => {
+                        $http.post(`/api/1.0/privateCloud/kill/pid`, {
+                            role: params.role,
+                            ip: params.ip,
+                            pid: params.pid
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        }).then(({data}) => {
+                            resolve(data);
+                        }).catch(({data}) => {
+                            reject(data.error)
+                        });
+                    });
+                }
+
                 return {
                     getConfig,
                     getEntrypointCondition,
                     getTranscoderCondition,
-                    getPackagerCondition
+                    getPackagerCondition,
+                    mediainfo,
+                    killPid
                 }
             }
 

@@ -72,6 +72,12 @@
 
   }
 
+  .video-container {
+    height: 301px;
+    width: 587px;
+    overflow: hidden;
+  }
+
 }
 
 .table-server-tasks {
@@ -90,7 +96,7 @@
 
   & {
     td {
-      padding: 0;
+      padding: 0px 6px;
     }
 
   }

@@ -1,0 +1,45 @@
+<div class="dialog_change_password private-cloud-resume" layout="column" style="min-width: 640px;min-height: 480px;">
+    <h2 class="dialog_change_password__title">Streaming Testing Tool</h2>
+    <div flex layout="column" layout-align="start start">
+
+        <div layout="row" layout-fill layout-align="end center">
+            Choose your tests:
+            <md-button class="md-primary md-raised" ng-click="doMediaInfo($event)" ng-disabled="busy">
+                Media Info
+            </md-button>
+
+            <md-button class="md-primary md-raised" ng-click="doPlayback($event)" ng-disabled="busy">
+                Playback
+            </md-button>
+
+            <md-button class="md-primary md-raised" ng-click="doSnapshot($event)" ng-disabled="busy">
+                Snapshot
+            </md-button>
+        </div>
+        <div flex layout="column" layout-fill style="margin-bottom: 8px;">
+            <div class="stats-item">
+                <label class="name">
+                    Test Result
+                </label>
+            </div>
+            <div layout-fill flex id="dialog-result-display" style="padding: 6px;max-height: 324px;overflow: scroll;"
+                 layout-align="center center" layout="column">
+                <label>Waiting for result</label>
+            </div>
+        </div>
+        <div layout="row" layout-fill>
+
+            <div class="stats-item">
+                <label class="name">
+                    RTMP Testing Source
+                </label>
+                <label>
+                    {{rtmpTestingSource}}
+                </label>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>

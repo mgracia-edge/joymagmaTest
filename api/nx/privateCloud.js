@@ -23,6 +23,16 @@ exports.resourceList = [
         callback: packager_get,
         method: "post",
         protected: true
+    }, {
+        path: "test/mediainfo",
+        callback: test_mediainfo,
+        method: "post",
+        protected: true
+    }, {
+        path: "kill/pid",
+        callback: kill_pid,
+        method: "post",
+        protected: true
     }
 ];
 
@@ -48,5 +58,19 @@ function transcoder_get(req, res) {
 function packager_get(req, res) {
     request.get(ROOT + `packager/get/${req.body.ip}`, function (error, query, response) {
         res.send(JSON.parse(response))
+    })
+}
+
+function test_mediainfo(req, res) {
+    request.post(ROOT + `mediainfo`, {
+        json: req.body
+    }, function (error, query, response) {
+        res.send({text: response})
+    })
+}
+
+function kill_pid(req, res) {
+    request.get(ROOT + `${req.body.role}/${req.body.ip}/kill/${req.body.pid}`, function (error, query, response) {
+        res.send(response)
     })
 }
