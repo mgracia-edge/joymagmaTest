@@ -681,7 +681,7 @@ function getADay(req, res) {
                 res.status(200).send(cache.data);
                 return;
             } else {
-                console.log("cache miss");
+                console.log("cache delete");
                 getDayCache.splice(i, 1);
             }
 
@@ -758,6 +758,7 @@ function getADay(req, res) {
 
                 console.log("cache store");
                 getDayCache.push({
+                    channelEPGId: channelEPGId,
                     expires: Date.now() + 3600000,
                     data: programmes
                 });
