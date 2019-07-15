@@ -15,6 +15,19 @@ const USER_AGENT = "Magma-Agent/4.0 (Linux x86_64)";
 
 let currentWiltelToken = null;
 
+let ottConfig = [];
+
+setInterval(() => {
+    let db = pdc.db;
+
+    if (db) {
+        db.OttConfigurations.findOne({}, (error, dbOttConfig) => {
+            ottConfig = dbOttConfig;
+        })
+    }
+
+}, 60000);
+
 exports.resourceList = [
     {
         path: "abm",
@@ -1068,10 +1081,6 @@ function getProducts(req, res) {
     }
 }
 
-function check_asset_access(req, res) {
-
-}
-
 function setFavorite(req, res) {
 
     // TODO VEr esto https://stackoverflow.com/questions/41788688/mongo-schema-array-of-string-with-unique-values,
@@ -1185,7 +1194,7 @@ function sendLogs(req, res) {
 
     let db = pdc.db;
 
-    if(db){
+    if (db) {
         let opt = {
             subscriberId: req.body.id,
             agent: req.body.agent,
@@ -1197,7 +1206,7 @@ function sendLogs(req, res) {
             date: new Date()
         };
 
-        db.StatsLines.create(opt, function(){
+        db.StatsLines.create(opt, function () {
             console.log("LOG LIN INSERTED")
         })
 
@@ -1207,3 +1216,32 @@ function sendLogs(req, res) {
     res.send({});
 }
 
+function check_asset_access(req, res) {
+    let db = pdc.db;
+
+    let {subscriberId} = req.body;
+    let screens = ottConfig.screens;
+
+    if (db) {
+
+        db.StatsLines.find({
+            "date": {
+                $gt: new Date(Date.now() - 10000)
+            },
+            "subscriberId": subscriberId
+        }, ((error, sessions) => {
+
+            if (sessions.length >= screens) {
+                res.send({
+                    canPlay: false
+                });
+            } else {
+                res.send({
+                    canPlay: true
+                });
+            }
+
+        }));
+
+    }
+}
