@@ -17,16 +17,21 @@ let currentWiltelToken = null;
 
 let ottConfig = [];
 
-setInterval(() => {
+
+pdc.on("connected", updateOttConfig);
+
+setInterval(updateOttConfig, 60000);
+
+function updateOttConfig() {
     let db = pdc.db;
 
     if (db) {
         db.OttConfigurations.findOne({}, (error, dbOttConfig) => {
             ottConfig = dbOttConfig;
+            console.log(ottConfig);
         })
     }
-
-}, 60000);
+}
 
 exports.resourceList = [
     {
@@ -661,7 +666,28 @@ function getAWeek(req, res) {
     }
 }
 
+
+let getDayCache = [];
+
 function getADay(req, res) {
+
+
+    for (let i in getDayCache) {
+        let cache = getDayCache[i];
+        if (cache.channelEPGId === req.body.channelEPGId) {
+
+            if (cache.expires > Date.now()) {
+                console.log("cache hit");
+                res.status(200).send(cache.data);
+                return;
+            } else {
+                console.log("cache miss");
+                getDayCache.splice(i, 1);
+            }
+
+            break;
+        }
+    }
 
 
     let db = pdc.db;
@@ -729,6 +755,12 @@ function getADay(req, res) {
 
                     check += p.last
                 }
+
+                console.log("cache store");
+                getDayCache.push({
+                    expires: Date.now() + 3600000,
+                    data: programmes
+                });
 
                 res.status(200).send(programmes);
             }).catch((error) => {
@@ -1224,6 +1256,13 @@ function check_asset_access(req, res) {
 
     if (db) {
 
+        console.log({
+            "date": {
+                $gt: new Date(Date.now() - 10000)
+            },
+            "subscriberId": subscriberId
+        });
+
         db.StatsLines.find({
             "date": {
                 $gt: new Date(Date.now() - 10000)
@@ -1231,7 +1270,19 @@ function check_asset_access(req, res) {
             "subscriberId": subscriberId
         }, ((error, sessions) => {
 
-            if (sessions.length >= screens) {
+            let sessionsIndex = [];
+            let nSessions = 0;
+
+            for (let session of sessions) {
+
+                if (sessionsIndex[session.session]) {
+                } else {
+                    nSessions++;
+                    sessionsIndex[session.session] = 1;
+                }
+            }
+
+            if (nSessions >= screens) {
                 res.send({
                     canPlay: false
                 });
