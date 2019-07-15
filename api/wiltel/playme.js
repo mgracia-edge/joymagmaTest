@@ -1257,14 +1257,8 @@ function check_asset_access(req, res) {
 
     if (db) {
 
-        console.log({
-            "date": {
-                $gt: new Date(Date.now() - 10000)
-            },
-            "subscriberId": subscriberId
-        });
-
         db.StatsLines.find({
+            "status": "playing",
             "date": {
                 $gt: new Date(Date.now() - 10000)
             },
