@@ -1270,6 +1270,10 @@ function check_asset_access(req, res) {
 
             for (let session of sessions) {
 
+                if (session.session === req.body.sessionId) {
+                    break;
+                }
+
                 if (sessionsIndex[session.session]) {
                 } else {
                     nSessions++;
