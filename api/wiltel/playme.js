@@ -1068,7 +1068,7 @@ function getProducts(req, res) {
     }
 }
 
-function check_asset_access(req, res){
+function check_asset_access(req, res) {
 
 }
 
@@ -1182,7 +1182,28 @@ function getFavorite(req, res) {
 }
 
 function sendLogs(req, res) {
-    console.log(req.body);
+
+    let db = pdc.db;
+
+    if(db){
+        let opt = {
+            subscriberId: req.body.id,
+            agent: req.body.agent,
+            status: req.body.status,
+            session: req.body.session,
+            channelId: req.body.channelId,
+            programmeId: req.body.programmeId,
+            dvrPosition: req.body.dvrPosition,
+            date: new Date()
+        };
+
+        db.StatsLines.create(opt, function(){
+            console.log("LOG LIN INSERTED")
+        })
+
+    }
+
+
     res.send({});
 }
 
