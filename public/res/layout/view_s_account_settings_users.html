@@ -7,8 +7,11 @@
                 <input type="search" ng-model="search.email" flex>
                 <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
             </search-box>
+            <md-button ng-click="newUser()" class="md-raised md-primary"  style="margin-left: 20px">
+                <span>Agregar usuario</span>
+            </md-button>
         </div>
-
+        <scroll-view orientation="vertical" layout="column" flex>
         <table class="table-users">
             <thead>
                 <tr>
@@ -68,6 +71,6 @@
             </tbody>
         </table>
 
-
+        </scroll-view>
     </div>
 </div>

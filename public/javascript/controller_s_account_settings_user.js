@@ -26,6 +26,7 @@
                         SUBSCRIBERS_READ: "subscribers.read",
                     };
 
+                    $scope.isNew = $routeParams.user_id === "new";
                     $scope.user = {};
                     $scope.accountName = '';
                     $scope.users_permissions = [
@@ -68,20 +69,21 @@
                     $scope.logAsUser = logAsUser;
 
                     function init() {
-                        let user_id = $routeParams.user_id;
+                        if (!$scope.isNew) {
+                            let user_id = $routeParams.user_id;
 
-                        if (user_id) {
-                            $NxApi.users.read({_id: user_id}).then(({users}) => {
-                                $scope.user = users[0];
-                                for (let permission of $scope.users_permissions) {
-                                    if ($scope.user.permissions.includes(permission.value)) {
-                                        permission.state = true;
+                            if (user_id) {
+                                $NxApi.users.read({_id: user_id}).then(({users}) => {
+                                    $scope.user = users[0];
+                                    for (let permission of $scope.users_permissions) {
+                                        if ($scope.user.permissions.includes(permission.value)) {
+                                            permission.state = true;
+                                        }
                                     }
-                                }
-                            });
+                                });
 
+                            }
                         }
-
                     }
 
                     function toast(msg) {
@@ -96,10 +98,24 @@
 
                     function checkForm() {
 
-                        let {firstName, lastName, email} = $scope.user;
+                        let {firstName, lastName, email,password} = $scope.user;
 
-                        if (firstName !== '' && lastName !== '' && email !== '') {
-                            return true
+                        if (
+                            typeof firstName !== 'undefined' &&
+                            firstName !== '' &&
+                            typeof lastName !== 'undefined' &&
+                            lastName !== '' &&
+                            typeof email !== 'undefined'
+                            && email !== ''
+                        ) {
+
+                            if ($scope.isNew) {
+                                if (password !== 'undefined' && password !== '') {
+                                    return true
+                                }
+                            }else{
+                                return true
+                            }
                         }
 
                         toast("The fields cannot be empty");
@@ -125,18 +141,39 @@
                                 data["photo"] = $scope.user.photo;
                             }
 
-                            $NxApi.users
-                                .update(data)
-                                .then(() => {
-                                    toast('The user was update');
-                                    $scope.loading = false;
-                                    if($scope.user.photo) $scope.user.photo.update = false;
+                            if ($scope.isNew) {
 
-                                })
-                                .catch((error) => {
-                                    console.log(error);
-                                    $scope.loading = false;
-                                })
+                                data.password = $scope.user.password;
+
+                                $NxApi.users
+                                    .create(data)
+                                    .then(() => {
+                                        toast('The user was create');
+                                        $scope.loading = false;
+                                        $location.path("/s/account/settings/users");
+
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                        $scope.loading = false;
+                                    })
+
+                            } else {
+
+                                $NxApi.users
+                                    .update(data)
+                                    .then(() => {
+                                        toast('The user was update');
+                                        $scope.loading = false;
+                                        if($scope.user.photo) $scope.user.photo.update = false;
+
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                        $scope.loading = false;
+                                    })
+                            }
+
                         }
 
                     }

@@ -1,5 +1,5 @@
 <div secction layout-fill layout="column">
-    <h1>User Details</h1>
+    <h1>{{isNew ? 'New User' : 'User Details'}}</h1>
     <div class="form form-acount-settings-user" layout="row">
 
         <div layout="column">
@@ -31,6 +31,11 @@
                 <input type="email" ng-model="user.email" aria-label="email" title="email" autocomplete="off">
             </item>
 
+            <item ng-show="isNew">
+                <label>password</label>
+                <input type="password" ng-model="user.password" aria-label="password" title="password" autocomplete="off">
+            </item>
+
             <h2>User permissions</h2>
             <div class="user_permissions">
 
@@ -46,7 +51,7 @@
             </md-button>
 
         </div>
-        <div layout="column" style="margin-left: 50px;">
+        <div layout="column" style="margin-left: 50px;" ng-hide="isNew">
             <md-button md-no-ink class="md-raised md-primary" ng-click="dialog_alert()">Remove User</md-button>
             <md-button md-no-ink class="md-raised md-primary" ng-click="dialog_changePassword()">Reset Password</md-button>
             <md-button md-no-ink class="md-raised md-primary" ng-click="logAsUser(user)">Log as user</md-button>

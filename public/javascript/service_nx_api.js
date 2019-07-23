@@ -600,7 +600,17 @@
 
                 function create(params) {
                     return $q((resolve, reject) => {
-
+                        $http.post("/api/1.0/user/create", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve(data.content);
+                            })
+                            .catch((error) => {
+                                reject(data.error)
+                            });
                     });
                 }
 
