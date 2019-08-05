@@ -27,12 +27,13 @@ const services = {
 
 const users_permissions = {
     USER_ADMIN: "user.admin",
+    PRIVATE_CLOUD_ADMIN: "privatecloud.admin",
     PRODUCTS_WRITE: "products.write",
     PRODUCTS_READ: "products.read",
     CHANNELS_WRITE: "channels.write",
     CHANNELS_READ: "channels.read",
     STATS_ACCESS: "stats.access",
-    SUBSCRIBERS_READ: "subscribers.read",
+    SUBSCRIBERS_READ: "subscribers.read"
 };
 
 const errorCode = {
