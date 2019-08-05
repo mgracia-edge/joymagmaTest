@@ -16,6 +16,16 @@
     angular.module('NxStudio')
         .factory('$NxNav', ['$http', '$q', function ($http, $q) {
 
+            const permissions = {
+                USER_ADMIN: "user.admin",
+                PRIVATE_CLOUD_ADMIN: "privatecloud.admin",
+                PRODUCTS_WRITE: "products.write",
+                PRODUCTS_READ: "products.read",
+                CHANNELS_WRITE: "channels.write",
+                CHANNELS_READ: "channels.read",
+                STATS_ACCESS: "stats.access",
+                SUBSCRIBERS_READ: "subscribers.read"
+            };
 
             let mainBar = {
                 hidden: true
@@ -37,6 +47,7 @@
             }
 
             function loadRootLevel(user, account) {
+
                 navPanel.currentAccount = account;
                 navPanel.currentMap = [
                     {
@@ -105,9 +116,18 @@
                         ]
                     }
 
-                ];
-            }
+                ].filter(checkPermissions);
 
+                function checkPermissions(item) {
+
+                    if (item.name === "Assets (PC)") {
+                        return user.permissions.includes(permissions.PRIVATE_CLOUD_ADMIN);
+                    }
+
+                    return true;
+                }
+
+            }
 
             return {
                 hide: hide,
