@@ -7,7 +7,6 @@ const api = require("../support");
 const C = require("../codes");
 const pdc = require("../../lib/dataConnection");
 
-
 const REPO_DIR = "../../res/reporttv";
 const WILTEL_KEY_PATH = path.join(__dirname, '../../res/EPA.pfx');
 
@@ -16,7 +15,6 @@ const USER_AGENT = "Magma-Agent/4.0 (Linux x86_64)";
 let currentWiltelToken = null;
 
 let ottConfig = [];
-
 
 pdc.on("connected", updateOttConfig);
 
@@ -532,6 +530,40 @@ function ABMPlayme(req, res) {
                         }
                     });
 
+            } else if (operacion === db.Subscribers.UpdateHistoryType.Baja) {
+
+                db.Subscribers
+                    .findOne({"subscriberId": suscriptor_id}, (error, data) => {
+                        if (error) {
+                            console.log(error);
+                            res.status(500).send({
+                                error: 0x0010,
+                                error_dsc: "Error en la base de datos"
+                            });
+                        } else {
+                            if (data) {
+
+                                db.Subscribers.remove(query, (error, subscriber) => {
+                                    if (error) {
+                                        console.warn(error);
+                                        res.status(500).send({
+                                            error: 0x0010,
+                                            error_dsc: "Error en la base de datos"
+                                        });
+                                    } else {
+                                        res.send({error: 0});
+                                    }
+
+                                });
+                            } else {
+                                res.status(200).send({
+                                    error: 0x0031,
+                                    error_dsc: "No se encuentra un Subscriber para realizar un update."
+                                });
+                            }
+                        }
+                    });
+
             } else {
                 res.status(400).send({
                     error: 0x0020,
@@ -666,7 +698,6 @@ function getAWeek(req, res) {
     }
 }
 
-
 let getDayCache = [];
 
 function getADay(req, res) {
@@ -733,7 +764,7 @@ function getADay(req, res) {
             .lean()
             .then((programmes) => {
                 let check = 0;
-                for (let i in  programmes) {
+                for (let i in programmes) {
 
                     let p = programmes[i];
 
