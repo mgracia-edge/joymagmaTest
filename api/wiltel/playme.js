@@ -543,6 +543,8 @@ function ABMPlayme(req, res) {
                         } else {
                             if (data) {
 
+                                let query = {"subscriberId": suscriptor_id};
+
                                 db.Subscribers.remove(query, (error, subscriber) => {
                                     if (error) {
                                         console.warn(error);
@@ -558,7 +560,7 @@ function ABMPlayme(req, res) {
                             } else {
                                 res.status(200).send({
                                     error: 0x0031,
-                                    error_dsc: "No se encuentra un Subscriber para realizar un update."
+                                    error_dsc: "Suscriptor no encontrado."
                                 });
                             }
                         }
