@@ -88,3 +88,12 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+/**
+ * Prevent the app crushing on an unhandled exception event.
+ */
+process.on('uncaughtException', function(err) {
+    console.log('Caught exception');
+    console.log(err);
+});
+
