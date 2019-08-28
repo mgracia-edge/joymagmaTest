@@ -1,7 +1,25 @@
 <div secction layout-fill layout="column">
-    <h1>Statistics</h1>
-    <div class="form form-acount-settings" layout="column">
-       {{test}}
+    <div>
+        <md-menu>
+            <md-button aria-label="Subsections" class="nx-section-menu" ng-click=" $mdMenu.open($event)">
+                <md-icon md-svg-src="{{currentSection.icon}}"></md-icon>
+                <label>
+                    {{currentSection.name}}
+                </label>
+                <md-icon md-svg-src="/res/drawable/ic_options.svg"></md-icon>
+            </md-button>
+            <md-menu-content width="4">
+                <md-menu-item ng-repeat="section in sections">
+                    <md-button ng-click="startSection(section)">
+                        <md-icon md-svg-src="{{section.icon}}"></md-icon>
+                        {{section.name}}
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+    </div>
+    <div section>
+
     </div>
 </div>
 
