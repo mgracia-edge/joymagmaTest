@@ -13,14 +13,14 @@
 
     function link(scope, element, attributes, ngModel) {
 
-        scope.channel = scope.item
+        scope.channel = scope.item;
 
         let chart_data = [];
-        let char_labels = []
+        let char_labels = [];
 
         for(let i in scope.channel.stats){
-            chart_data.push(scope.channel.stats[i].concurrency)
-            char_labels.push(scope.channel.stats[i].timestamp)
+            chart_data.push(scope.channel.stats[i].concurrency);
+            char_labels.push(scope.channel.stats[i].timestamp);
         }
 
         let ctx = element[0].getElementsByTagName("canvas")[0];

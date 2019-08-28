@@ -13,3 +13,33 @@ button.nx-section-menu {
   }
 
 }
+
+.nx-ott-stats-header {
+  md-icon.md-default-theme, md-icon {
+    color: #42516e;
+    fill: #42516e;
+  }
+}
+
+.stats-box {
+
+  color: #41516E;
+  display: inline-flex;
+  flex-direction: column;
+
+  value {
+    font-size: 34px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  label {
+    display: flex;
+    border-top: 2px solid #41516E;
+    font-size: 16px;
+    padding: 0px 16px;
+  }
+
+}

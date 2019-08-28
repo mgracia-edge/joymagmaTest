@@ -1,5 +1,5 @@
 <div secction layout-fill layout="column">
-    <div>
+    <div class="nx-ott-stats-header" layout="row">
         <md-menu>
             <md-button aria-label="Subsections" class="nx-section-menu" ng-click=" $mdMenu.open($event)">
                 <md-icon md-svg-src="{{currentSection.icon}}"></md-icon>
@@ -17,9 +17,24 @@
                 </md-menu-item>
             </md-menu-content>
         </md-menu>
+        <div flex></div>
+        <div layout="column">
+            <div layout="row" layout-align="center center">
+                <md-button aria-label="Subsections" class="md-icon-button" ng-click="filters.changeDates()">
+                    <md-icon md-svg-src="/res/drawable/ic_calendar.svg"></md-icon>
+                </md-button>
+                <md-button aria-label="Subsections" class="md-icon-button" ng-class=""
+                           ng-click="filters.changeParameters()">
+                    <md-icon
+                            md-svg-src="{{!filters.active?'/res/drawable/ic_filter.svg':'/res/drawable/ic_filter_fill.svg'}}"></md-icon>
+                </md-button>
+            </div>
+            <div style="font-size: 12px">
+                {{filters.dates.start | date}} - {{filters.dates.end | date}}
+            </div>
+        </div>
     </div>
-    <div section>
-
+    <div section ng-include="templateUrl" flex style="overflow-y: scroll">
     </div>
 </div>
 

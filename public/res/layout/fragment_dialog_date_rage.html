@@ -1,0 +1,26 @@
+<md-dialog>
+    <md-dialog-content class="nx-dialog-dates">
+        <h1>Choose a date range</h1>
+
+        <div layout="row" class="choosers">
+            <div layout="column">
+                <label>Start Date</label>
+                <md-calendar ng-model="ctrl.startDate"></md-calendar>
+            </div>
+            <div layout="column">
+                <label>End Date</label>
+                <md-calendar ng-model="ctrl.endDate"></md-calendar>
+            </div>
+        </div>
+
+        <div class="line"></div>
+        <div layout="row" layout-align="end">
+            <md-button class="md-raised" ng-click="cancel()">
+                cancel
+            </md-button>
+            <md-button class="md-raised" ng-click="save()">
+                Save
+            </md-button>
+        </div>
+    </md-dialog-content>
+</md-dialog>
