@@ -63,6 +63,10 @@
                     templateUrl: '/res/layout/view_s_ott_config.html',
                     controller: 'sOttConfigCtrl'
                 })
+                .when('/s/ott/statistics', {
+                    templateUrl: '/res/layout/view_s_ott_statistics.html',
+                    controller: 'sOttStatisticsCtrl'
+                })
                 .when('/s/user-profile', {
                     templateUrl: '/res/layout/view_s_user_profile.html',
                     controller: 'sUserProfileCtrl'

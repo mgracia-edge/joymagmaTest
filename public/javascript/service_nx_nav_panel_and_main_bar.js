@@ -102,6 +102,11 @@
                                 iconURL: "/res/drawable/ic_ott_project.svg",
                                 name: "Config",
                                 path: "/s/ott/config"
+                            },
+                            {
+                                iconURL: "/res/drawable/ic_statistics.svg",
+                                name: "Statistics",
+                                path: "/s/ott/statistics"
                             }]
 
                     },
