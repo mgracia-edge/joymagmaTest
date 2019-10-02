@@ -377,6 +377,234 @@
                             active: 155,
                             new: 11,
                             deletion: 0
+                        },
+                        {
+                            date: new Date("2019-08-29"),
+                            active: 171,
+                            new: 16,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-08-30"),
+                            active: 181,
+                            new: 10,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-08-31"),
+                            active: 181,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-01"),
+                            active: 181,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-02"),
+                            active: 192,
+                            new: 11,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-03"),
+                            active: 202,
+                            new: 10,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-04"),
+                            active: 212,
+                            new: 10,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-05"),
+                            active: 221,
+                            new: 9,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-06"),
+                            active: 234,
+                            new: 13,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-07"),
+                            active: 234,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-08"),
+                            active: 234,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-09"),
+                            active: 235,
+                            new: 1,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-10"),
+                            active: 245,
+                            new: 10,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-11"),
+                            active: 248,
+                            new: 3,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-12"),
+                            active: 234,
+                            new: 6,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-13"),
+                            active: 239,
+                            new: 5,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-14"),
+                            active: 239,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-15"),
+                            active: 239,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-16"),
+                            active: 246,
+                            new: 7,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-17"),
+                            active: 253,
+                            new: 7,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-18"),
+                            active: 55,
+                            new: 6,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-19"),
+                            active: 253,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-20"),
+                            active: 273,
+                            new: 20,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-21"),
+                            active: 273,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-23"),
+                            active: 282,
+                            new: 9,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-24"),
+                            active: 287,
+                            new: 5,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-25"),
+                            active: 287,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-26"),
+                            active: 294,
+                            new: 7,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-27"),
+                            active: 303,
+                            new: 9,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-28"),
+                            active: 303,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-29"),
+                            active: 303,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-09-30"),
+                            active: 320,
+                            new: 17,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-10-01"),
+                            active: 328,
+                            new: 8,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-10-02"),
+                            active: 334,
+                            new: 6,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-10-03"),
+                            active: 334,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-10-04"),
+                            active: 334,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-10-05"),
+                            active: 334,
+                            new: 0,
+                            deletion: 0
+                        },
+                        {
+                            date: new Date("2019-10-06"),
+                            active: 334,
+                            new: 0,
+                            deletion: 0
                         }
                     ];
 
@@ -739,9 +967,27 @@
                         },
                         {
                             date: new Date("2019-08-28"),
-                            concurrency: 67,
+                            concurrency: 105,
+                            uniqueUsers: 132,
+                            avgPTPD: 89
+                        },
+                        {
+                            date: new Date("2019-08-29"),
+                            concurrency: 105,
                             uniqueUsers: 99,
+                            avgPTPD: 73
+                        },
+                        {
+                            date: new Date("2019-08-30"),
+                            concurrency: 105,
+                            uniqueUsers: 97,
                             avgPTPD: 76
+                        },
+                        {
+                            date: new Date("2019-08-31"),
+                            concurrency: 45,
+                            uniqueUsers: 34,
+                            avgPTPD: 123
                         }
                     ];
 
