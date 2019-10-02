@@ -988,6 +988,187 @@
                             concurrency: 45,
                             uniqueUsers: 34,
                             avgPTPD: 123
+                        },
+
+                        {
+                            date: new Date("2019-08-01"),
+                            concurrency: 21,
+                            uniqueUsers: 26,
+                            avgPTPD: 78
+                        },
+                        {
+                            date: new Date("2019-08-02"),
+                            concurrency: 25,
+                            uniqueUsers: 29,
+                            avgPTPD: 65
+                        },
+                        {
+                            date: new Date("2019-08-03"),
+                            concurrency: 12,
+                            uniqueUsers: 22,
+                            avgPTPD: 88
+                        },
+                        {
+                            date: new Date("2019-08-04"),
+                            concurrency: 27,
+                            uniqueUsers: 30,
+                            avgPTPD: 78
+                        },
+                        {
+                            date: new Date("2019-08-05"),
+                            concurrency: 23,
+                            uniqueUsers: 31,
+                            avgPTPD: 74
+                        },
+                        {
+                            date: new Date("2019-08-06"),
+                            concurrency: 22,
+                            uniqueUsers: 33,
+                            avgPTPD: 75
+                        },
+                        {
+                            date: new Date("2019-08-07"),
+                            concurrency: 18,
+                            uniqueUsers: 30,
+                            avgPTPD: 79
+                        },
+                        {
+                            date: new Date("2019-08-08"),
+                            concurrency: 25,
+                            uniqueUsers: 39,
+                            avgPTPD: 73
+                        },
+                        {
+                            date: new Date("2019-08-09"),
+                            concurrency: 21,
+                            uniqueUsers: 36,
+                            avgPTPD: 75
+                        },
+                        {
+                            date: new Date("2019-08-10"),
+                            concurrency: 20,
+                            uniqueUsers: 31,
+                            avgPTPD: 75
+                        },
+                        {
+                            date: new Date("2019-08-11"),
+                            concurrency: 6,
+                            uniqueUsers: 87,
+                            avgPTPD: 197
+                        },
+                        {
+                            date: new Date("2019-08-12"),
+                            concurrency: 66,
+                            uniqueUsers: 78,
+                            avgPTPD: 73
+                        },
+                        {
+                            date: new Date("2019-08-13"),
+                            concurrency: 78,
+                            uniqueUsers: 89,
+                            avgPTPD: 74
+                        },
+                        {
+                            date: new Date("2019-08-14"),
+                            concurrency: 56,
+                            uniqueUsers: 67,
+                            avgPTPD: 70
+                        },
+                        {
+                            date: new Date("2019-08-15"),
+                            concurrency: 97,
+                            uniqueUsers: 101,
+                            avgPTPD: 72
+                        },
+                        {
+                            date: new Date("2019-08-16"),
+                            concurrency: 121,
+                            uniqueUsers: 134,
+                            avgPTPD: 79
+                        },
+                        {
+                            date: new Date("2019-08-17"),
+                            concurrency: 125,
+                            uniqueUsers: 188,
+                            avgPTPD: 70
+                        },
+                        {
+                            date: new Date("2019-08-18"),
+                            concurrency: 134,
+                            uniqueUsers: 167,
+                            avgPTPD: 73
+                        },
+                        {
+                            date: new Date("2019-08-19"),
+                            concurrency: 145,
+                            uniqueUsers: 173,
+                            avgPTPD: 76
+                        },
+                        {
+                            date: new Date("2019-08-20"),
+                            concurrency: 33,
+                            uniqueUsers: 63,
+                            avgPTPD: 161
+                        },
+                        {
+                            date: new Date("2019-08-21"),
+                            concurrency: 54,
+                            uniqueUsers: 67,
+                            avgPTPD: 71
+                        },
+                        {
+                            date: new Date("2019-09-21"),
+                            concurrency: 163,
+                            uniqueUsers: 178,
+                            avgPTPD: 72
+                        },
+                        {
+                            date: new Date("2019-09-23"),
+                            concurrency: 168,
+                            uniqueUsers: 199,
+                            avgPTPD: 63
+                        },
+                        {
+                            date: new Date("2019-09-24"),
+                            concurrency: 162,
+                            uniqueUsers: 176,
+                            avgPTPD: 78
+                        },
+                        {
+                            date: new Date("2019-09-25"),
+                            concurrency: 145,
+                            uniqueUsers: 197,
+                            avgPTPD: 69
+                        },
+                        {
+                            date: new Date("2019-09-26"),
+                            concurrency: 162,
+                            uniqueUsers: 202,
+                            avgPTPD: 67
+                        },
+                        {
+                            date: new Date("2019-09-27"),
+                            concurrency: 124,
+                            uniqueUsers: 153,
+                            avgPTPD: 88
+                        },
+                        {
+                            date: new Date("2019-09-28"),
+                            concurrency: 58,
+                            uniqueUsers: 96,
+                            avgPTPD: 131
+                        },
+                        {
+                            date: new Date("2019-09-29"),
+                            concurrency: 105,
+                            uniqueUsers: 99,
+                            avgPTPD: 124
+                        },
+                        {
+                            date: new Date("2019-09-30"),
+                            concurrency: 201,
+                            uniqueUsers: 245,
+                            avgPTPD: 121
                         }
                     ];
 
