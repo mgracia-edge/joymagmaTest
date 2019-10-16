@@ -897,7 +897,7 @@
                             date: new Date("2019-08-16"),
                             concurrency: 35,
                             uniqueUsers: 47,
-                            avgPTPD: 79
+                            avgPTPD: 7
                         },
                         {
                             date: new Date("2019-08-17"),
