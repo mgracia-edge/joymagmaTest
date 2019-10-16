@@ -7,12 +7,6 @@ const api = require("../support");
 const C = require("../codes");
 const pdc = require("../../lib/dataConnection");
 
-const REPO_DIR = "../../res/reporttv";
-const WILTEL_KEY_PATH = path.join(__dirname, '../../res/EPA.pfx');
-
-const USER_AGENT = "Magma-Agent/4.0 (Linux x86_64)";
-
-let currentWiltelToken = null;
 
 let ottConfig = [];
 
@@ -25,19 +19,12 @@ function updateOttConfig() {
 
     if (db) {
         db.OttConfigurations.findOne({}, (error, dbOttConfig) => {
-            ottConfig = dbOttConfig;
-            console.log(ottConfig);
+            ottConfig = dbOttConfig != null ? dbOttConfig : {};
         })
     }
 }
 
 exports.resourceList = [
-    {
-        path: "abm",
-        callback: ABMPlayme,
-        method: "post",
-        protected: true
-    },
     {
         path: "verify",
         callback: LoginWOTT,
@@ -138,189 +125,12 @@ function listProgramme() {
 
 }
 
-function downloadReportTV() {
-    console.log('Descargando archivo de programas...');
-
-    fs.access(path.join(__dirname, REPO_DIR, 'file.xml'), fs.constants.F_OK, (err) => {
-        if (!err) {
-            fs.unlink(path.join(__dirname, REPO_DIR, 'file.xml'), (err) => {
-                if (err) console.log(err);
-                console.log('Archivo descargado Eliminado');
-            });
-        }
-
-
-    });
-
-    return new Promise((resolve, reject) => {
-
-        let ftp = new Client();
-
-        try {
-            fs.mkdirSync(path.join(__dirname, REPO_DIR), {recursive: true})
-        } catch (err) {
-            if (err.code !== "EEXIST") {
-                throw err;
-            }
-        }
-
-
-        ftp.on('ready', () => {
-
-            ftp.list((err, list) => {
-                if (err) reject();
-
-                let lastFile = list[list.length - 2].name;
-
-                ftp.get(lastFile, function (err, stream) {
-                    if (err) reject();
-
-                    stream.once('close', function () {
-                        console.log('Archivo descargado');
-                        resolve();
-
-                        ftp.end();
-
-                    });
-
-                    stream.pipe(fs.createWriteStream(path.join(__dirname, REPO_DIR, 'file.xml')));
-
-                });
-            });
-        });
-
-        ftp.connect({
-            host: 'ftp.filestv.com.ar',
-            user: 'NexTV',
-            password: 'nextvepg123'
-        });
-
-    });
-}
-
-function programmeUpdateService() {
-
-    let hourOfMyTimeZone = new Date().getTimezoneOffset() / 60 - 3;
-
-    function parseDate(string) {
-
-        return new Date(
-            string.substring(0, 4) + "/" +
-            string.substring(4, 6) + "/" +
-            string.substring(6, 8)
-        ).setHours(string.substring(8, 10) - hourOfMyTimeZone, string.substring(10, 12), 0);
-
-    }
-
-    downloadReportTV()
-        .then(listProgramme)
-        .then((list) => {
-            let db = pdc.db;
-
-            if (db) {
-
-                db.Programme.deleteMany().then(() => {
-                    let arr = [];
-
-                    console.log("Registros Eliminados");
-
-                    list.forEach((item) => {
-
-                        let json = {
-                            "start": parseDate(item["$"].start),
-                            "stop": parseDate(item["$"].stop),
-                            "title": item.title[0]["_"],
-                            "description": item.desc[0]["_"],
-                            "credits": item.credits ? item.credits[0] : '',
-                            "category": parseInt(item.category[0]["_"]),
-                            "subCategory": parseInt(item["sub-category"][0]["_"]),
-                            "parentalCode": parseInt(item["$"]['parental-code']),
-                            "channelEPGId": parseInt(item["$"]['channel'])
-                        };
-
-
-                        arr.push(json);
-
-                    });
-
-                    // Elimino elementos duplicados del array.
-                    let set = new Set(arr.map(JSON.stringify));
-                    arr = Array.from(set).map(JSON.parse);
-
-                    db.Programme.insertMany(arr, (err) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            console.log("Numeros de Programas agregados", list.length);
-                        }
-
-                    });
-                });
-
-
-            } else {
-                console.log("error")
-            }
-        });
-}
-
-let intervalID = setInterval(programmeUpdateService, 1000 * 3600 * 24);
-
-programmeUpdateService();
-
 /** API Interface Wiltel ***/
 
 function LoginWOTT(req, res) {
-
-    let options = {
-        url: 'https://ws.wiltel.com.ar/WS/CRM.asmx/LoginWOTT',
-        agentOptions: {
-            pfx: fs.readFileSync(WILTEL_KEY_PATH),
-            passphrase: 'Wiltel19',
-            securityOptions: 'SSL_OP_NO_SSLv3'
-        },
-        formData: {
-            Usuario: "epa",
-            Password: "wil2019tel"
-        }
-    };
-
-    let result = request.post(options, (err, httpResponse, body) => {
-        if (err) res.send(err);
-        res.status(200).send(body);
-    });
-
-    //console.log(result)
-
+    res.status(C.error.operation.OPERATION_NOT_IMPLEMENTED.httpCode).send(new
+    api.Error(C.error.operation.OPERATION_NOT_IMPLEMENTED));
 }
-
-setInterval(renewWiltelToken, 60 * 3600000);
-
-function renewWiltelToken() {
-    let options = {
-        url: 'https://ws.wiltel.com.ar/WS/CRM.asmx/LoginWOTT',
-        agentOptions: {
-            pfx: fs.readFileSync(WILTEL_KEY_PATH),
-            passphrase: 'Wiltel19',
-            securityOptions: 'SSL_OP_NO_SSLv3'
-        },
-        formData: {
-            Usuario: "epa",
-            Password: "wil2019tel"
-        },
-        headers: {
-            "User-Agent": USER_AGENT
-        }
-    };
-
-    request.post(options, (err, httpResponse, body) => {
-        if (err) res.send(err);
-        console.log("token actualizado ", body);
-        currentWiltelToken = body.substring(1, body.length - 1);
-    });
-}
-
-renewWiltelToken();
 
 function checkSubscriberCredentials(req, res) {
 
@@ -337,60 +147,11 @@ function checkSubscriberCredentials(req, res) {
                 if (storedSubscriber && storedSubscriber.password && storedSubscriber.password === password) {
                     res.status(200).send(new api.Success(storedSubscriber));
                 } else if (error) {
-
                     res.status(C.error.database.ERROR.httpCode).send(new
                     api.Error(C.error.database.ERROR));
-
                 } else {
-                    if (storedSubscriber) {
-                        const subscriberId = storedSubscriber.subscriberId;
-
-                        if (currentWiltelToken) {
-
-                            let options = {
-                                url: 'https://ws.wiltel.com.ar/WS/CRM.asmx/vpass',
-                                agentOptions: {
-                                    pfx: fs.readFileSync(WILTEL_KEY_PATH),
-                                    passphrase: 'Wiltel19',
-                                    securityOptions: 'SSL_OP_NO_SSLv3'
-                                },
-                                formData: {
-                                    id: subscriberId,
-                                    password: password,
-                                    auth_usuario: "epa",
-                                    auth_token: currentWiltelToken
-                                },
-                                headers: {
-                                    "User-Agent": USER_AGENT
-                                }
-                            };
-
-                            request.post(options, (err, httpResponse, response) => {
-                                if (err) {
-                                    res.status(C.error.connection.UNKNOWN.httpCode).send(new // TODO Replace with BAD GATEWAY
-                                    api.Error(C.error.connection.UNKNOWN));
-                                } else {
-
-                                    let responseJson = JSON.parse(response);
-
-                                    if (responseJson.error === 200) {
-                                        res.status(200).send(new api.Success(storedSubscriber));
-                                    } else {
-                                        res.send(responseJson)
-                                    }
-                                }
-
-                            });
-
-                        } else {
-                            res.status(C.error.connection.UNKNOWN.httpCode).send(new // TODO Replace with BAD GATEWAY
-                            api.Error(C.error.connection.UNKNOWN));
-                        }
-
-                    } else {
-                        res.status(C.error.userRights.NON_EXISTENT_USER.httpCode).send(new
-                        api.Error(C.error.userRights.NON_EXISTENT_USER));
-                    }
+                    res.status(C.error.userRights.NON_EXISTENT_USER.httpCode).send(new
+                    api.Error(C.error.userRights.NON_EXISTENT_USER));
                 }
             })
 
@@ -400,195 +161,9 @@ function checkSubscriberCredentials(req, res) {
         }
 
     } else {
-
         res.status(C.error.operation.OPERATION_INVALID_PARAMETERS.httpCode).send(new
         api.Error(C.error.operation.OPERATION_INVALID_PARAMETERS));
     }
-}
-
-function ABMPlayme(req, res) {
-
-    let db = pdc.db;
-
-    if (db) {
-
-        let {operador, sistema, operacion, suscriptor_id, email, timeout, productos, device_list, device_type_list, celular} = req.body;
-
-        if (operador && sistema && operacion && suscriptor_id) {
-
-            let products = typeof productos === "string" && productos.length !== 0 ? productos.split(",").filter(elem => elem !== '') : [];
-
-            if (operacion === db.Subscribers.UpdateHistoryType.Create) {
-
-                db.Subscribers
-                    .findOne({"subscriberId": suscriptor_id}, (error, data) => {
-                        if (error) {
-
-                            res.status(500).send({
-                                error: 0x0010,
-                                error_dsc: "Error en la base de datos"
-                            });
-                        } else {
-                            if (data) {
-
-                                res.status(200).send({
-                                    error: 0x0030,
-                                    error_dsc: "Subscriber ID duplicado."
-                                });
-                            } else {
-
-                                let json = {
-                                    operator: operador,
-                                    system: sistema,
-                                    subscriberId: suscriptor_id,
-                                    lastUpdate: new Date(),
-                                    creationDate: new Date(),
-                                    products: products,
-                                    updateHistory: [{
-                                        date: new Date(),
-                                        type: operacion,
-                                        products: products
-                                    }]
-                                };
-
-                                if (email) json.email = email;
-
-                                let Subscribers = new db.Subscribers(json);
-
-                                Subscribers.save(json, (err) => {
-                                    if (err) {
-                                        console.log(err);
-                                        res.status(500).send({
-                                            error: 0x0010,
-                                            error_dsc: "Error en la base de datos"
-                                        });
-                                    } else {
-                                        res.status(200).send({error: 0});
-                                    }
-
-                                });
-                            }
-                        }
-                    });
-
-            } else if (operacion === db.Subscribers.UpdateHistoryType.Update) {
-
-                db.Subscribers
-                    .findOne({"subscriberId": suscriptor_id}, (error, data) => {
-                        if (error) {
-                            console.log(error);
-                            res.status(500).send({
-                                error: 0x0010,
-                                error_dsc: "Error en la base de datos"
-                            });
-                        } else {
-                            if (data) {
-
-                                let query = {
-                                    subscriberId: suscriptor_id
-                                };
-
-                                let update = {
-                                    $set: {
-                                        operator: operador,
-                                        system: sistema,
-                                        lastUpdate: new Date()
-                                    }
-                                };
-
-                                update["$push"] = {};
-                                update["$push"].updateHistory = {
-                                    date: new Date(),
-                                    type: operacion
-                                };
-
-                                if (email) update["$set"].email = email;
-
-
-                                update["$set"].products = products;
-                                update["$push"].updateHistory.products = products;
-
-
-                                db.Subscribers.updateOne(query, update, (error, subscriber) => {
-                                    if (error) {
-                                        console.warn(error);
-                                        res.status(500).send({
-                                            error: 0x0010,
-                                            error_dsc: "Error en la base de datos"
-                                        });
-                                    } else {
-                                        res.send({error: 0});
-                                    }
-
-                                });
-                            } else {
-                                res.status(200).send({
-                                    error: 0x0031,
-                                    error_dsc: "No se encuentra un Subscriber para realizar un update."
-                                });
-                            }
-                        }
-                    });
-
-            } else if (operacion === db.Subscribers.UpdateHistoryType.Baja) {
-
-                db.Subscribers
-                    .findOne({"subscriberId": suscriptor_id}, (error, data) => {
-                        if (error) {
-                            console.log(error);
-                            res.status(500).send({
-                                error: 0x0010,
-                                error_dsc: "Error en la base de datos"
-                            });
-                        } else {
-                            if (data) {
-
-                                let query = {"subscriberId": suscriptor_id};
-
-                                db.Subscribers.remove(query, (error, subscriber) => {
-                                    if (error) {
-                                        console.warn(error);
-                                        res.status(500).send({
-                                            error: 0x0010,
-                                            error_dsc: "Error en la base de datos"
-                                        });
-                                    } else {
-                                        res.send({error: 0});
-                                    }
-
-                                });
-                            } else {
-                                res.status(200).send({
-                                    error: 0x0031,
-                                    error_dsc: "Suscriptor no encontrado."
-                                });
-                            }
-                        }
-                    });
-
-            } else {
-                res.status(400).send({
-                    error: 0x0020,
-                    error_dsc: "error en parametros"
-                });
-            }
-
-        } else {
-            res.status(400).send({
-                error: 0x0020,
-                error_dsc: "error en parametros"
-            });
-        }
-
-    } else {
-
-        res.status(500).send({
-            error: 0x0010,
-            error_dsc: "Error en la base de datos"
-        });
-    }
-
-
 }
 
 function getCurrentProgramme(req, res) {
