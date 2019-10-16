@@ -152,7 +152,7 @@ function _update(req, res) {
 
                 if (!error) {
                     if (data.nModified === 1) {
-                        api.send(api.Success({}));
+                        res.send(api.Success({}));
                     } else {
                         res.status(C.error.operation.TARGET_NOT_FOUND.httpCode).send(new
                         api.Error(C.error.operation.TARGET_NOT_FOUND));
