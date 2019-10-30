@@ -23,7 +23,6 @@
             function init(){
                 $NxApi.subscribers.read().then((data)=>{
                     $scope.subscribers = data.subscribers;
-
                     $scope.subscribers.map((subscriber)=>{
 
                         $NxApi.products.read({
@@ -33,10 +32,7 @@
                         })
 
                     });
-
-                    setTimeout(()=> $scope.loading = false,1000);
-
-
+                    $scope.loading = false
                 }).catch((e)=>{
                     console.error(e);
                 })

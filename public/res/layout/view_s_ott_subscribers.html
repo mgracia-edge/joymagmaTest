@@ -17,6 +17,9 @@
                         email
                     </th>
                     <th>
+                        name
+                    </th>
+                    <th>
                         packages
                     </th>
                     <th>
@@ -46,7 +49,9 @@
                 <tr ng-hide="loading"
                     ng-repeat="subscriber in subscribers | filter : search ">
                     <td>
-                        {{subscriber.subscriberId}}
+                        {{subscriber.cid}}
+                    </td><td>
+                        {{subscriber.name}}
                     </td>
                     <td>
                         {{subscriber.email}}
