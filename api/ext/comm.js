@@ -146,16 +146,15 @@ function _update(req, res) {
             if (email) updateQuery.email = email;
             if (password) updateQuery.password = password;
             if (name) updateQuery.name = name;
-            if (products) updateQuery.cid = products;
+            if (products) updateQuery.products = products;
 
             db.Subscriber.update(query, {$set: updateQuery}, function (error, data) {
 
                 if (!error) {
                     if (data.nModified === 1) {
-                        res.send(api.Success({}));
+                        res.send(new api.Success({n:data.nModified}));
                     } else {
-                        res.status(C.error.operation.TARGET_NOT_FOUND.httpCode).send(new
-                        api.Error(C.error.operation.TARGET_NOT_FOUND));
+                        res.send(new api.Success(C.error.operation.NOT_MODIFY))
                     }
                 } else {
                     res.status(C.error.database.OPERATION_ERROR.httpCode).send(new

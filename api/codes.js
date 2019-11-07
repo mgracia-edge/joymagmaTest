@@ -160,6 +160,11 @@ const errorCode = {
             message: "Cannot create, entity already exists.",
             httpCode: 409
 
+        },
+        NOT_MODIFY: {
+            code: 0X305,
+            message: "Not Modify.",
+            httpCode: 304
         }
     }
 };

@@ -82,6 +82,11 @@
                                 iconURL: "/res/drawable/ic_channel.svg",
                                 name: "Categories",
                                 path: "/s/ott/categories"
+                            },
+                            {
+                                iconURL: "/res/drawable/ic_notification.svg",
+                                name: "Notifications",
+                                path: "/s/ott/notifications"
                             }
                         ]
                     },
