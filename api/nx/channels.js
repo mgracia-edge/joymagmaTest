@@ -42,7 +42,7 @@ function _create(req, res) {
             return;
         }
 
-        const {channelEPGId, name, descriptionShort, descriptionLong,category,poster,notes,enabled} = req.body;
+        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled} = req.body;
 
         db.Channels
             .findOne({"name": name}, (error, data) => {
@@ -64,9 +64,9 @@ function _create(req, res) {
                                 type: db.Channels.publishingType.HLS,
                                 streamName: api.newStreamKeyCode()
                             },
-                            enabled:enabled,
-                            notes:notes,
-                            category:category,
+                            enabled: enabled,
+                            notes: notes,
+                            category: category,
                             entryPoint: {
                                 type: db.Channels.entryPoint.RTMP,
                                 streamKey: api.newStreamKeyCode()
@@ -85,12 +85,12 @@ function _create(req, res) {
                         if (typeof notes === 'undefined') delete json.notes;
                         if (typeof enabled === 'undefined') delete json.enabled;
 
-                        if(typeof poster !== 'undefined' && poster[0].update && poster[0].update === true){
+                        if (typeof poster !== 'undefined' && poster[0].update && poster[0].update === true) {
                             cloudinary.uploader.upload(poster[0].url, (result) => {
 
                                 let poster = {
-                                    url:result.url,
-                                    type:db.Channels.poster.LANDSCAPE
+                                    url: result.url,
+                                    type: db.Channels.poster.LANDSCAPE
                                 };
 
                                 json.poster = [poster];
@@ -98,11 +98,11 @@ function _create(req, res) {
                                 _create();
                             });
 
-                        }else{
+                        } else {
                             _create()
                         }
 
-                        function _create(){
+                        function _create() {
                             let Channels = new db.Channels(json);
 
                             Channels.save(json, (err) => {
@@ -143,9 +143,9 @@ function _read(req, res) {
             return;
         }
 
-        let {id,data} = req.body;
+        let {id, data} = req.body;
 
-        let { name, channelEPGId,includeUpdateHistory} = data;
+        let {name, channelEPGId, includeUpdateHistory} = data;
 
         let query = {
             find: {},
@@ -165,7 +165,7 @@ function _read(req, res) {
 
             query.find = {productName: Array.isArray(name) ? {$in: name} : name}
 
-        }else if(channelEPGId){
+        } else if (channelEPGId) {
             query.find = {channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : name}
         }
 
@@ -210,7 +210,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {channelEPGId, name, descriptionShort, descriptionLong,category, poster,notes,enabled} = data;
+        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, source} = data;
 
         let query = {
             find: {
@@ -224,7 +224,8 @@ function _update(req, res) {
                     descriptionShort: descriptionShort,
                     descriptionLong: descriptionLong,
                     category: category,
-                    notes:notes
+                    notes: notes,
+                    source: source
                 },
                 $push: {
                     updateHistory: {
@@ -245,12 +246,12 @@ function _update(req, res) {
 
         query.update.$push.updateHistory.payload = query.update.$set;
 
-        if(typeof poster !== 'undefined' && poster[0].update === true){
+        if (typeof poster !== 'undefined' && poster[0].update === true) {
             cloudinary.uploader.upload(poster[0].url, (result) => {
 
                 let poster = {
-                    url:result.url,
-                    type:db.Channels.poster.LANDSCAPE
+                    url: result.url,
+                    type: db.Channels.poster.LANDSCAPE
                 };
 
                 query.update["$set"].poster = [poster];
@@ -258,11 +259,11 @@ function _update(req, res) {
                 _update();
             });
 
-        }else{
+        } else {
             _update()
         }
 
-        function _update(){
+        function _update() {
             db.Channels.updateOne(query.find, query.update, (error, products) => {
                 if (error) {
                     res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
@@ -273,7 +274,6 @@ function _update(req, res) {
 
             });
         }
-
 
 
     } else {

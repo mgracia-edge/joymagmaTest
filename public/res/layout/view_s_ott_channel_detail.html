@@ -34,7 +34,9 @@
                     <item>
                         <label>Category</label>
                         <md-select ng-model="channelData.category">
-                            <md-option><em>None</em></md-option>
+                            <md-option>
+                                <em>None</em>
+                            </md-option>
                             <md-option ng-repeat="category in categories" ng-value="category._id">
                                 {{category.name}}
                             </md-option>
@@ -72,15 +74,39 @@
                     </item>
 
                     <item>
-                        <label>Entry Point</label>
-                        {{channelData.entryPoint.type}}
+                        <label>RTMP Entry Point</label>
+                        {{channelData.entryPoint.type}}:
                         {{channelData.entryPoint.streamKey}}
                     </item>
-
                     <item>
-                        <label>Notes</label>
-                        <textarea ng-model="channelData.notes" cols="40" rows="8"></textarea>
+                        <label>Push Entry Point Id</label>
+                        <input type="text" ng-model="channelData.source.entrypointId">
                     </item>
+                    <div layout="row">
+                        <item>
+                            <label>Source IP</label>
+                            <input type="text" ng-model="channelData.source.ip"
+                                   style="width: 150px;margin-right: 16px">
+                        </item>
+                        <item>
+                            <label>PORT</label>
+                            <input type="text" ng-model="channelData.source.port"
+                                   style="width: 60px">
+                        </item>
+                    </div>
+                    <div layout="row">
+                        <item>
+                            <label>Audio ID</label>
+                            <input type="text" ng-model="channelData.source.audioPkgId"
+                                   style="width: 106px;margin-right: 16px">
+                        </item>
+
+                        <item>
+                            <label>Video ID</label>
+                            <input type="text" ng-model="channelData.source.videoPkgId"
+                                   style="width: 106px;">
+                        </item>
+                    </div>
                 </div>
 
             </div>
