@@ -16,6 +16,11 @@ exports.resourceList = [
         callback: _entrypoin_get_config,
         method: "post",
         protected: false
+    },{
+        path: "entrypoint/get_channel",
+        callback: _get_channel,
+        method: "post",
+        protected: false
     }
 ];
 
@@ -29,6 +34,20 @@ function _entrypoin_get_config(req, res) {
     if (db) {
         db.Channels.find({"source.entrypointId": req.body.entrypointId}, function (error, channels) {
             res.send(new api.Success(channels));
+        })
+    } else {
+        res.status(C.error.database.DISCONNECTED.httpCode).send(new
+        api.Error(C.error.database.DISCONNECTED));
+    }
+}
+
+function _get_channel(req, res) {
+
+    const db = pdc.db;
+
+    if (db) {
+        db.Channels.findeOne({"entryPoint.streamKey": req.streamKey}, function (error, channel) {
+            res.send(new api.Success(channel));
         })
     } else {
         res.status(C.error.database.DISCONNECTED.httpCode).send(new
