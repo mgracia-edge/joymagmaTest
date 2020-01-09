@@ -46,7 +46,7 @@ function _get_channel(req, res) {
     const db = pdc.db;
 
     if (db) {
-        db.Channels.findeOne({"entryPoint.streamKey": req.streamKey}, function (error, channel) {
+        db.Channels.findOne({"entryPoint.streamKey": req.body.streamKey}, function (error, channel) {
             res.send(new api.Success(channel));
         })
     } else {
