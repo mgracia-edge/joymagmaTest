@@ -17,7 +17,7 @@ exports.resourceList = [
         method: "post",
         protected: false
     },{
-        path: "entrypoint/get_channel",
+        path: "channel/get",
         callback: _get_channel,
         method: "post",
         protected: false
