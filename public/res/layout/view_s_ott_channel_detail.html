@@ -78,6 +78,15 @@
                         {{channelData.entryPoint.type}}:
                         {{channelData.entryPoint.streamKey}}
                     </item>
+
+                    <item>
+                        <label>Transcoder Id</label>
+                        <input type="text" ng-model="channelData.transcoder">
+                    </item>
+
+                    <item class="separator">
+                        <label>Source</label>
+                    </item>
                     <item>
                         <label>Push Entry Point Id</label>
                         <input type="text" ng-model="channelData.source.entrypointId">
@@ -107,6 +116,10 @@
                                    style="width: 106px;">
                         </item>
                     </div>
+                    <item>
+                        <label>UDP Params Overload</label>
+                        <input type="text" ng-model="channelData.source.udpQuery" placeholder="(Use & prefix to append)">
+                    </item>
                 </div>
 
             </div>

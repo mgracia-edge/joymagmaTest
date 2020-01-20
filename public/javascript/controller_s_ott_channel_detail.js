@@ -24,7 +24,8 @@
             descriptionLong: '',
             poster: [],
             notes: '',
-            enabled: false
+            enabled: false,
+            transcoder: null
         };
 
         $scope.uploadImage = uploadImage;
@@ -210,7 +211,7 @@
                     $NxApi.channels
                         .update($scope.channelData)
                         .then(() => {
-                            $scope.$parent.toast('The channel was update');
+                            $scope.$parent.toast('Channel updated');
                             $scope.loading = false;
                             if ($scope.channelData.poster) $scope.channelData.poster.update = false;
 

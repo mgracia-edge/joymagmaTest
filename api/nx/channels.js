@@ -210,7 +210,10 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, source} = data;
+        const {
+            channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, source,
+            transcoder, profile
+        } = data;
 
         let query = {
             find: {
@@ -225,7 +228,9 @@ function _update(req, res) {
                     descriptionLong: descriptionLong,
                     category: category,
                     notes: notes,
-                    source: source
+                    source: source,
+                    transcoder: transcoder,
+                    profile: profile
                 },
                 $push: {
                     updateHistory: {

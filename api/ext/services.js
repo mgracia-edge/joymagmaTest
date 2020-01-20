@@ -13,7 +13,12 @@ const API_KEY = "C9U-7S6-FV1-AQ7";
 exports.resourceList = [
     {
         path: "entrypoint/get_config",
-        callback: _entrypoin_get_config,
+        callback: _entrypoint_get_config,
+        method: "post",
+        protected: false
+    },{
+        path: "entrypoint/post_status",
+        callback: _entrypoint_post_status,
         method: "post",
         protected: false
     },{
@@ -27,7 +32,7 @@ exports.resourceList = [
 /** API Interface  ***/
 
 
-function _entrypoin_get_config(req, res) {
+function _entrypoint_get_config(req, res) {
 
     const db = pdc.db;
 
@@ -47,6 +52,20 @@ function _get_channel(req, res) {
 
     if (db) {
         db.Channels.findOne({"entryPoint.streamKey": req.body.streamKey}, function (error, channel) {
+            res.send(new api.Success(channel));
+        })
+    } else {
+        res.status(C.error.database.DISCONNECTED.httpCode).send(new
+        api.Error(C.error.database.DISCONNECTED));
+    }
+}
+
+function _entrypoint_post_status(req, res) {
+
+    const db = pdc.db;
+
+    if (db) {
+        db.Channels.update({"_id": req.body.channelId,}, function (error, channel) {
             res.send(new api.Success(channel));
         })
     } else {

@@ -168,6 +168,11 @@ md-menu-content {
     display: flex;
     margin: 4px 0;
 
+    &.separator {
+      margin-top: 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+    }
+
     div[layout="row"] {
       input {
         margin: 0 8px 0 0;
