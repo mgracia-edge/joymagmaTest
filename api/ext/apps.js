@@ -551,6 +551,10 @@ function getSubscriberContents(req, res) {
 
                         for (let channel of channels) {
 
+
+                            if(!channel || !channel.enabled) continue;
+
+
                             if (categories[channel.category]) {
                                 categories[channel.category].push(channel)
                             } else {
