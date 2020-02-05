@@ -212,7 +212,7 @@ function _update(req, res) {
 
         const {
             channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, source,
-            transcoder, profile, deinterlace
+            transcoder, profile, deinterlace, aspectRatio
         } = data;
 
         let query = {
