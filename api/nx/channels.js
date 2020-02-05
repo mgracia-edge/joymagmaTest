@@ -231,7 +231,8 @@ function _update(req, res) {
                     source: source,
                     transcoder: transcoder,
                     profile: profile,
-                    deinterlace: deinterlace
+                    deinterlace: deinterlace,
+                    aspectRatio: aspectRatio
                 },
                 $push: {
                     updateHistory: {

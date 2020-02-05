@@ -70,6 +70,13 @@
                         <md-switch ng-model="channelData.deinterlace" aria-label="Switch 1">Deinterlace</md-switch>
                     </item>
 
+                    <item>
+                        <label>Aspect Ratio</label>
+                        <input type="text" ng-model="channelData.aspectRatio" aria-label="Aspect Ratio"
+                               title="Aspect Ratio"
+                               autocomplete="off">
+                    </item>
+
                 </div>
                 <div layout="column" style="margin-left: 20px" ng-show="!isNew">
                     <item>
