@@ -212,7 +212,7 @@ function _update(req, res) {
 
         const {
             channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, source,
-            transcoder, profile
+            transcoder, profile, deinterlace
         } = data;
 
         let query = {
@@ -230,7 +230,8 @@ function _update(req, res) {
                     notes: notes,
                     source: source,
                     transcoder: transcoder,
-                    profile: profile
+                    profile: profile,
+                    deinterlace: deinterlace
                 },
                 $push: {
                     updateHistory: {

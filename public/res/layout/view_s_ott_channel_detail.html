@@ -64,6 +64,12 @@
                                   autocomplete="off" rows="4">
                         </textarea>
                     </item>
+
+                    <item>
+                        <label>Options</label>
+                        <md-switch ng-model="channelData.deinterlace" aria-label="Switch 1">Deinterlace</md-switch>
+                    </item>
+
                 </div>
                 <div layout="column" style="margin-left: 20px" ng-show="!isNew">
                     <item>
@@ -87,6 +93,7 @@
                     <item class="separator">
                         <label>Source</label>
                     </item>
+
                     <item>
                         <label>Push Entry Point Id</label>
                         <input type="text" ng-model="channelData.source.entrypointId">
