@@ -407,6 +407,7 @@ function getChannels(req, res) {
                     enabled: true
                 },
                 sort: {
+                    priority: -1,
                     name: 1
                 }
             }
@@ -416,6 +417,7 @@ function getChannels(req, res) {
             query = {
                 find: {},
                 sort: {
+                    priority: -1,
                     name: 1
                 }
             };
@@ -426,6 +428,7 @@ function getChannels(req, res) {
                     _id: Array.isArray(channelId) ? {$in: channelId} : channelId
                 },
                 sort: {
+                    priority: -1,
                     name: 1
                 }
             };
