@@ -50,12 +50,23 @@
                                autocomplete="off">
                     </item>
 
-                    <item>
-                        <label>EPG Source Id</label>
-                        <input type="text" ng-model="channelData.channelEPGId" aria-label="first name"
-                               title="first name"
-                               autocomplete="off">
-                    </item>
+                    <div layout="row">
+                        <item flex>
+                            <label>Priority</label>
+                            <input type="text" ng-model="channelData.priority" aria-label="first name"
+                                   title="priority"
+                                   autocomplete="off"
+                                   style="width: 100px;">
+                        </item>
+                        <div style="width: 20px;"></div>
+                        <item flex>
+                            <label>EPG Source Id</label>
+                            <input type="text" ng-model="channelData.channelEPGId" aria-label="first name"
+                                   title="first name"
+                                   autocomplete="off"
+                                   style="width: 100px;">
+                        </item>
+                    </div>
 
                     <item>
                         <label>Large description</label>
@@ -134,7 +145,8 @@
                     </div>
                     <item>
                         <label>UDP Params Overload</label>
-                        <input type="text" ng-model="channelData.source.udpQuery" placeholder="(Use & prefix to append)">
+                        <input type="text" ng-model="channelData.source.udpQuery"
+                               placeholder="(Use & prefix to append)">
                     </item>
                 </div>
 
