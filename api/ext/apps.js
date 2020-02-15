@@ -530,13 +530,13 @@ function getSubscriberContents(req, res) {
             if (subscriber) {
                 let categories = [];
                 let channels = [];
-                let p = [];
+                let productsQueries = [];
 
                 for (let product of subscriber.products) {
-                    p.push(getChannelsFor(product))
+                    productsQueries.push(getChannelsFor(product))
                 }
 
-                Promise.all(p).then((products) => {
+                Promise.all(productsQueries).then((products) => {
 
                     for (let product of products) {
                         for (let channelId of product.channels) {
@@ -544,13 +544,19 @@ function getSubscriberContents(req, res) {
                         }
                     }
 
-                    let p = [];
+                    let channelsQueries = [];
 
                     for (let channelId in channels) {
-                        p.push(getChannel(channelId));
+                        channelsQueries.push(getChannel(channelId));
                     }
 
-                    Promise.all(p).then((channels) => {
+                    Promise.all(channelsQueries).then((channels) => {
+
+                        channels.sort((a,b)=>{
+                            let p1 = a&&a.priority?a.priority:100;
+                            let p2 = b&&b.priority?b.priority:100;
+                            return p1 - p2;
+                        });
 
                         for (let channel of channels) {
 
