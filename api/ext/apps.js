@@ -24,6 +24,7 @@ function updateOttConfig() {
     }
 }
 
+
 exports.resourceList = [
     {
         path: "verify",
@@ -108,6 +109,11 @@ exports.resourceList = [
         callback: check_asset_access,
         method: "post",
         protected: false
+    }, {
+        path: "get_promo_channels",
+        callback: get_promo_channels,
+        method: "post",
+        protected: false
     }
 ];
 
@@ -125,11 +131,42 @@ function listProgramme() {
 
 }
 
-/** API Interface Wiltel ***/
+/** API Interface Joy ***/
 
 function LoginWOTT(req, res) {
     res.status(C.error.operation.OPERATION_NOT_IMPLEMENTED.httpCode).send(new
     api.Error(C.error.operation.OPERATION_NOT_IMPLEMENTED));
+}
+
+function get_promo_channels(req, res) {
+    req.send([
+        {
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582047140/HBO%20GO.jpg",
+            action: "playStore",
+            appId: "com.hbo.broadband",
+            uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband&hl=en",
+            scope: "mobile"
+        },
+        {
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582047140/HBO%20GO.jpg",
+            action: "playStore",
+            appId: "com.hbo.broadband",
+            uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband&hl=en",
+            scope: "tv"
+        }, {
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582050637/fox.jpg",
+            action: "playStore",
+            appId: "com.moviecity.app",
+            uri: "https://play.google.com/store/apps/details?id=com.moviecity.app",
+            scope: "mobile"
+        }, {
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582050637/fox.jpg",
+            action: "playStore",
+            appId: "com.moviecity.app",
+            uri: "https://play.google.com/store/apps/details?id=com.moviecity.app",
+            scope: "mobile"
+        }
+    ])
 }
 
 function checkSubscriberCredentials(req, res) {
@@ -552,16 +589,16 @@ function getSubscriberContents(req, res) {
 
                     Promise.all(channelsQueries).then((channels) => {
 
-                        channels.sort((a,b)=>{
-                            let p1 = a&&a.priority?a.priority:100;
-                            let p2 = b&&b.priority?b.priority:100;
+                        channels.sort((a, b) => {
+                            let p1 = a && a.priority ? a.priority : 100;
+                            let p2 = b && b.priority ? b.priority : 100;
                             return p1 - p2;
                         });
 
                         for (let channel of channels) {
 
 
-                            if(!channel || !channel.enabled) continue;
+                            if (!channel || !channel.enabled) continue;
 
 
                             if (categories[channel.category]) {
