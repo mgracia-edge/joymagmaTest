@@ -164,7 +164,7 @@ function get_promo_channels(req, res) {
             action: "playStore",
             appId: "com.moviecity.app",
             uri: "https://play.google.com/store/apps/details?id=com.moviecity.app",
-            scope: "mobile"
+            scope: "tv"
         }
     ])
 }
