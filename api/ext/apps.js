@@ -139,7 +139,7 @@ function LoginWOTT(req, res) {
 }
 
 function get_promo_channels(req, res) {
-    req.send([
+    res.send([
         {
             poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582047140/HBO%20GO.jpg",
             action: "playStore",
