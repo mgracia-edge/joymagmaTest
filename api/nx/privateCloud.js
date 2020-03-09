@@ -1,7 +1,7 @@
 const request = require("request");
 const codes = require('../codes');
 const api = require('../support');
-const ROOT = "http://200.2.125.60:10888/api/";
+const ROOT = "http://131.255.63.147:10888/api/";
 
 exports.resourceList = [
     {
