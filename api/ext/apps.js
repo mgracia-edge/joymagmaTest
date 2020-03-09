@@ -141,29 +141,47 @@ function LoginWOTT(req, res) {
 function get_promo_channels(req, res) {
     res.send([
         {
-            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582047140/HBO%20GO.jpg",
+            name: "HBO GO",
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1583795150/HBO_GO.jpg",
             action: "playStore",
-            appId: "com.hbo.broadband",
-            uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband&hl=en",
+            appId: "com.hbo",
+            uri: "https://play.google.com/store/apps/details?id=com.hbo",
             scope: "mobile"
         },
         {
-            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582047140/HBO%20GO.jpg",
+            name: "HBO GO",
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1583795150/HBO_GO.jpg",
             action: "playStore",
-            appId: "com.hbo.broadband",
-            uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband&hl=en",
+            appId: "com.hbo.go",
+            uri: "https://play.google.com/store/apps/details?id=com.hbo.go",
             scope: "tv"
         }, {
-            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582050637/fox.jpg",
+            name: "FOX GO",
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1583796318/fox_go_2.jpg",
             action: "playStore",
             appId: "com.moviecity.app",
             uri: "https://play.google.com/store/apps/details?id=com.moviecity.app",
             scope: "mobile"
         }, {
-            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582050637/fox.jpg",
+            name: "FOX GO",
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1583796318/fox_go_2.jpg",
             action: "playStore",
             appId: "com.moviecity.app",
             uri: "https://play.google.com/store/apps/details?id=com.moviecity.app",
+            scope: "tv"
+        }, {
+            name: "Netflix",
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1583796318/netflix.jpg",
+            action: "playStore",
+            appId: "com.netflix.mediaclient",
+            uri: "https://play.google.com/store/apps/details?id=com.netflix.mediaclient",
+            scope: "mobile"
+        }, {
+            name: "Netflix",
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1583796318/netflix.jpg",
+            action: "playStore",
+            appId: "com.netflix.ninja",
+            uri: "https://play.google.com/store/apps/details?id=com.netflix.ninja",
             scope: "tv"
         }
     ])
