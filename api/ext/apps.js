@@ -144,16 +144,16 @@ function get_promo_channels(req, res) {
             name: "HBO GO",
             poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1583795150/HBO_GO.jpg",
             action: "playStore",
-            appId: "com.hbo",
-            uri: "https://play.google.com/store/apps/details?id=com.hbo",
+            appId: "com.hbo.broadband",
+            uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband",
             scope: "mobile"
         },
         {
             name: "HBO GO",
             poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1583795150/HBO_GO.jpg",
             action: "playStore",
-            appId: "com.hbo.go",
-            uri: "https://play.google.com/store/apps/details?id=com.hbo.go",
+            appId: "com.hbo.broadband",
+            uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband",
             scope: "tv"
         }, {
             name: "FOX GO",
