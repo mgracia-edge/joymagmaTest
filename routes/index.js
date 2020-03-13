@@ -82,25 +82,16 @@ function index(req, res) {
 function mediaMonitor(req, res) {
     let db = dc.db;
     if (db) {
-        db.Channels.find({enabled: true}, (error, enabledChannels) => {
-
-            let {p, q} = req.query;
+        let {p, q} = req.query;
+        db.Channels.find({enabled: true}).skip(p * q).limit(+q).then(enabledChannels => {
 
             let list = [];
-
-            for (let i in enabledChannels) {
-
-                if (i >= (p) * q && i < (p + 1) * (q)) {
-                    console.log(1)
-                    list.push({
-                        hash: enabledChannels[i]._id,
-                        name: enabledChannels[i].name,
-                        hls: `https://joy.nx-pc.edge-apps.net/hls/${enabledChannels[i].publishing[0].streamName}_360p/index.m3u8`
-                    });
-                } else {
-                    console.log(0)
-                }
-
+            for (let channel of enabledChannels) {
+                list.push({
+                    hash: channel._id,
+                    name: channel.name,
+                    hls: `https://joy.nx-pc.edge-apps.net/hls/${channel.publishing[0].streamName}_360p/index.m3u8`
+                });
             }
             let h,w;
             if (req.query.h && req.query.w) {
@@ -116,7 +107,6 @@ function mediaMonitor(req, res) {
                 h = 150;
                 w = Math.round(150*1.777);
             }
-
             res.render('monitor', {channels: list, h: h, w: w});
 
         });
