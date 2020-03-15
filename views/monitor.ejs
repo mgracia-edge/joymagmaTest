@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
-<body ng-app="NxStudio" ng-cloak ng-controller="MainCtrl" layout="row">
+<body ng-app="NxStudio" ng-cloak ng-controller="MainCtrl" style=" display: flex; flex-wrap: wrap;">
 <style>
 
     .vpb {
@@ -39,8 +39,29 @@
 </style>
 
 <% channels.forEach(function(channel){ %>
-    <video id="vpb-<%= channel.hash %>" class="vpb">
-    </video>
+    <div style="position: relative; margin-left: 2px; margin-right: 2px;">
+        <video id="vpb-<%= channel.hash %>" class="vpb"></video>
+        <div style="
+            height: 30px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+            padding-top: 10px;
+            position: absolute;
+            left: 0px;
+            bottom: 0;
+            width: 50%;
+            margin-left: 25%;
+            display: inline-block;
+            text-align: center;
+            background-color: black;
+            border-radius: 20px;
+            background-color:rgba(0,0,0, 0.5);"
+            >
+            <span style="opacity: 1"><%=channel.name%></span>
+        </div>
+    </div>
     <script>
         (function (divId, hlsURL) {
             var video = document.getElementById(divId);
