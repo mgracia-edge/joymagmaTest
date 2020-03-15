@@ -150,7 +150,7 @@ function get_promo_channels(req, res) {
         },
         {
             name: "HBO GO",
-            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582047140/HBO%20GO.jpg",
+            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582047140/HBO%20GO.jpg:",
             action: "playStore",
             appId: "com.hbo.broadband.view.activity.main",
             uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband",
