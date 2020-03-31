@@ -83,7 +83,13 @@ function mediaMonitor(req, res) {
     let db = dc.db;
     if (db) {
         let {p, q} = req.query;
-        db.Channels.find({enabled: true}).sort({"monitoring.priority":-1}).skip(p * q).limit(q).then(enabledChannels => {
+        db.Channels.find({enabled: true}).sort({"monitoring.priority":-1}).skip(p * q).limit(parseInt(q)).exec((error, enabledChannels) => {
+
+            if(error){
+                console.error(error);
+                res.send(error);
+                return
+            }
 
             let list = [];
             for (let channel of enabledChannels) {
