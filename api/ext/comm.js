@@ -34,7 +34,14 @@ exports.resourceList = [
         callback: _delete,
         method: "post",
         protected: false
+    },
+    {
+        path: "channel/restart",
+        callback: _channel_restart,
+        method: "post",
+        protected: false
     }
+
 ];
 
 /** API Interface  ***/
@@ -209,5 +216,10 @@ function _delete(req, res) {
         res.status(C.error.operation.OPERATION_INVALID_PARAMETERS.httpCode).send(new
         api.Error(C.error.operation.OPERATION_INVALID_PARAMETERS));
     }
+
+}
+
+function _channel_restart(req, res) {
+    // TODO TErimanr esto
 
 }

@@ -117,20 +117,6 @@ exports.resourceList = [
     }
 ];
 
-/** Programme Update Service ***/
-
-function listProgramme() {
-    return new Promise((resolve, reject) => {
-        parseString(fs.readFileSync(path.join(__dirname, '../../res/reporttv/file.xml'), 'latin1'), (err, result) => {
-            if (err) reject(err);
-
-            resolve(result.tv.programme)
-        });
-    })
-
-
-}
-
 /** API Interface Joy ***/
 
 function LoginWOTT(req, res) {

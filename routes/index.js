@@ -83,7 +83,7 @@ function mediaMonitor(req, res) {
     let db = dc.db;
     if (db) {
         let {p, q} = req.query;
-        db.Channels.find({enabled: true}).skip(p * q).limit(+q).then(enabledChannels => {
+        db.Channels.find({enabled: true}).sort({"monitoring.priority":-1}).skip(p * q).limit(q).then(enabledChannels => {
 
             let list = [];
             for (let channel of enabledChannels) {
@@ -94,6 +94,7 @@ function mediaMonitor(req, res) {
                 });
             }
             let h,w;
+
             if (req.query.h && req.query.w) {
                 h = req.query.h;
                 w = req.query.w;
@@ -107,6 +108,7 @@ function mediaMonitor(req, res) {
                 h = 150;
                 w = Math.round(150*1.777);
             }
+
             res.render('monitor', {channels: list, h: h, w: w});
 
         });
