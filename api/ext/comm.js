@@ -36,8 +36,14 @@ exports.resourceList = [
         protected: false
     },
     {
-        path: "channel/restart",
+        path: "channel_restart",
         callback: _channel_restart,
+        method: "post",
+        protected: false
+    },
+    {
+        path: "channel_get",
+        callback: _channel_get,
         method: "post",
         protected: false
     }
@@ -159,7 +165,7 @@ function _update(req, res) {
 
                 if (!error) {
                     if (data.nModified === 1) {
-                        res.send(new api.Success({n:data.nModified}));
+                        res.send(new api.Success({n: data.nModified}));
                     } else {
                         res.send(new api.Success(C.error.operation.NOT_MODIFY))
                     }
@@ -220,6 +226,54 @@ function _delete(req, res) {
 }
 
 function _channel_restart(req, res) {
-    // TODO TErimanr esto
+    let db = pdc.db;
+    let {id} = req.body;
+
+    if (db) {
+
+        let query = {_id: id};
+
+        db.Channels.findOne(query, function (error, data) {
+            if (data) {
+                res.send(new api.Success({}));
+            } else if (!error) {
+                res.status(C.error.operation.TARGET_NOT_FOUND.httpCode).send(new
+                api.Error(C.error.operation.TARGET_NOT_FOUND));
+            } else {
+                res.status(C.error.operation.OPERATION_HAS_FAILED.httpCode).send(new
+                api.Error(C.error.operation.OPERATION_HAS_FAILED));
+            }
+        })
+
+    } else {
+        res.status(C.error.database.DISCONNECTED.httpCode).send(new
+        api.Error(C.error.database.DISCONNECTED));
+    }
+
+}
+
+function _channel_get(req, res) {
+
+    let db = pdc.db;
+
+
+    if (db) {
+
+        let query = {enabled: true};
+
+        db.Channels.find(query, function (error, data) {
+
+            if (!error) {
+                res.send(new api.Success(data));
+            } else {
+                res.status(C.error.database.OPERATION_ERROR.httpCode).send(new
+                api.Error(C.error.database.OPERATION_ERROR));
+            }
+        })
+
+    } else {
+        res.status(C.error.database.DISCONNECTED.httpCode).send(new
+        api.Error(C.error.database.DISCONNECTED));
+    }
 
 }
