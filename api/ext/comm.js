@@ -229,13 +229,30 @@ function _channel_restart(req, res) {
     let db = pdc.db;
     let {id} = req.body;
 
+    const EP = {
+        'EP-01':'131.255.63.146',
+        'EP-02':'131.255.63.155'
+    };
+
     if (db) {
 
         let query = {_id: id};
 
         db.Channels.findOne(query, function (error, data) {
-            if (data) {
-                res.send(new api.Success({}));
+            if (data && data.source) {
+                const ep = EP[data.source.entrypointId];
+                const URL = `http://${ep}/restart/${data.entryPoint.streamKey}`;
+
+                request(URL, function (error, response, body) {
+                    if(error){
+                        res.status(C.error.operation.OPERATION_HAS_FAILED.httpCode).send(new
+                            api.Error(C.error.operation.OPERATION_HAS_FAILED)
+                        );
+                    }else{
+                        res.send(new api.Success({serverResponse: body}));
+                    }
+                });
+
             } else if (!error) {
                 res.status(C.error.operation.TARGET_NOT_FOUND.httpCode).send(new
                 api.Error(C.error.operation.TARGET_NOT_FOUND));
