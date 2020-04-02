@@ -10,9 +10,15 @@ const pdc = require("../../lib/dataConnection");
 
 let ottConfig = [];
 
-pdc.on("connected", updateOttConfig);
+pdc.on("connected", () => {
+    updateOttConfig();
+    preChacheDays();
+
+});
 
 setInterval(updateOttConfig, 60000);
+setInterval(preChacheDays, 1800000);
+
 
 function updateOttConfig() {
     let db = pdc.db;
@@ -109,7 +115,8 @@ exports.resourceList = [
         callback: check_asset_access,
         method: "post",
         protected: false
-    }, {
+    },
+    {
         path: "get_promo_channels",
         callback: get_promo_channels,
         method: "post",
@@ -319,15 +326,24 @@ function getAWeek(req, res) {
 let getDayCache = [];
 
 function getADay(req, res) {
+    let startDate = Date.now();
+    let justChache = null;
 
+    if (!res) {
+        console.log(`Caching day ${req}`);
+        justChache = req;
+    }
+
+    let channelEPGId = justChache!==null ? justChache : req.body.channelEPGId;
 
     for (let i in getDayCache) {
         let cache = getDayCache[i];
-        if (cache.channelEPGId === req.body.channelEPGId) {
+        if (cache.channelEPGId === channelEPGId) {
 
             if (cache.expires > Date.now()) {
                 console.log("cache hit");
                 res.status(200).send(cache.data);
+                console.log(`Day data delivered from cache / ${Date.now() - startDate} ms`);
                 return;
             } else {
                 console.log("cache delete");
@@ -338,19 +354,17 @@ function getADay(req, res) {
         }
     }
 
-
     let db = pdc.db;
 
     if (db) {
 
-        let channelEPGId = req.body.channelEPGId;
-
         if (!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
-
-            res.status(400).send({
-                error: 0x0022,
-                error_dsc: "channelEPGId debe ser del tipo INT o [INT]"
-            });
+            if (justChache === null) {
+                res.status(400).send({
+                    error: 0x0022,
+                    error_dsc: "channelEPGId debe ser del tipo INT o [INT]"
+                });
+            }
 
             return false
         }
@@ -376,11 +390,30 @@ function getADay(req, res) {
             }
         };
 
+        console.log(query);
+
         db.Programme
             .find(query.find)
             .sort(query.sort)
             .lean()
-            .then((programmes) => {
+            .then((dbp) => {
+                console.log(`Day data fetched from db / ${Date.now() - startDate} ms`);
+
+                let programmes = [];
+
+                if (dbp.length !== 0) {
+                    let lastStop = dbp[0].stop.getTime();
+                    for (let i = 1; i < dbp.length; i++) {
+
+                        if (lastStop > dbp[i].start.getTime()) {
+                            continue;
+                        }
+
+                        programmes.push(dbp[i]);
+                        lastStop = dbp[i].stop.getTime();
+                    }
+                }
+
                 let check = 0;
                 for (let i in programmes) {
 
@@ -405,19 +438,49 @@ function getADay(req, res) {
                     check += p.last
                 }
 
-                console.log("cache store");
+
+                if (programmes.length === 0) {
+                    let delta = (day.getTime() - today.getTime()) / 3600000;
+
+                    for (let i = 0; i < delta; i++) {
+
+                        programmes.push({
+                            "_id": "",
+                            "start": new Date(today.getTime() + 3600000 * i),
+                            "stop": new Date(today.getTime() + 3600000 * (i + 1)),
+                            "title": "No hay información.",
+                            "description": "No hay información relacionada con este programa.",
+                            "channelEPGId": 0,
+                            "deltaStart": 60 * i,
+                            "deltaStop": 60 * (i + 1),
+                            "last": 60
+                        })
+
+                    }
+                }
+
                 getDayCache.push({
                     channelEPGId: channelEPGId,
                     expires: Date.now() + 3600000,
                     data: programmes
                 });
 
-                res.status(200).send(programmes);
+                if (justChache === null) {
+                    res.status(200).send(programmes);
+                }
+
+                console.log(`Day data fetched processed / ${Date.now() - startDate} ms`);
+
             }).catch((error) => {
-            res.status(500).send({
-                error: 0x0010,
-                error_dsc: "Error en la base de datos"
-            });
+            console.error(error);
+
+            if (justChache === null) {
+                res.status(500).send({
+                    error: 0x0010,
+                    error_dsc: "Error en la base de datos"
+                });
+            }
+
         })
 
     } else {
@@ -956,4 +1019,22 @@ function check_asset_access(req, res) {
         }));
 
     }
+}
+
+
+function preChacheDays() {
+
+    let db = pdc.db;
+
+    if (db) {
+        db.Channels.find({enabled: true}, function (error, data) {
+
+            for (let i in data) {
+                getADay(parseInt(data[i].channelEPGId));
+            }
+
+        });
+
+    }
+
 }
