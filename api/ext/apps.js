@@ -13,7 +13,6 @@ let ottConfig = [];
 pdc.on("connected", () => {
     updateOttConfig();
     preChacheDays();
-
 });
 
 setInterval(updateOttConfig, 60000);
