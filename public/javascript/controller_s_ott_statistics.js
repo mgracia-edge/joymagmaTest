@@ -114,18 +114,15 @@
                 };
 
                 $scope.filters.dates.onDateChanged = () => {
-                    drawChart();
+                    getData().then(drawChart);
+
                 };
 
                 $timeout(() => {
+                    getData().then(drawChart);
+                }, 0);
 
-                    drawChart();
-
-                }, 1000);
-
-                function drawChart() {
-
-                    let data = getData();
+                function drawChart(data) {
 
                     let char_labels = data.date;
                     let chart_data_active = data.active;
@@ -202,437 +199,47 @@
                 }
 
                 function getData() {
+                    return new Promise((resolve, reject) => {
 
-                    $scope.summary = {
-                        new: 0,
-                        deletion: 0,
-                        active: 0
-                    };
+                        $scope.summary = {
+                            new: 0,
+                            deletion: 0,
+                            active: 0
+                        };
 
-                    let data = [
-                        {
-                            date: new Date("2019-08-01"),
-                            active: 41,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-02"),
-                            active: 41,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-03"),
-                            active: 41,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-04"),
-                            active: 41,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-05"),
-                            active: 41,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-06"),
-                            active: 41,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-07"),
-                            active: 41,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-08"),
-                            active: 42,
-                            new: 1,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-09"),
-                            active: 43,
-                            new: 1,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-10"),
-                            active: 43,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-11"),
-                            active: 43,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-12"),
-                            active: 44,
-                            new: 1,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-13"),
-                            active: 46,
-                            new: 2,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-14"),
-                            active: 46,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-15"),
-                            active: 46,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-16"),
-                            active: 55,
-                            new: 9,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-17"),
-                            active: 55,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-18"),
-                            active: 55,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-19"),
-                            active: 62,
-                            new: 7,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-20"),
-                            active: 65,
-                            new: 3,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-21"),
-                            active: 68,
-                            new: 3,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-21"),
-                            active: 93,
-                            new: 25,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-23"),
-                            active: 105,
-                            new: 12,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-24"),
-                            active: 105,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-25"),
-                            active: 105,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-26"),
-                            active: 122,
-                            new: 17,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-27"),
-                            active: 144,
-                            new: 20,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-28"),
-                            active: 155,
-                            new: 11,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-29"),
-                            active: 171,
-                            new: 16,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-30"),
-                            active: 181,
-                            new: 10,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-08-31"),
-                            active: 181,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-01"),
-                            active: 181,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-02"),
-                            active: 192,
-                            new: 11,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-03"),
-                            active: 202,
-                            new: 10,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-04"),
-                            active: 212,
-                            new: 10,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-05"),
-                            active: 221,
-                            new: 9,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-06"),
-                            active: 234,
-                            new: 13,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-07"),
-                            active: 234,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-08"),
-                            active: 234,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-09"),
-                            active: 235,
-                            new: 1,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-10"),
-                            active: 245,
-                            new: 10,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-11"),
-                            active: 248,
-                            new: 3,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-12"),
-                            active: 234,
-                            new: 6,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-13"),
-                            active: 239,
-                            new: 5,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-14"),
-                            active: 239,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-15"),
-                            active: 239,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-16"),
-                            active: 246,
-                            new: 7,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-17"),
-                            active: 253,
-                            new: 7,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-18"),
-                            active: 55,
-                            new: 6,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-19"),
-                            active: 253,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-20"),
-                            active: 273,
-                            new: 20,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-21"),
-                            active: 273,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-23"),
-                            active: 282,
-                            new: 9,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-24"),
-                            active: 287,
-                            new: 5,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-25"),
-                            active: 287,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-26"),
-                            active: 294,
-                            new: 7,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-27"),
-                            active: 303,
-                            new: 9,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-28"),
-                            active: 303,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-29"),
-                            active: 303,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-09-30"),
-                            active: 320,
-                            new: 17,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-10-01"),
-                            active: 328,
-                            new: 8,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-10-02"),
-                            active: 334,
-                            new: 6,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-10-03"),
-                            active: 334,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-10-04"),
-                            active: 334,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-10-05"),
-                            active: 334,
-                            new: 0,
-                            deletion: 0
-                        },
-                        {
-                            date: new Date("2019-10-06"),
-                            active: 334,
-                            new: 0,
-                            deletion: 0
-                        }
-                    ];
+                        $NxApi.statistics.subscribers({
+                            from: $scope.filters.dates.start.getTime(),
+                            until: $scope.filters.dates.end.getTime()
+                        }).then((data) => {
 
-                    let result = {
-                        date: [],
-                        active: [],
-                        new: [],
-                        deletions: []
-                    };
+                            let result = {
+                                date: [],
+                                active: [],
+                                new: [],
+                                deletions: []
+                            };
 
-                    for (let item of data) {
-                        if (item.date.getTime() >= $scope.filters.dates.start.getTime() &&
-                            item.date.getTime() <= $scope.filters.dates.end.getTime()) {
+                            for (let item of data) {
 
-                            result.date.push(`${item.date.getDate()}/${item.date.getMonth() + 1}`);
-                            result.active.push(item.active);
-                            result.new.push(item.new);
-                            result.deletions.push(item.deletion);
+                                let date = new Date(item.date);
 
-                            $scope.summary.new += item.new;
-                            $scope.summary.deletion += item.deletion;
-                        }
-                    }
+                                result.date.push(`${date.getDate()}/${date.getMonth() + 1}`);
+                                result.active.push(item.active.total);
+                                result.new.push(item.installs.total);
+                                result.deletions.push(item.uninstalls.total);
 
-                    $scope.summary.active = result.active[result.active.length - 1];
+                                $scope.summary.new += item.installs.total;
+                                $scope.summary.deletion += item.uninstalls.total;
 
-                    return result;
+                            }
 
+                            $scope.summary.active = result.active[result.active.length - 1];
+
+                            resolve(result);
+
+                        })
+
+                    });
                 }
 
             }
@@ -655,22 +262,17 @@
                 };
 
                 $scope.filters.dates.onDateChanged = () => {
-                    drawChart();
+                    getData().then(drawChart);
                 };
 
                 $timeout(() => {
+                    getData().then(drawChart);
+                }, 0);
 
-                    drawChart();
-
-                }, 1000);
-
-                function drawChart() {
-
-                    let data = getData();
+                function drawChart(data) {
 
                     let char_labels = data.date;
                     let chart_data_unique = data.uniqueUsers;
-                    let chart_data_concurrency = data.concurrency;
                     let chart_data_avgPTPD = data.avgPTPD;
 
                     let ctx = document.getElementById("sb-chart-1").getElementsByTagName("canvas")[0];
@@ -685,12 +287,6 @@
                             "labels": char_labels,
                             "datasets": [
                                 {
-                                    "label": "Concurrent Users",
-                                    "data": chart_data_concurrency,
-                                    "fill": true,
-                                    "backgroundColor": 'rgba(154,1,16,0.67)',
-                                    "borderWidth": 0
-                                }, {
                                     "label": "Unique Users",
                                     "data": chart_data_unique,
                                     "fill": true,
@@ -728,12 +324,14 @@
                                 }],
                                 yAxes: [{
                                     display: true,
-                                    stacked: false
+                                    stacked: false,
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
                                 }]
                             }
                         }
                     });
-
 
 
                     let ctx2 = document.getElementById("sb-chart-2").getElementsByTagName("canvas")[0];
@@ -785,7 +383,10 @@
                                 }],
                                 yAxes: [{
                                     display: true,
-                                    stacked: false
+                                    stacked: false,
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
                                 }]
                             }
                         }
@@ -795,428 +396,236 @@
                 }
 
                 function getData() {
+                    return new Promise((resolve, reject) => {
 
-                    $scope.summary = {
-                        concurrency: 0,
-                        uniqueUsers: 0,
-                        avgPTPD: 0
-                    };
+                        $scope.summary = {
+                            uniqueUsers: 0,
+                            avgPTPD: 0
+                        };
 
-                    let data = [
-                        {
-                            date: new Date("2019-08-01"),
-                            concurrency: 21,
-                            uniqueUsers: 26,
-                            avgPTPD: 78
-                        },
-                        {
-                            date: new Date("2019-08-02"),
-                            concurrency: 25,
-                            uniqueUsers: 29,
-                            avgPTPD: 65
-                        },
-                        {
-                            date: new Date("2019-08-03"),
-                            concurrency: 12,
-                            uniqueUsers: 22,
-                            avgPTPD: 88
-                        },
-                        {
-                            date: new Date("2019-08-04"),
-                            concurrency: 27,
-                            uniqueUsers: 30,
-                            avgPTPD: 78
-                        },
-                        {
-                            date: new Date("2019-08-05"),
-                            concurrency: 23,
-                            uniqueUsers: 31,
-                            avgPTPD: 74
-                        },
-                        {
-                            date: new Date("2019-08-06"),
-                            concurrency: 22,
-                            uniqueUsers: 33,
-                            avgPTPD: 75
-                        },
-                        {
-                            date: new Date("2019-08-07"),
-                            concurrency: 18,
-                            uniqueUsers: 30,
-                            avgPTPD: 79
-                        },
-                        {
-                            date: new Date("2019-08-08"),
-                            concurrency: 25,
-                            uniqueUsers: 39,
-                            avgPTPD: 73
-                        },
-                        {
-                            date: new Date("2019-08-09"),
-                            concurrency: 21,
-                            uniqueUsers: 36,
-                            avgPTPD: 75
-                        },
-                        {
-                            date: new Date("2019-08-10"),
-                            concurrency: 20,
-                            uniqueUsers: 31,
-                            avgPTPD: 75
-                        },
-                        {
-                            date: new Date("2019-08-11"),
-                            concurrency: 35,
-                            uniqueUsers: 45,
-                            avgPTPD: 197
-                        },
-                        {
-                            date: new Date("2019-08-12"),
-                            concurrency: 21,
-                            uniqueUsers: 38,
-                            avgPTPD: 73
-                        },
-                        {
-                            date: new Date("2019-08-13"),
-                            concurrency: 21,
-                            uniqueUsers: 36,
-                            avgPTPD: 74
-                        },
-                        {
-                            date: new Date("2019-08-14"),
-                            concurrency: 21,
-                            uniqueUsers: 37,
-                            avgPTPD: 70
-                        },
-                        {
-                            date: new Date("2019-08-15"),
-                            concurrency: 21,
-                            uniqueUsers: 34,
-                            avgPTPD: 72
-                        },
-                        {
-                            date: new Date("2019-08-16"),
-                            concurrency: 35,
-                            uniqueUsers: 47,
-                            avgPTPD: 7
-                        },
-                        {
-                            date: new Date("2019-08-17"),
-                            concurrency: 37,
-                            uniqueUsers: 44,
-                            avgPTPD: 70
-                        },
-                        {
-                            date: new Date("2019-08-18"),
-                            concurrency: 43,
-                            uniqueUsers: 62,
-                            avgPTPD: 73
-                        },
-                        {
-                            date: new Date("2019-08-19"),
-                            concurrency: 40,
-                            uniqueUsers: 61,
-                            avgPTPD: 76
-                        },
-                        {
-                            date: new Date("2019-08-20"),
-                            concurrency: 33,
-                            uniqueUsers: 63,
-                            avgPTPD: 70
-                        },
-                        {
-                            date: new Date("2019-08-21"),
-                            concurrency: 54,
-                            uniqueUsers: 67,
-                            avgPTPD: 75
-                        },
-                        {
-                            date: new Date("2019-08-21"),
-                            concurrency: 63,
-                            uniqueUsers: 78,
-                            avgPTPD: 72
-                        },
-                        {
-                            date: new Date("2019-08-23"),
-                            concurrency: 68,
-                            uniqueUsers: 89,
-                            avgPTPD: 73
-                        },
-                        {
-                            date: new Date("2019-08-24"),
-                            concurrency: 62,
-                            uniqueUsers: 94,
-                            avgPTPD: 74
-                        },
-                        {
-                            date: new Date("2019-08-25"),
-                            concurrency: 73,
-                            uniqueUsers: 99,
-                            avgPTPD: 79
-                        },
-                        {
-                            date: new Date("2019-08-26"),
-                            concurrency: 81,
-                            uniqueUsers: 101,
-                            avgPTPD: 79
-                        },
-                        {
-                            date: new Date("2019-08-27"),
-                            concurrency: 102,
-                            uniqueUsers: 125,
-                            avgPTPD: 76
-                        },
-                        {
-                            date: new Date("2019-08-28"),
-                            concurrency: 105,
-                            uniqueUsers: 132,
-                            avgPTPD: 89
-                        },
-                        {
-                            date: new Date("2019-08-29"),
-                            concurrency: 105,
-                            uniqueUsers: 99,
-                            avgPTPD: 73
-                        },
-                        {
-                            date: new Date("2019-08-30"),
-                            concurrency: 105,
-                            uniqueUsers: 97,
-                            avgPTPD: 76
-                        },
-                        {
-                            date: new Date("2019-08-31"),
-                            concurrency: 45,
-                            uniqueUsers: 34,
-                            avgPTPD: 123
-                        },
+                        let result = {
+                            date: [],
+                            uniqueUsers: [],
+                            avgPTPD: []
+                        };
 
-                        {
-                            date: new Date("2019-08-01"),
-                            concurrency: 21,
-                            uniqueUsers: 26,
-                            avgPTPD: 78
-                        },
-                        {
-                            date: new Date("2019-08-02"),
-                            concurrency: 25,
-                            uniqueUsers: 29,
-                            avgPTPD: 65
-                        },
-                        {
-                            date: new Date("2019-08-03"),
-                            concurrency: 12,
-                            uniqueUsers: 22,
-                            avgPTPD: 88
-                        },
-                        {
-                            date: new Date("2019-08-04"),
-                            concurrency: 27,
-                            uniqueUsers: 30,
-                            avgPTPD: 78
-                        },
-                        {
-                            date: new Date("2019-08-05"),
-                            concurrency: 23,
-                            uniqueUsers: 31,
-                            avgPTPD: 74
-                        },
-                        {
-                            date: new Date("2019-08-06"),
-                            concurrency: 22,
-                            uniqueUsers: 33,
-                            avgPTPD: 75
-                        },
-                        {
-                            date: new Date("2019-08-07"),
-                            concurrency: 18,
-                            uniqueUsers: 30,
-                            avgPTPD: 79
-                        },
-                        {
-                            date: new Date("2019-08-08"),
-                            concurrency: 25,
-                            uniqueUsers: 39,
-                            avgPTPD: 73
-                        },
-                        {
-                            date: new Date("2019-08-09"),
-                            concurrency: 21,
-                            uniqueUsers: 36,
-                            avgPTPD: 75
-                        },
-                        {
-                            date: new Date("2019-08-10"),
-                            concurrency: 20,
-                            uniqueUsers: 31,
-                            avgPTPD: 75
-                        },
-                        {
-                            date: new Date("2019-08-11"),
-                            concurrency: 6,
-                            uniqueUsers: 87,
-                            avgPTPD: 197
-                        },
-                        {
-                            date: new Date("2019-08-12"),
-                            concurrency: 66,
-                            uniqueUsers: 78,
-                            avgPTPD: 73
-                        },
-                        {
-                            date: new Date("2019-08-13"),
-                            concurrency: 78,
-                            uniqueUsers: 89,
-                            avgPTPD: 74
-                        },
-                        {
-                            date: new Date("2019-08-14"),
-                            concurrency: 56,
-                            uniqueUsers: 67,
-                            avgPTPD: 70
-                        },
-                        {
-                            date: new Date("2019-08-15"),
-                            concurrency: 97,
-                            uniqueUsers: 101,
-                            avgPTPD: 72
-                        },
-                        {
-                            date: new Date("2019-08-16"),
-                            concurrency: 121,
-                            uniqueUsers: 134,
-                            avgPTPD: 79
-                        },
-                        {
-                            date: new Date("2019-08-17"),
-                            concurrency: 125,
-                            uniqueUsers: 188,
-                            avgPTPD: 70
-                        },
-                        {
-                            date: new Date("2019-08-18"),
-                            concurrency: 134,
-                            uniqueUsers: 167,
-                            avgPTPD: 73
-                        },
-                        {
-                            date: new Date("2019-08-19"),
-                            concurrency: 145,
-                            uniqueUsers: 173,
-                            avgPTPD: 76
-                        },
-                        {
-                            date: new Date("2019-08-20"),
-                            concurrency: 33,
-                            uniqueUsers: 63,
-                            avgPTPD: 161
-                        },
-                        {
-                            date: new Date("2019-08-21"),
-                            concurrency: 54,
-                            uniqueUsers: 67,
-                            avgPTPD: 71
-                        },
-                        {
-                            date: new Date("2019-09-21"),
-                            concurrency: 163,
-                            uniqueUsers: 178,
-                            avgPTPD: 72
-                        },
-                        {
-                            date: new Date("2019-09-23"),
-                            concurrency: 168,
-                            uniqueUsers: 199,
-                            avgPTPD: 63
-                        },
-                        {
-                            date: new Date("2019-09-24"),
-                            concurrency: 162,
-                            uniqueUsers: 176,
-                            avgPTPD: 78
-                        },
-                        {
-                            date: new Date("2019-09-25"),
-                            concurrency: 145,
-                            uniqueUsers: 197,
-                            avgPTPD: 69
-                        },
-                        {
-                            date: new Date("2019-09-26"),
-                            concurrency: 162,
-                            uniqueUsers: 202,
-                            avgPTPD: 67
-                        },
-                        {
-                            date: new Date("2019-09-27"),
-                            concurrency: 124,
-                            uniqueUsers: 153,
-                            avgPTPD: 88
-                        },
-                        {
-                            date: new Date("2019-09-28"),
-                            concurrency: 58,
-                            uniqueUsers: 96,
-                            avgPTPD: 131
-                        },
-                        {
-                            date: new Date("2019-09-29"),
-                            concurrency: 105,
-                            uniqueUsers: 99,
-                            avgPTPD: 124
-                        },
-                        {
-                            date: new Date("2019-09-30"),
-                            concurrency: 201,
-                            uniqueUsers: 245,
-                            avgPTPD: 121
-                        }
-                    ];
+                        $NxApi.statistics.dailyPlay({
+                            from: $scope.filters.dates.start.getTime(),
+                            until: $scope.filters.dates.end.getTime()
+                        }).then((data) => {
 
-                    let result = {
-                        date: [],
-                        concurrency: [],
-                        uniqueUsers: [],
-                        avgPTPD: []
-                    };
+                            let uidx = [];
 
-                    for (let item of data) {
-                        if (item.date.getTime() >= $scope.filters.dates.start.getTime() &&
-                            item.date.getTime() <= $scope.filters.dates.end.getTime()) {
+                            for (let item of data) {
 
-                            result.date.push(`${item.date.getDate()}/${item.date.getMonth() + 1}`);
-                            result.concurrency.push(item.concurrency);
-                            result.uniqueUsers.push(item.uniqueUsers);
-                            result.avgPTPD.push(item.avgPTPD);
+                                let date = new Date(item.date);
 
-                            if ($scope.summary.concurrency < item.concurrency) {
-                                $scope.summary.concurrency = item.concurrency;
+                                result.date.push(`${date.getDate()}/${date.getMonth() + 1}`);
+                                result.uniqueUsers.push(item.peaks.uniqueUsers);
+                                result.avgPTPD.push(Math.round(item.avgPerSub.playingTime / 60000));
+
+                                if (item.avgPerSub.playingTime !== 0) {
+                                    $scope.summary.avgPTPD += item.avgPerSub.playingTime;
+                                } else {
+                                    $scope.summary.avgPTPD = item.avgPerSub.playingTime;
+                                }
+
+                                for (let s in item.subscribers) {
+                                    uidx[s] = 1;
+                                }
+
                             }
 
-                            if ($scope.summary.uniqueUsers < item.uniqueUsers) {
-                                $scope.summary.uniqueUsers = item.uniqueUsers + 2;
+                            for (let id in uidx) {
+                                $scope.summary.uniqueUsers++;
                             }
 
-                            if ($scope.summary.avgPTPD !== 0) {
-                                $scope.summary.avgPTPD = ($scope.summary.avgPTPD + item.avgPTPD) / 2;
-                            } else {
-                                $scope.summary.avgPTPD = item.avgPTPD;
-                            }
+                            $scope.summary.avgPTPD /= data.length;
 
-                        }
-                    }
+                            resolve(result);
+                        });
 
-                    return result;
-
+                    });
                 }
 
             }
 
             function DevicesCtrl() {
-                cleanUp = (_) => {
-                    // Setup a new Clean Up Function in case other section is choose.
+
+                $scope.templateUrl = "/res/layout/view_s_ott_statistics_devices.html";
+
+                $scope.summary = {
+                    ios: 0,
+                    android: 0,
+                    androidTv: 0,
+                    browser: 0
                 };
 
-                $scope.templateUrl = null;
+                cleanUp = (_) => {
+                    // Clean data on new section fill
+                    $scope.summary = null;
+                    $scope.filters.dates.onDateChanged = () => {
+                    }
+                };
+
+                $scope.filters.dates.onDateChanged = () => {
+                    getData().then(drawChart);
+                };
+
+                $timeout(() => {
+                    getData().then(drawChart);
+                }, 0);
+
+                function getData() {
+                    return new Promise((resolve, reject) => {
+
+                        let totalDevices = 0;
+
+                        $scope.summary = {
+                            ios: 0,
+                            android: 0,
+                            androidTv: 0,
+                            browser: 0
+                        };
+
+                        let result = {
+                            date: [],
+                            uniqueUsers: [],
+                            avgPTPD: []
+                        };
+
+                        $NxApi.statistics.dailyPlay({
+                            from: $scope.filters.dates.start.getTime(),
+                            until: $scope.filters.dates.end.getTime()
+                        }).then((data) => {
+
+                            let result = {
+                                date: [],
+                                ios: [],
+                                android: [],
+                                androidTv: [],
+                                browser: []
+                            };
+
+                            for (let item of data) {
+
+                                $scope.summary.ios += item.devices.ios;
+                                $scope.summary.android += item.devices.android;
+                                $scope.summary.androidTv += item.devices.androidTv;
+                                $scope.summary.browser += item.devices.browser;
+
+
+                                let date = new Date(item.date);
+
+                                result.date.push(`${date.getDate()}/${date.getMonth() + 1}`);
+
+                                result.ios.push(item.devices.ios);
+                                result.android.push(item.devices.android);
+                                result.androidTv.push(item.devices.androidTv);
+                                result.browser.push(item.devices.browser);
+
+                            }
+
+                            let tnm = ($scope.summary.ios +
+                                $scope.summary.android +
+                                $scope.summary.androidTv +
+                                $scope.summary.browser) / 100;
+
+                            $scope.summary.ios /= tnm;
+                            $scope.summary.android /= tnm;
+                            $scope.summary.androidTv /= tnm;
+                            $scope.summary.browser /= tnm;
+
+                            resolve(result);
+                        });
+
+                    });
+                }
+
+                function drawChart(data) {
+
+                    let char_labels = data.date;
+
+                    let chart_data_iOs = data.ios;
+                    let chart_data_and = data.android;
+                    let chart_data_box = data.androidTv;
+                    let chart_data_browser = data.browser;
+
+                    let ctx = document.getElementById("sb-chart").getElementsByTagName("canvas")[0];
+                    document.getElementById("sb-chart").removeChild(ctx);
+                    document.getElementById("sb-chart").appendChild(document.createElement("canvas"));
+                    ctx = document.getElementById("sb-chart").getElementsByTagName("canvas")[0];
+
+                    ctx.height = 125;
+                    let myBarChart = new Chart(ctx, {
+                        "type": "line",
+                        "data": {
+                            "labels": char_labels,
+                            "datasets": [
+                                {
+                                    "label": "Android",
+                                    "data": chart_data_and,
+                                    "fill": true,
+                                    "backgroundColor": 'rgba(47,110,0,0.67)',
+                                    "borderWidth": 0
+                                }, {
+                                    "label": "TV Box",
+                                    "data": chart_data_box,
+                                    "fill": true,
+                                    "backgroundColor": 'rgba(0,77,160,0.67)',
+                                    "borderWidth": 0
+                                },
+                                {
+                                    "label": "iOs",
+                                    "data": chart_data_iOs,
+                                    "fill": true,
+                                    "backgroundColor": 'rgba(0,0,0,0.99)',
+                                    "borderWidth": 0
+                                },
+                                {
+                                    "label": "Browser",
+                                    "data": chart_data_browser,
+                                    "fill": true,
+                                    "backgroundColor": 'rgba(203,83,35,0.67)',
+                                    "borderWidth": 0
+                                }]
+                        },
+                        "options": {
+                            layout: {
+                                padding: {
+                                    left: 0,
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0
+                                }
+                            },
+                            legend: {
+                                position: "bottom",
+                                display: true,
+                                labels: {
+                                    fontColor: 'black'
+                                }
+                            },
+                            title: {
+                                display: false
+                            },
+                            tooltips: {
+                                enabled: true,
+                                display: false,
+                            },
+                            scales: {
+                                xAxes: [{
+                                    stacked: false,
+                                    display: true,
+                                }],
+                                yAxes: [{
+                                    display: true,
+                                    stacked: false
+                                }]
+                            }
+                        }
+                    });
+                }
 
 
             }

@@ -2,24 +2,19 @@
     <div layout="row">
         <div flex></div>
         <div class="stats-box">
-            <value>{{summary.concurrency}}</value>
-            <label>Concurrent Users</label>
-        </div>
-        <div flex></div>
-        <div class="stats-box">
             <value>{{summary.uniqueUsers}}</value>
             <label>Unique Users</label>
         </div>
         <div flex></div>
         <div class="stats-box">
-            <value>{{summary.avgPTPD | number : 0}} min</value>
+            <value>{{summary.avgPTPD/60000 | number : 0}} min</value>
             <label>Avg. T. / day / sub.</label>
         </div>
         <div flex></div>
     </div>
     <div>
         <div class="channel_chart" id="sb-chart-1">
-            <h1>Plays</h1>
+            <h1>Unique Users</h1>
             <canvas style="height: 250px"></canvas>
         </div>
         <div class="channel_chart" id="sb-chart-2">

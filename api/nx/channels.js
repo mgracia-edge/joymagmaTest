@@ -2,6 +2,7 @@ const api = require('../support');
 const codes = require('../codes');
 const dc = require('../../lib/dataConnection');
 const cloudinary = require('cloudinary');
+const request = require('request');
 
 exports.resourceList = [
     {
@@ -25,6 +26,12 @@ exports.resourceList = [
     {
         path: "delete",
         callback: _delete,
+        method: "post",
+        protected: true
+    },
+    {
+        path: "restartPush",
+        callback: _restartPush,
         method: "post",
         protected: true
     }];
@@ -192,6 +199,49 @@ function _read(req, res) {
 
         res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+}
+
+function _restartPush(req, res) {
+    let db = dc.db;
+    let {id} = req.body;
+
+    const EP = {
+        'EP-01': '131.255.63.146',
+        'EP-02': '131.255.63.155'
+    };
+
+    if (db) {
+
+        let query = {_id: id};
+
+        db.Channels.findOne(query, function (error, data) {
+            if (data && data.source) {
+                const ep = EP[data.source.entrypointId];
+                const URL = `http://${ep}/restart/${data.entryPoint.streamKey}`;
+
+                request(URL, function (error, response, body) {
+                    if (error) {
+                        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode).send(new
+                            api.Error(codes.error.operation.OPERATION_HAS_FAILED)
+                        );
+                    } else {
+                        res.send(new api.Success({serverResponse: body}));
+                    }
+                });
+
+            } else if (!error) {
+                res.status(codes.error.operation.TARGET_NOT_FOUND.httpCode).send(new
+                api.Error(codes.error.operation.TARGET_NOT_FOUND));
+            } else {
+                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode).send(new
+                api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+            }
+        })
+
+    } else {
+        res.status(codes.error.database.DISCONNECTED.httpCode).send(new
+        api.Error(codes.error.database.DISCONNECTED));
     }
 }
 

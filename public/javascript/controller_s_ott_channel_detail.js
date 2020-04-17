@@ -32,6 +32,8 @@
         $scope.getUrlPoster = getUrlPoster;
         $scope.updateChannel = updateChannel;
         $scope.removeChannel = removeChannel;
+        $scope.restartPush = restartPush;
+
         $scope.categories = [];
 
         function init() {
@@ -54,7 +56,6 @@
                     .catch((error) => {
                         $location.path("/s/ott/channel");
                         $scope.$parent.toast('The channel not exist');
-
                     })
             }
 
@@ -121,9 +122,26 @@
             dialog_alert()
                 .then(() => {
                     $location.path('/s/ott/channel');
-                }).catch((error) => {
-                $scope.$parent.toast(error.message)
-            })
+                })
+                .catch((error) => {
+                    $scope.$parent.toast(error.message)
+                })
+        }
+
+        function restartPush() {
+
+            let channelId = $routeParams.id;
+            $scope.loading = true;
+            $NxApi.channels.restartPush({id: channelId})
+                .then(() => {
+                    $scope.$parent.toast("Channel push restarted.");
+                    $scope.loading = false;
+                })
+                .catch(() => {
+                    $scope.$parent.toast("Something happened. Channel push couldn't be restart.");
+                    $scope.loading = false;
+                })
+
         }
 
         function dialog_alert() {

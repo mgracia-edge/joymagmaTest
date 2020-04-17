@@ -113,7 +113,6 @@
                     <item class="separator">
                         <label>Source</label>
                     </item>
-
                     <item>
                         <label>Push Entry Point Id</label>
                         <input type="text" ng-model="channelData.source.entrypointId">
@@ -148,6 +147,12 @@
                         <input type="text" ng-model="channelData.source.udpQuery"
                                placeholder="(Use & prefix to append)">
                     </item>
+                    <md-button ng-click="restartPush()" class="md-raised md-primary" layout="row"
+                               layout-align="center center">
+                        <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                              md-diameter="30"></md-progress-circular>
+                        <span ng-show="!loading">Restart Push</span>
+                    </md-button>
                     <item class="separator">
                         <label>Monitoring</label>
                     </item>

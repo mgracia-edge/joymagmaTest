@@ -316,11 +316,30 @@
                     });
                 }
 
+                function restartPush(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/channels/restartPush", {
+                            id: params.id
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch(({data}) => {
+                                reject(data.error)
+                            });
+                    });
+                }
+
                 return {
                     create,
                     read,
                     update,
                     delete: remove,
+                    restartPush
                 }
             }
 
@@ -868,6 +887,42 @@
                 }
             }
 
+            function Statistics($http, $q) {
+
+                function subscribers(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/statistics/subscribers", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        }).then(({data}) => {
+                            resolve(data.content);
+                        }).catch((error) => {
+                            reject(error)
+                        });
+                    });
+                }
+
+                function dailyPlay(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/statistics/dailyPlay", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        }).then(({data}) => {
+                            resolve(data.content);
+                        }).catch((error) => {
+                            reject(error)
+                        });
+                    });
+                }
+
+                return {
+                    subscribers,
+                    dailyPlay
+                }
+            }
+
             init();
 
             return {
@@ -885,7 +940,8 @@
                 privateCloud: privateCloudDelegation($http, $q),
                 products: Products($http, $q),
                 avProfiles: AvProfiles($http, $q),
-                ottConfigurations: OttConfigurations($http, $q)
+                ottConfigurations: OttConfigurations($http, $q),
+                statistics: Statistics($http, $q)
             }
         }]);
 
