@@ -31,9 +31,13 @@
                     icon: "/res/drawable/ic_users.svg",
                     controller: SubscribersCtrl
                 }, {
-                    name: "Viewing",
+                    name: "Audience",
                     icon: "/res/drawable/ic_viewing.svg",
-                    controller: ViewingCtrl
+                    controller: AudienceCtrl
+                }, {
+                    name: "Content",
+                    icon: "/res/drawable/ic_show.svg",
+                    controller: ContentCtrl
                 }, {
                     name: "Devices",
                     icon: "/res/drawable/ic_devices.svg",
@@ -244,7 +248,7 @@
 
             }
 
-            function ViewingCtrl() {
+            function AudienceCtrl() {
 
                 $scope.templateUrl = "/res/layout/view_s_ott_statistics_viewing.html";
 
@@ -450,6 +454,194 @@
 
             }
 
+            function ContentCtrl() {
+
+                $scope.templateUrl = "/res/layout/view_s_ott_statistics_content.html";
+
+                $scope.summary = {};
+
+                cleanUp = (_) => {
+                    // Clean data on new section fill
+                    $scope.summary = null;
+                    $scope.filters.dates.onDateChanged = () => {
+                    }
+                };
+
+                $scope.filters.dates.onDateChanged = () => {
+                    getData().then(drawChart);
+                };
+
+                $timeout(() => {
+                    getData().then(drawChart);
+                }, 0);
+
+                function getData() {
+                    return new Promise((resolve, reject) => {
+
+                        $scope.summary = {
+                            ios: 0,
+                            android: 0,
+                            androidTv: 0,
+                            browser: 0
+                        };
+
+                        $NxApi.statistics.dailyPlay({
+                            from: $scope.filters.dates.start.getTime(),
+                            until: $scope.filters.dates.end.getTime()
+                        }).then((data) => {
+
+                            let channelsTotals = [];
+
+                            let chartData = {
+                                date: [],
+                                channels: {}
+                            };
+
+                            for (let item of data) {
+                                for (let channel of item.channels) {
+                                    if (!channelsTotals[channel.id]) {
+                                        channelsTotals[channel.id] = 0;
+                                    }
+                                    channelsTotals[channel.id] += channel.playingTime;
+                                }
+                            }
+
+                            let sorted = [];
+
+                            for (let id in channelsTotals) {
+                                sorted.push({
+                                    id: id,
+                                    playingTime: channelsTotals[id]
+                                })
+                            }
+
+                            sorted.sort((a, b) => {
+                                return b.playingTime - a.playingTime;
+                            });
+
+                            let topChannels = sorted.slice(0, 20);
+
+                            chartData.channels = {};
+
+                            for (let channel of topChannels) {
+                                chartData.channels[channel.id] = [];
+                            }
+
+                            for (let item of data) {
+                                let date = new Date(item.date);
+                                chartData.date.push(`${date.getDate()}/${date.getMonth() + 1}`);
+
+                                for (let channel of topChannels) {
+                                    let match = item.channels.find(it => it.id === channel.id);
+
+                                    let value = 0;
+
+                                    if (match) {
+                                        value = match.playingTime;
+                                    }
+
+                                    chartData.channels[channel.id].push(value);
+                                }
+
+                            }
+
+                            addChannelNames({chartData, channelsTotals})
+                                .then(resolve)
+                                .catch(reject)
+                        });
+
+                    });
+                }
+
+                function addChannelNames(results) {
+                    results.channelsIndex = {};
+                    return new Promise((resolve, reject) => {
+                        $NxApi.channels.read({namesOnly: true}).then((channels) => {
+                            for (let channel of channels) {
+                                results.channelsIndex[channel._id] = channel;
+                            }
+
+                            resolve(results)
+
+                        }).catch(reject);
+                    });
+                }
+
+                function drawChart(data) {
+
+                    let dataSet = [];
+
+                    let char_labels = data.chartData.date;
+
+                    for (let id in data.chartData.channels) {
+
+                        let color = randomColor();
+
+                        dataSet.push({
+                            "label": data.channelsIndex[id].name,
+                            "data": data.chartData.channels[id],
+                            "fill": false,
+                            "borderColor": color,
+                            "backgroundColor": color,
+                            "borderWidth": 0
+                        });
+
+                    }
+
+                    console.log(dataSet);
+
+                    let ctx = document.getElementById("sb-chart").getElementsByTagName("canvas")[0];
+                    document.getElementById("sb-chart").removeChild(ctx);
+                    document.getElementById("sb-chart").appendChild(document.createElement("canvas"));
+                    ctx = document.getElementById("sb-chart").getElementsByTagName("canvas")[0];
+
+                    ctx.height = 125;
+                    let myBarChart = new Chart(ctx, {
+                        "type": "line",
+                        "data": {
+                            "labels": char_labels,
+                            "datasets": dataSet
+                        },
+                        "options": {
+                            layout: {
+                                padding: {
+                                    left: 0,
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0
+                                }
+                            },
+                            legend: {
+                                position: "bottom",
+                                display: true,
+                                labels: {
+                                    fontColor: 'black'
+                                }
+                            },
+                            title: {
+                                display: false
+                            },
+                            tooltips: {
+                                enabled: true,
+                                display: false,
+                            },
+                            scales: {
+                                xAxes: [{
+                                    stacked: false,
+                                    display: true,
+                                }],
+                                yAxes: [{
+                                    display: true,
+                                    stacked: false
+                                }]
+                            }
+                        }
+                    });
+                }
+
+
+            }
+
             function DevicesCtrl() {
 
                 $scope.templateUrl = "/res/layout/view_s_ott_statistics_devices.html";
@@ -479,19 +671,11 @@
                 function getData() {
                     return new Promise((resolve, reject) => {
 
-                        let totalDevices = 0;
-
                         $scope.summary = {
                             ios: 0,
                             android: 0,
                             androidTv: 0,
                             browser: 0
-                        };
-
-                        let result = {
-                            date: [],
-                            uniqueUsers: [],
-                            avgPTPD: []
                         };
 
                         $NxApi.statistics.dailyPlay({
@@ -642,6 +826,15 @@
                 result.end.setHours(0, 0, 0, 0);
 
                 return result;
+            }
+
+
+            function randomColor() {
+                let colors = ["#B0171F", "#00008B", "#008B45", "#DAA520",
+                    "#FF4500", "#877eff", "#1E90FF", "#1E1E1E", "#8E8E8E", "#8B4513",
+                    "#CD69C9", "#33A1C9", "#7AC5CD", "#CD00CD", "#6B8E23", "#8B4789"];
+                if (!this.i) i = 0;
+                return colors[i++ % colors.length];
             }
 
             // End of code
