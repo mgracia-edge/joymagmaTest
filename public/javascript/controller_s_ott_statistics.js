@@ -537,7 +537,7 @@
                                     let value = 0;
 
                                     if (match) {
-                                        value = match.playingTime;
+                                        value = Math.round(match.playingTime/3600000);
                                     }
 
                                     chartData.channels[channel.id].push(value);

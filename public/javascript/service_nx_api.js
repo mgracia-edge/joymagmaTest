@@ -887,7 +887,7 @@
                 }
             }
 
-            function Statistics($http, $q) {
+            function StatisticsDelegation($http, $q) {
 
                 function subscribers(params) {
                     return $q((resolve, reject) => {
@@ -941,7 +941,7 @@
                 products: Products($http, $q),
                 avProfiles: AvProfiles($http, $q),
                 ottConfigurations: OttConfigurations($http, $q),
-                statistics: Statistics($http, $q)
+                statistics: StatisticsDelegation($http, $q)
             }
         }]);
 
