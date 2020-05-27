@@ -262,7 +262,8 @@ function _update(req, res) {
 
         const {
             channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, source,
-            transcoder, profile, deinterlace, aspectRatio, forceX264, sd, priority, monitoring
+            transcoder, profile, deinterlace, aspectRatio, forceX264, sd, priority, monitoring,
+            h265, useMpkg
         } = data;
 
         let query = {
@@ -284,6 +285,8 @@ function _update(req, res) {
                     deinterlace: deinterlace,
                     aspectRatio: aspectRatio,
                     forceX264: forceX264,
+                    h265: h265,
+                    useMpkg: useMpkg,
                     priority: priority,
                     sd: sd,
                     monitoring: monitoring
