@@ -9,7 +9,7 @@
     <scroll-view orientation="vertical" flex>
         <nx-channel
                 ng-click="channelDetails(item)"
-                ng-repeat="item in channels | filter:customFilter()"
+                ng-repeat="item in channels | filter: search"
                 ng-model="item"></nx-channel>
     </scroll-view>
 </div>

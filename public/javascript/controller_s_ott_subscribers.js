@@ -12,38 +12,156 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sOttSubscribersCtrl", ['$scope', '$NxApi', '$mdToast','$location',
-            function ($scope, $NxApi, $mdToast,$location) {
+        .controller("sOttSubscribersCtrl", ['$scope', '$NxApi', '$mdToast', '$location', '$timeout',
+            function ($scope, $NxApi, $mdToast, $location, $timeout) {
 
-            $scope.subscribers = [];
-            $scope.loading = true;
+                $scope.subscribers = {
+                    getItemAtIndex: function (i) {
+                        return null;
+                    },
+                    getLength: function () {
+                        return 0;
+                    }
+                };
 
-            $scope.details = details;
+                $scope.sortedBy = sortedBy;
+                $scope.sortBy = sortBy;
 
-            function init(){
-                $NxApi.subscribers.read().then((data)=>{
-                    $scope.subscribers = data.subscribers;
-                    $scope.subscribers.map((subscriber)=>{
+                let sortVars = {
+                    by: "id",
+                    order: 1
+                };
 
-                        $NxApi.products.read({
-                            _id:subscriber.products
-                        }).then((products)=>{
-                            subscriber.products = products;
-                        })
+                let subscribers = [];
+                let products = [];
 
+                $scope.loading = true;
+                $scope.details = details;
+
+                $scope.productName = function (id) {
+                    return products.find(element => element._id === id).name;
+                };
+
+                function init() {
+
+                    $NxApi.products.read({}).then((result) => {
+                        products = result;
                     });
-                    $scope.loading = false
-                }).catch((e)=>{
-                    console.error(e);
-                })
-            }
 
-            function details(subscriber){
-                $location.path('/s/ott/subscribers/' + subscriber._id)
-            }
+                    $NxApi.subscribers.read().then((data) => {
 
-            $NxApi.setAfterLogin(init);
+                        subscribers = data.subscribers;
 
 
-        }]);
+                        sortSubscribers();
+
+                        $scope.subscribers = {
+                            getItemAtIndex: function (i) {
+                                return subscribers[i];
+                            },
+                            getLength: function () {
+                                return subscribers.length;
+                            }
+                        };
+
+                        $scope.$watch("search", (newValue) => {
+                            if(!newValue || newValue === ""){
+                                subscribers = data.subscribers;
+                            }else{
+                                subscribers = [];
+
+                                for(let subscriber of data.subscribers){
+
+                                    if( subscriber.cid.toString().includes(newValue) ||
+                                        subscriber.email.toLowerCase().includes(newValue.toLowerCase())){
+                                        subscribers.push(subscriber)
+                                    }
+
+                                }
+
+                            }
+                        });
+
+                        $scope.loading = false;
+
+                    }).catch((e) => {
+                        console.error(e);
+                    })
+                }
+
+                function details(subscriber) {
+                    $location.path('/s/ott/subscribers/' + subscriber._id)
+                }
+
+                function sortedBy(field, order) {
+                    return order === sortVars.order && field === sortVars.by;
+                }
+
+                function sortBy(field){
+
+                    if(sortVars.by === field){
+                        sortVars.order = (sortVars.order + 1) % 2; // Toggle
+                    }else{
+                        sortVars.by = field;
+                        sortVars.order = 0;
+                    }
+
+                    sortSubscribers();
+
+                }
+
+                function sortSubscribers(){
+                    let field = sortVars.by;
+                    switch (field) {
+                        case "id":{
+                            subscribers.sort((a,b)=>{
+                                if(sortVars.order === 0){
+                                    return a._id > b._id?1:-1
+                                }else{
+                                    return a._id < b._id?1:-1
+                                }
+                            });
+                            break;
+                        }
+                        case "packages":{
+                            break;
+                        }
+                        case "email":{
+                            subscribers.sort((a,b)=>{
+                                if(sortVars.order === 0){
+                                    return a.email > b.email?1:-1
+                                }else{
+                                    return a.email < b.email?1:-1
+                                }
+                            });
+                            break;
+                        }
+                        case "creationd":{
+                            subscribers.sort((a,b)=>{
+                                if(sortVars.order === 0){
+                                    return a.creationDate > b.creationDate?1:-1
+                                }else{
+                                    return a.creationDate < b.creationDate?1:-1
+                                }
+                            });
+                            break;
+                        }
+                        case "lastud":{
+                            subscribers.sort((a,b)=>{
+                                if(sortVars.order === 0){
+                                    return a.lastUpdate > b.lastUpdate?1:-1
+                                }else{
+                                    return a.lastUpdate < b.lastUpdate?1:-1
+                                }
+                            });
+                            break;
+                        }
+                        case "detail":{
+                        }
+                    }
+                }
+
+                $NxApi.setAfterLogin(init);
+
+            }]);
 })();

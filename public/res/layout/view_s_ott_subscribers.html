@@ -10,68 +10,76 @@
         <table>
             <thead>
                 <tr>
-                    <th>
+                    <th style="width: 70px; cursor: pointer" ng-click="sortBy('id')">
                         ID
+                        <span ng-show="sortedBy('id',0)">↓</span>
+                        <span ng-show="sortedBy('id',1)">↑</span>
                     </th>
-                    <th>
+                    <th style="cursor: pointer" ng-click="sortBy('email')">
                         email
+                        <span ng-show="sortedBy('email',0)">↓</span>
+                        <span ng-show="sortedBy('email',1)">↑</span>
                     </th>
-                    <th>
-                        name
-                    </th>
-                    <th>
+                    <th style="width: 200px; cursor: pointer" ng-click="sortBy('packages')">
                         packages
+                        <span ng-show="sortedBy('packages',0)">↓</span>
+                        <span ng-show="sortedBy('packages',1)">↑</span>
                     </th>
-                    <th>
+                    <th style="width: 180px; cursor: pointer" ng-click="sortBy('creationd')">
                         Creation Date
+                        <span ng-show="sortedBy('creationd',0)">↓</span>
+                        <span ng-show="sortedBy('creationd',1)">↑</span>
                     </th>
-                    <th>
+                    <th style="width: 180px; cursor: pointer" ng-click="sortBy('lastud')">
                         Last Update
+                        <span ng-show="sortedBy('lastud',0)">↓</span>
+                        <span ng-show="sortedBy('lastud',1)">↑</span>
                     </th>
-                    <th>
+                    <th style="width: 80px; cursor: pointer" ng-click="sortBy('detail')">
                         Details
+                        <span ng-show="sortedBy('detail',0)">↓</span>
+                        <span ng-show="sortedBy('detail',1)">↑</span>
                     </th>
                 </tr>
             </thead>
-            <tbody>
-                <tr ng-show="loading">
-                    <td colspan="5">
-                        <div style="padding:20px"
-                             layout="row"
-                             layout-align="center center">
-                            <md-progress-circular
-                                    class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
-
-                        </div>
-
-                    </td>
-                </tr>
-                <tr ng-hide="loading"
-                    ng-repeat="subscriber in subscribers | filter : search ">
-                    <td>
-                        {{subscriber.cid}}
-                    </td><td>
-                        {{subscriber.name}}
-                    </td>
-                    <td>
-                        {{subscriber.email}}
-                    </td>
-                    <td>
-                        <div class="glove" ng-repeat="product in subscriber.products">
-                            {{product.name}}
-                        </div>
-                    </td>
-                    <td>
-                        {{subscriber.creationDate | date:'MMMM dd, yyyy'}}
-                    </td>
-                    <td>
-                        {{subscriber.lastUpdate | date:'MMMM dd, yyyy'}}
-                    </td>
-                    <td>
-                        <md-button ng-click="details(subscriber)">more</md-button>
-                    </td>
-                </tr>
-            </tbody>
         </table>
+        <div ng-show="loading">
+            <div style="padding:20px"
+                 layout="row"
+                 layout-align="center center">
+                <md-progress-circular
+                        class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
+            </div>
+        </div>
+        <md-virtual-repeat-container id="vertical-container" flex>
+            <div md-virtual-repeat="subscriber in subscribers" md-on-demand flex>
+                <table layout-fill>
+                    <tbody>
+                        <tr>
+                            <td style="width: 70px">
+                                {{subscriber.cid}}
+                            </td>
+                            <td>
+                                {{subscriber.email}}
+                            </td>
+                            <td style="width: 200px">
+                                <div class="glove" ng-repeat="product in subscriber.products">
+                                    {{productName(product)}}
+                                </div>
+                            </td>
+                            <td style="width: 180px">
+                                {{subscriber.creationDate | date:'MMMM dd, yyyy'}}
+                            </td>
+                            <td style="width: 180px">
+                                {{subscriber.lastUpdate | date:'MMMM dd, yyyy'}}
+                            </td>
+                            <td style="width: 80px">
+                                <md-button ng-click="details(subscriber)">more</md-button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </md-virtual-repeat-container>
     </scroll-view>
 </div>
