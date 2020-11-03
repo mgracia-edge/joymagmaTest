@@ -183,7 +183,7 @@ function checkSubscriberCredentials(req, res) {
 
     const {email, password, cid} = req.body;
 
-    if (email && (password || cid)) {
+    if ((!!email || !!cid) && password) {
 
         let query = {};
 
