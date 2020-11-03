@@ -181,15 +181,23 @@ function get_promo_channels(req, res) {
 
 function checkSubscriberCredentials(req, res) {
 
-    const {email, password} = req.body;
+    const {email, password, cid} = req.body;
 
-    if (email && password) {
+    if (email && (password || cid)) {
+
+        let query = {};
+
+        if (cid) {
+            query.email = email;
+        } else {
+            query.cid = cid;
+        }
 
         let db = pdc.db;
 
         if (db) {
 
-            db.Subscribers.findOne({email: email}, function (error, storedSubscriber) {
+            db.Subscribers.findOne(query, function (error, storedSubscriber) {
 
                 if (storedSubscriber && storedSubscriber.password && storedSubscriber.password === password) {
                     res.status(200).send(new api.Success(storedSubscriber));
@@ -333,7 +341,7 @@ function getADay(req, res) {
         justChache = req;
     }
 
-    let channelEPGId = justChache!==null ? justChache : req.body.channelEPGId;
+    let channelEPGId = justChache !== null ? justChache : req.body.channelEPGId;
 
     for (let i in getDayCache) {
         let cache = getDayCache[i];
