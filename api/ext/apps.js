@@ -183,14 +183,16 @@ function checkSubscriberCredentials(req, res) {
 
     const {email, password, cid} = req.body;
 
+    console.log((!!email || !!cid) && password)
+
     if ((!!email || !!cid) && password) {
 
         let query = {};
 
         if (cid) {
-            query.email = email;
-        } else {
             query.cid = cid;
+        } else {
+            query.email = email;
         }
 
         let db = pdc.db;
