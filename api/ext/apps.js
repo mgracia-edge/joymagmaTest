@@ -147,7 +147,7 @@ function get_promo_channels(req, res) {
             appId: "com.hbo.broadband.view.activity.main",
             uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband",
             scope: "tv"
-        }, {
+        },/* {
             name: "FOX GO",
             poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582050637/fox.jpg",
             action: "playStore",
@@ -161,7 +161,7 @@ function get_promo_channels(req, res) {
             appId: "com.moviecity.app",
             uri: "https://play.google.com/store/apps/details?id=com.moviecity.app",
             scope: "tv"
-        }, {
+        },*/ {
             name: "Netflix",
             poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1584315834/Netflix_icon.svg.jpg",
             action: "playStore",
