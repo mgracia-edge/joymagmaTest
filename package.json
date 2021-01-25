@@ -40,8 +40,8 @@
     "maxmind": "^2.12.0",
     "mongoose": "^5.9.9",
     "morgan": "~1.9.0",
-    "node-sass": "^4.12.0",
-    "node-sass-middleware": "0.11.0",
+    "node-sass": "^5.0.0",
+    "node-sass-middleware": "^0.11.0",
     "ua-parser-js": "^0.7.19",
     "xml2js": "^0.4.19"
   },
