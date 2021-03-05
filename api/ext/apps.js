@@ -147,21 +147,21 @@ function get_promo_channels(req, res) {
             appId: "com.hbo.broadband.view.activity.main",
             uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband",
             scope: "tv"
-        },/* {
-            name: "FOX GO",
-            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582050637/fox.jpg",
+        }, {
+            name: "Prime Video",
+            poster: "https://play-lh.googleusercontent.com/OWpGnzHvIMGzxQ4TSiNwZKex_Nq8ZLjvKmiSiCfPO26Ncy5DFhID-v3vQ_1dWCVPqA=s360-rw",
             action: "playStore",
-            appId: "com.moviecity.app",
-            uri: "https://play.google.com/store/apps/details?id=com.moviecity.app",
+            appId: "com.amazon.avod.thirdpartyclient",
+            uri: "https://play.google.com/store/apps/details?id=com.amazon.avod.thirdpartyclient",
             scope: "mobile"
         }, {
-            name: "FOX GO",
-            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582050637/fox.jpg",
+            name: "Prime Video",
+            poster: "https://play-lh.googleusercontent.com/OWpGnzHvIMGzxQ4TSiNwZKex_Nq8ZLjvKmiSiCfPO26Ncy5DFhID-v3vQ_1dWCVPqA=s360-rw",
             action: "playStore",
-            appId: "com.moviecity.app",
-            uri: "https://play.google.com/store/apps/details?id=com.moviecity.app",
+            appId: "com.amazon.amazonvideo.livingroom",
+            uri: "https://play.google.com/store/apps/details?id=com.amazon.amazonvideo.livingroom",
             scope: "tv"
-        },*/ {
+        }, {
             name: "Netflix",
             poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1584315834/Netflix_icon.svg.jpg",
             action: "playStore",
