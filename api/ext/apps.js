@@ -133,16 +133,16 @@ function LoginWOTT(req, res) {
 function get_promo_channels(req, res) {
     res.send([
         {
-            name: "HBO GO",
-            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582047140/HBO%20GO.jpg",
+            name: "HBO MAX",
+            poster: "https://play-lh.googleusercontent.com/GmIOtlRHzTffK3WSyNrz4NNrWFh_yUuhQb9UHXztk0ZxeeFzAUD52b9YVTGh7nsdJ8c=s360-rw",
             action: "playStore",
             appId: "com.hbo.broadband",
             uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband",
             scope: "mobile"
         },
         {
-            name: "HBO GO",
-            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1582047140/HBO%20GO.jpg",
+            name: "HBO MAX",
+            poster: "https://play-lh.googleusercontent.com/GmIOtlRHzTffK3WSyNrz4NNrWFh_yUuhQb9UHXztk0ZxeeFzAUD52b9YVTGh7nsdJ8c=s360-rw",
             action: "playStore",
             appId: "com.hbo.broadband.view.activity.main",
             uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband",
