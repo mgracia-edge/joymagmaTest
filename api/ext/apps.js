@@ -137,7 +137,7 @@ function get_promo_channels(req, res) {
             poster: "https://play-lh.googleusercontent.com/GmIOtlRHzTffK3WSyNrz4NNrWFh_yUuhQb9UHXztk0ZxeeFzAUD52b9YVTGh7nsdJ8c=s360-rw",
             action: "playStore",
             appId: "com.hbo.hbonow",
-            uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband",
+            uri: "https://play.google.com/store/apps/details?id=com.hbo.hbonow",
             scope: "mobile"
         },
         {
@@ -145,7 +145,7 @@ function get_promo_channels(req, res) {
             poster: "https://play-lh.googleusercontent.com/GmIOtlRHzTffK3WSyNrz4NNrWFh_yUuhQb9UHXztk0ZxeeFzAUD52b9YVTGh7nsdJ8c=s360-rw",
             action: "playStore",
             appId: "com.hbo.hbonow",
-            uri: "https://play.google.com/store/apps/details?id=com.hbo.broadband",
+            uri: "https://play.google.com/store/apps/details?id=com.hbo.hbonow",
             scope: "tv"
         }, {
             name: "Prime Video",
