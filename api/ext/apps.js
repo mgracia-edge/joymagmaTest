@@ -176,6 +176,20 @@ function get_promo_channels(req, res) {
             uri: "https://play.google.com/store/apps/details?id=com.netflix.mediaclient",
             scope: "mobile"
         }, {
+            name: "YouTube",
+            poster: "https://play-lh.googleusercontent.com/lMoItBgdPPVDJsNOVtP26EKHePkwBg-PkuY9NOrc-fumRtTFP4XhpUNk_22syN4Datc=s360-rw",
+            action: "playStore",
+            appId: "com.google.android.youtube.tv",
+            uri: "https://play.google.com/store/apps/details?id=com.google.android.youtube",
+            scope: "tv"
+        }, {
+            name: "YouTube",
+            poster: "https://play-lh.googleusercontent.com/lMoItBgdPPVDJsNOVtP26EKHePkwBg-PkuY9NOrc-fumRtTFP4XhpUNk_22syN4Datc=s360-rw",
+            action: "playStore",
+            appId: "com.google.android.youtube",
+            uri: "https://play.google.com/store/apps/details?id=com.google.android.youtube",
+            scope: "mobile"
+        }, {
             name: "CineAR",
             poster: "https://play-lh.googleusercontent.com/I2vjdY8vSMK02_1d1Uz0Z-GIFKmAzm1Np1hQGRQysJUJRHDM_xmTIjxBnsYB-qBdQ4c=s360-rw",
             action: "playStore",
