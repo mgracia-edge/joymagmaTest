@@ -32,7 +32,7 @@
                     </item>
 
                     <item>
-                        <label>Category</label>
+                        <label>Category & Groups</label>
                         <md-select ng-model="channelData.category">
                             <md-option>
                                 <em>None</em>
@@ -41,6 +41,8 @@
                                 {{category.name}}
                             </md-option>
                         </md-select>
+                        <md-switch ng-model="channelData.featured" aria-label="Switch 1">Featrured Channel</md-switch>
+                        <md-switch ng-model="channelData.liveNow" aria-label="Switch 1">Now Live Channel</md-switch>
                     </item>
 
                     <item>

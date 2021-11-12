@@ -265,7 +265,7 @@ function _update(req, res) {
         const {
             channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, source,
             transcoder, profile, deinterlace, aspectRatio, forceX264, sd, priority, monitoring,
-            h265, useMpkg, dvr24
+            h265, useMpkg, dvr24,featured, liveNow
         } = data;
 
         let query = {
@@ -292,7 +292,9 @@ function _update(req, res) {
                     priority: priority,
                     sd: sd,
                     monitoring: monitoring,
-                    dvr24: dvr24
+                    dvr24: dvr24,
+                    liveNow: liveNow,
+                    featured: featured
                 },
                 $push: {
                     updateHistory: {
