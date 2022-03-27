@@ -729,7 +729,7 @@ function getSubscriberContents(req, res) {
 
     function renderResponse(categories) {
 
-        db.Category.find({}).sort({ priority :1 }).exec(function (error, catData) {
+        db.Category.find({}, function (error, catData) {
             let response = [];
 
             for (let cid in categories) {
@@ -745,10 +745,17 @@ function getSubscriberContents(req, res) {
                 response.push({
                     name: data !== null ? data.name : "",
                     descriptionShort: data !== null ? data.descriptionShort : "",
+                    priority: data.priority,
                     categoryId: cid,
                     channels: categories[cid]
                 })
             }
+
+            response.sort((a,b)=>{
+                return a.priority - b.priority;
+            })
+
+            console.log(response)
 
             res.status(200).send(response);
 
