@@ -180,7 +180,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, descriptionShort, descriptionLong} = data;
+        const {name, descriptionShort, descriptionLong, priority} = data;
 
         let query = {
             find: {
@@ -190,13 +190,8 @@ function _update(req, res) {
                 $set: {
                     name: name,
                     descriptionShort: descriptionShort,
-                    descriptionLong: descriptionLong
-                },
-                $push: {
-                    updateHistory: {
-                        date: new Date(),
-                        payload: {}
-                    }
+                    descriptionLong: descriptionLong,
+                    priority: priority
                 }
             }
         };
@@ -204,8 +199,6 @@ function _update(req, res) {
         if (typeof name === 'undefined') delete query.update.$set.name;
         if (typeof descriptionShort === 'undefined') delete query.update.$set.descriptionShort;
         if (typeof descriptionLong === 'undefined') delete query.update.$set.descriptionLong;
-
-        query.update.$push.updateHistory.payload = query.update.$set;
 
         _update();
 

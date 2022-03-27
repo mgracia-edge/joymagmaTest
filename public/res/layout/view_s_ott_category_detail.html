@@ -13,20 +13,25 @@
                                    title="Category Name"
                                    autocomplete="off">
                         </item>
-
                         <item>
                             <label>Short description</label>
                             <input type="text" ng-model="categoryData.descriptionShort" aria-label="Short Description"
                                    title="Short Description"
                                    autocomplete="off">
                         </item>
-
                         <item>
                             <label>Large description</label>
                             <textarea ng-model="categoryData.descriptionLong" aria-label="Large Description"
                                       title="Large Description"
                                       autocomplete="off" rows="4">
                             </textarea>
+                        </item>
+                        <item flex>
+                            <label>Priority</label>
+                            <input type="text" ng-model="categoryData.priority" aria-label="first name"
+                                   title="priority"
+                                   autocomplete="off"
+                                   style="width: 100px;">
                         </item>
                     </div>
 

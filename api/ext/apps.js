@@ -729,7 +729,7 @@ function getSubscriberContents(req, res) {
 
     function renderResponse(categories) {
 
-        db.Category.find({}, function (error, catData) {
+        db.Category.find({}).sort({ priority :1 }).exec(function (error, catData) {
             let response = [];
 
             for (let cid in categories) {
