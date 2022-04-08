@@ -309,7 +309,7 @@
                             },
                             legend: {
                                 position: "bottom",
-                                display: true,
+                                display: false,
                                 labels: {
                                     fontColor: 'black'
                                 }
@@ -580,15 +580,10 @@
                         dataSet.push({
                             "label": data.channelsIndex[id].name,
                             "data": data.chartData.channels[id],
-                            "fill": false,
-                            "borderColor": color,
-                            "backgroundColor": color,
-                            "borderWidth": 0
+                            "backgroundColor": color
                         });
 
                     }
-
-                    console.log(dataSet);
 
                     let ctx = document.getElementById("sb-chart").getElementsByTagName("canvas")[0];
                     document.getElementById("sb-chart").removeChild(ctx);
@@ -596,26 +591,22 @@
                     ctx = document.getElementById("sb-chart").getElementsByTagName("canvas")[0];
 
                     ctx.height = 125;
-                    let myBarChart = new Chart(ctx, {
-                        "type": "line",
-                        "data": {
-                            "labels": char_labels,
-                            "datasets": dataSet
+
+                    const config = {
+                        type: 'bar',
+                        data: {
+                            labels: char_labels,
+                            datasets: dataSet
                         },
-                        "options": {
-                            layout: {
-                                padding: {
-                                    left: 0,
-                                    right: 0,
-                                    top: 0,
-                                    bottom: 0
-                                }
-                            },
-                            legend: {
-                                position: "bottom",
-                                display: true,
-                                labels: {
-                                    fontColor: 'black'
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: "right",
+                                    display: true,
+                                    labels: {
+                                        fontColor: 'black'
+                                    }
                                 }
                             },
                             title: {
@@ -626,17 +617,52 @@
                                 display: false,
                             },
                             scales: {
+                                x: {
+                                    stacked: true,
+                                },
+                                y: {
+                                    stacked: true
+                                },
                                 xAxes: [{
-                                    stacked: false,
+                                    categoryPercentage: 1.0,
+                                    barPercentage: 1.0
+                                }]
+                            }
+                        }
+                    };
+
+                    let myBarChart = new Chart(ctx,config);
+                    /*
+                    let myBarChart = new Chart(ctx, {
+                        type: "bar",
+                        data: {
+                            labels: char_labels,
+                            datasets: dataSet
+                        },
+                        options: {
+                            layout: {
+                                padding: {
+                                    left: 0,
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0
+                                }
+                            },
+                            responsive: true,
+
+                            scales: {
+                                xAxes: [{
+                                    stacked: true,
                                     display: true,
                                 }],
                                 yAxes: [{
                                     display: true,
-                                    stacked: false
+                                    stacked: true
                                 }]
                             }
                         }
                     });
+                     */
                 }
 
 
@@ -830,9 +856,16 @@
 
 
             function randomColor() {
-                let colors = ["#B0171F", "#00008B", "#008B45", "#DAA520",
-                    "#FF4500", "#877eff", "#1E90FF", "#1E1E1E", "#8E8E8E", "#8B4513",
-                    "#CD69C9", "#33A1C9", "#7AC5CD", "#CD00CD", "#6B8E23", "#8B4789"];
+                let colors =
+                    [
+                        "#068f23","#8a2d65","#ed8052",
+                        "#4ea032","#568ea8","#d43d51",
+                        "#77b143","#e2604f","#bed36c",
+                        "#9cc256","#864780","#f49f5b",
+                        "#dfe584","#8f0b80","#1b94ad",
+                        "#b03317","#1e6dff","#205b1c",
+                        "#ffab31","#126eb4","#d03cc0",
+                    ];
                 if (!this.i) i = 0;
                 return colors[i++ % colors.length];
             }
