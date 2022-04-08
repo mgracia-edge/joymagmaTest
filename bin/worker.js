@@ -108,10 +108,10 @@ async function compResumeHigher(date, aggregation, box){
             })
 
             l.perChannel.forEach(it => {
-                let cData = cMap.get(it.channelId);
+                let cData = cMap.get(String(it.channelId));
 
                 if(!cData){
-                    cMap.set(it.channelId, {
+                    cMap.set(String(it.channelId), {
                         concurrency: it.concurrency,
                         playTime: it.playTime
                     });
@@ -124,7 +124,7 @@ async function compResumeHigher(date, aggregation, box){
         }
 
         for(let it of cMap){
-            let channelId = it[0];
+            let channelId = String(it[0]);
             let concurrency = it[1].concurrency;
             let playTime = it[1].playTime;
 

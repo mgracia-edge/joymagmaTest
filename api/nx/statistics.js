@@ -1,6 +1,8 @@
 const api = require('../support');
 const codes = require('../codes');
 const dc = require('../../lib/dataConnection');
+const stats = require('../../lib/stats');
+
 
 exports.resourceList = [
     {
@@ -11,6 +13,11 @@ exports.resourceList = [
     }, {
         path: "dailyPlay",
         callback: _dailyPlay,
+        method: "post",
+        protected: true
+    },{
+        path: "report",
+        callback: _report,
         method: "post",
         protected: true
     }];
@@ -60,6 +67,60 @@ function _dailyPlay(req, res) {
         db.StatsDailyPlayingResume.find({date: {$gte: new Date(from), $lte: new Date(until)}}, (error, data) => {
             res.send(new api.Success(data));
         });
+
+    } else {
+
+        res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+
+}
+
+async function _report(req, res) {
+    let db = dc.db;
+
+    if (db) {
+
+        if (!req.user.permissions.includes(codes.users_permissions.STATS_ACCESS)) {
+
+            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+            return;
+        }
+
+        let {from, until, aggregation} = req.body;
+
+        let dateFrom = new Date(from);
+        let dateUntil = new Date(until);
+
+        if(!aggregation){
+            let delta = Math.abs((dateUntil.getTime() - dateFrom.getTime()) / 86400000);
+
+            if(delta < 1){
+                aggregation = stats.C.aggregation.PER_MIN;
+            }else if(delta < 2){
+                aggregation = stats.C.aggregation.PER_5MIN;
+            }else if(delta < 6){
+                aggregation = stats.C.aggregation.PER_QTR_HR;
+            }else if(delta < 16){
+                aggregation = stats.C.aggregation.PER_HLF_LF;
+            }else if(delta < 32){
+                aggregation = stats.C.aggregation.PER_HR;
+            }else{
+                aggregation = stats.C.aggregation.PER_DAY;
+            }
+        }
+
+        console.log({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation})
+
+        let data = await db.StatsResume.find({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation},{sessions:0,aggregation:0});
+
+        console.log(data)
+        console.log(data.length)
+
+        res.send(new api.Success(data));
+
 
     } else {
 
