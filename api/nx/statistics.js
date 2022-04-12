@@ -97,11 +97,11 @@ async function _report(req, res) {
         if(!aggregation){
             let delta = Math.abs((dateUntil.getTime() - dateFrom.getTime()) / 86400000);
 
-            if(delta < 1){
+            if(delta < 2){
                 aggregation = stats.C.aggregation.PER_MIN;
-            }else if(delta < 2){
+            }else if(delta < 3){
                 aggregation = stats.C.aggregation.PER_5MIN;
-            }else if(delta < 6){
+            }else if(delta < 10){
                 aggregation = stats.C.aggregation.PER_QTR_HR;
             }else if(delta < 16){
                 aggregation = stats.C.aggregation.PER_HLF_LF;
@@ -112,9 +112,9 @@ async function _report(req, res) {
             }
         }
 
-        console.log({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation})
+        console.log({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation, device: "android_tv"})
 
-        let data = await db.StatsResume.find({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation},{sessions:0,aggregation:0});
+        let data = await db.StatsResume.find({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation, device: "android_tv"},{sessions:0,aggregation:0});
 
         console.log(data)
         console.log(data.length)

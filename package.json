@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "compile": "npx webpack --config webpack.config.js",
-    "compile-watch": "npx webpack --config webpack.config.js --watch",
+    "compile-watch": "npx webpack --config webpack.config.js --watch --mode=development",
     "heroku-postbuild": "npm run compile"
   },
   "babel": {

@@ -44,6 +44,7 @@ const config = {
         filename: 'app.js',
         path: path.resolve(__dirname, './public')
     },
+    devtool:"source-map",
     module: {
         rules: [
             {

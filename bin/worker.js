@@ -116,7 +116,7 @@ async function compResumeHigher(date, aggregation, box){
                         playTime: it.playTime
                     });
                 }else{
-                    cData.concurrency += Math.max(it.concurrency, cData.concurrency);
+                    cData.concurrency = Math.max(it.concurrency, cData.concurrency);
                     cData.playTime += it.playTime;
                 }
 
