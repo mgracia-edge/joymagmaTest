@@ -3,6 +3,7 @@ const codes = require('../codes');
 const dc = require('../../lib/dataConnection');
 const stats = require('../../lib/stats');
 
+// TODO add Gzip compression, probably im app.js
 
 exports.resourceList = [
     {
@@ -10,7 +11,7 @@ exports.resourceList = [
         callback: _subscribers,
         method: "post",
         protected: true
-    }, {
+    }, { // Deprecated, use report
         path: "dailyPlay",
         callback: _dailyPlay,
         method: "post",
@@ -49,7 +50,7 @@ function _subscribers(req, res) {
 
 }
 
-function _dailyPlay(req, res) {
+function _dailyPlay(req, res) { // Deprecated, use _report
     let db = dc.db;
 
     if (db) {
@@ -110,17 +111,13 @@ async function _report(req, res) {
             }else{
                 aggregation = stats.C.aggregation.PER_DAY;
             }
+        }else{
+            // Todo Verify that the combination of aggregation and dates would not result in more than 1000 lines,
+            //  if that is the case, then use the automatic aggregation.
         }
 
-        console.log({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation, device: "android_tv"})
-
         let data = await db.StatsResume.find({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation, device: "android_tv"},{sessions:0,aggregation:0});
-
-        console.log(data)
-        console.log(data.length)
-
         res.send(new api.Success(data));
-
 
     } else {
 
