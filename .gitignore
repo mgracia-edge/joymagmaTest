@@ -5,3 +5,4 @@ node_modules
 .DS_Store
 res/reporttv/file.xml
 public/app.js
+.vscode
