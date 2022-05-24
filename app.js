@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const compression = require('compression');
 const sassMiddleware = require('node-sass-middleware');
 const wsr = require("./lib/wsrouter");
 const bodyParser = require('body-parser');
@@ -27,6 +28,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+
+// gzip compression
+app.use(compression());
+
 app.use(sassMiddleware({
     src: path.join(__dirname, 'public'),
     dest: path.join(__dirname, 'public'),
