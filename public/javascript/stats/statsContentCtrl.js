@@ -8,7 +8,7 @@ export default function ContentCtrl($scope, $timeout, Chart, cleanUp, $NxApi, ra
         // Clean data on new section fill
         $scope.summary = null;
         $scope.filters.dates.onDateChanged = () => {
-        }
+        }    
     };
 
     $scope.filters.dates.onDateChanged = () => {
@@ -31,7 +31,8 @@ export default function ContentCtrl($scope, $timeout, Chart, cleanUp, $NxApi, ra
 
             $NxApi.statistics.report({
                 from: $scope.filters.dates.start.getTime(),
-                until: $scope.filters.dates.end.getTime()
+                until: $scope.filters.dates.end.getTime(),
+                ...$scope.filters.parameters
             }).then((data) => {
 
                 let channelsTotals = [];

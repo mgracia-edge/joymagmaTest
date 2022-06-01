@@ -1,0 +1,30 @@
+<md-dialog>
+  <md-dialog-content class="nx-dialog-filter">
+      <h1>Choose filter</h1>
+
+      <div layout="row" class="choosers">
+          <div layout="column">
+              <label>Aggregation</label>
+              <md-select ng-model="ctrl.aggregation" class="md-no-underline">
+                <md-option value="auto">Automático</md-option>
+                <md-option value="per_minute">Minuto</md-option>
+                <md-option value="per_5minute">5 Minutos</md-option>
+                <md-option value="pre_quarter_hr">15 Minutos</md-option>
+                <md-option value="per_half_hr">30 Minutos</md-option>
+                <md-option value="per_hr">Hora</md-option>
+                <md-option value="per_day">Día</md-option>
+            </md-select>
+          </div>
+      </div>
+
+      <div class="line"></div>
+      <div layout="row" layout-align="end">
+          <md-button class="md-raised" ng-click="cancel()">
+              cancel
+          </md-button>
+          <md-button class="md-raised" ng-click="save()">
+              Save
+          </md-button>
+      </div>
+  </md-dialog-content>
+</md-dialog>

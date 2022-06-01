@@ -1,0 +1,29 @@
+.nx-dialog-filter {
+  min-width: 450px;
+  padding: 16px;
+
+  h1 {
+    color: $primary-color;
+    font-size: 26px;
+    font-weight: 500;
+  }
+
+  .choosers {
+    padding-bottom: 15px;
+
+    label {
+      font-size: 14px;
+      color: #333;
+      border-bottom: 1px solid #ddd;
+      display: block;
+      padding-bottom: 8px;
+    }
+
+  }
+
+  .line {
+    height: 1px;
+    background: #ddd;
+  }
+
+}

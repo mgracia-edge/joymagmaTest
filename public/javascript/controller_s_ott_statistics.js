@@ -15,6 +15,13 @@ import ContentCtrl from "./stats/statsContentCtrl"
 
 (function () {
 
+    const parameterAvilable = {
+        aggregation: "aggregation"
+    };
+    const parameterDefault = {
+        aggregation: "auto"
+    };
+
     let  nextColor = 0;
 
     angular.module('NxStudio')
@@ -27,7 +34,7 @@ import ContentCtrl from "./stats/statsContentCtrl"
                     changeDates: changeDates,
                     changeParameters: changeParameters,
                     dates: setDatesToLastWeek(),
-                    parameters: [],
+                    parameters: {},
                     onDateChanged: () => {
                     }
                 };
@@ -94,7 +101,32 @@ import ContentCtrl from "./stats/statsContentCtrl"
                 }
 
                 function changeParameters() {
-                    $scope.filters.active = true;
+
+                    let masterScope = $scope;
+
+                    $mdDialog.show({
+                        templateUrl: "/res/layout/fragment_dialog_filter.html",
+                        controller: ($scope, $mdDialog) => {
+
+                            $scope.cancel = function () {
+                                $mdDialog.hide()
+                            };
+
+                            $scope.save = function () {
+                                masterScope.filters.parameters = {}
+                                if ($scope.ctrl.aggregation !== parameterDefault["aggregation"]) {
+                                    masterScope.filters.parameters[parameterAvilable["aggregation"]] = $scope.ctrl.aggregation
+                                }
+                                $mdDialog.hide()
+                                masterScope.filters.active = Object.entries(masterScope.filters.parameters).length !== 0 ? true : false
+                            };
+
+                            $scope.ctrl = {
+                                aggregation: masterScope.filters.parameters[parameterAvilable["aggregation"]] || parameterDefault["aggregation"]
+                            };
+
+                        }
+                    })
                 }
 
                 function startSection(section) {
