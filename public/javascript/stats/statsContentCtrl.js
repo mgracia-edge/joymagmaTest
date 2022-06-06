@@ -8,12 +8,18 @@ export default function ContentCtrl($scope, $timeout, Chart, cleanUp, $NxApi, ra
         // Clean data on new section fill
         $scope.summary = null;
         $scope.filters.dates.onDateChanged = () => {
-        }    
+        }
+        $scope.filters.onParameterChanged = () => {
+        }        
     };
 
     $scope.filters.dates.onDateChanged = () => {
         getData().then(drawChart);
     };
+
+    $scope.filters.onParameterChanged = () => {
+        getData().then(drawChart);
+    };    
 
     $timeout(() => {
         getData().then(drawChart);

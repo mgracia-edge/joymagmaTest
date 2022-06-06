@@ -36,6 +36,8 @@ import ContentCtrl from "./stats/statsContentCtrl"
                     dates: setDatesToLastWeek(),
                     parameters: {},
                     onDateChanged: () => {
+                    },
+                    onParameterChanged: () => {
                     }
                 };
 
@@ -117,6 +119,9 @@ import ContentCtrl from "./stats/statsContentCtrl"
                                 if ($scope.ctrl.aggregation !== parameterDefault["aggregation"]) {
                                     masterScope.filters.parameters[parameterAvilable["aggregation"]] = $scope.ctrl.aggregation
                                 }
+                                if (typeof masterScope.filters.onParameterChanged === "function") {
+                                    masterScope.filters.onParameterChanged();
+                                }
                                 $mdDialog.hide()
                                 masterScope.filters.active = Object.entries(masterScope.filters.parameters).length !== 0 ? true : false
                             };
@@ -154,12 +159,19 @@ import ContentCtrl from "./stats/statsContentCtrl"
                         $scope.summary = null;
                         $scope.filters.dates.onDateChanged = () => {
                         }
+                        $scope.filters.onParameterChanged = () => {
+                        }
                     };
 
                     $scope.filters.dates.onDateChanged = () => {
                         getData().then(drawChart);
 
                     };
+
+                    $scope.filters.onParameterChanged = () => {
+                        getData().then(drawChart);
+
+                    };                    
 
                     $timeout(() => {
                         getData().then(drawChart);
@@ -302,11 +314,17 @@ import ContentCtrl from "./stats/statsContentCtrl"
                         $scope.summary = null;
                         $scope.filters.dates.onDateChanged = () => {
                         }
+                        $scope.filters.onParameterChanged = () => {
+                        }                        
                     };
 
                     $scope.filters.dates.onDateChanged = () => {
                         getData().then(drawChart);
                     };
+                    
+                    $scope.filters.onParameterChanged = () => {
+                        getData().then(drawChart);
+                    };                    
 
                     $timeout(() => {
                         getData().then(drawChart);
@@ -511,11 +529,17 @@ import ContentCtrl from "./stats/statsContentCtrl"
                         $scope.summary = null;
                         $scope.filters.dates.onDateChanged = () => {
                         }
+                        $scope.filters.onParameterChanged = () => {
+                        }                        
                     };
 
                     $scope.filters.dates.onDateChanged = () => {
                         getData().then(drawChart);
                     };
+                    
+                    $scope.filters.onParameterChanged = () => {
+                        getData().then(drawChart);
+                    };                    
 
                     $timeout(() => {
                         getData().then(drawChart);
