@@ -9,7 +9,7 @@ exports.resourceList = [
         callback: _subscribers,
         method: "post",
         protected: true
-    }, { // Deprecated, use report
+    }, {
         path: "dailyPlay",
         callback: _dailyPlay,
         method: "post",
@@ -48,7 +48,7 @@ function _subscribers(req, res) {
 
 }
 
-function _dailyPlay(req, res) { // Deprecated, use _report
+async function _dailyPlay(req, res) {
     let db = dc.db;
 
     if (db) {
@@ -61,11 +61,66 @@ function _dailyPlay(req, res) { // Deprecated, use _report
             return;
         }
 
-        let {from, until} = req.body;
+        let {from, until, aggregation} = req.body;
 
-        db.StatsDailyPlayingResume.find({date: {$gte: new Date(from), $lte: new Date(until)}}, (error, data) => {
-            res.send(new api.Success(data));
-        });
+        let dateFrom = new Date(from);
+        let dateUntil = new Date(until);
+
+        const aditionalSearchs = {};
+
+        if(!aggregation){
+            aggregation = defAggregation(dateFrom, dateUntil);
+        }else{
+            aggregation = checkLinesByAggregation(dateFrom, dateUntil, aggregation, stats.C);
+        }
+
+        const pipeline = [
+            {
+              '$match': {
+                'date': {
+                  '$gte': new Date(from), 
+                  '$lt': new Date(until)
+                }, 
+                'aggregation': aggregation,
+                ...aditionalSearchs
+              }
+            }, {
+              '$project': {
+                'perChannel': 0, 
+                'sessions': 0, 
+                'aggregation': 0, 
+                '__v': 0
+              }
+            }, {
+              '$group': {
+                '_id': '$date', 
+                'concurrency': {
+                  '$sum': '$concurrency'
+                }, 
+                'playTime': {
+                  '$sum': '$playTime'
+                }, 
+                'numberOfSubscribers': {
+                  '$sum': '$numberOfSubscribers'
+                }
+              }
+            }, {
+              '$project': {
+                'date': '$_id', 
+                '_id': 0, 
+                'concurrency': 1, 
+                'playTime': 1, 
+                'numberOfSubscribers': 1
+              }
+            }, {
+              '$sort': {
+                'date': 1
+              }
+            }
+        ];
+
+        let data = await db.StatsResume.aggregate(pipeline);
+        res.send(new api.Success(data));
 
     } else {
 
