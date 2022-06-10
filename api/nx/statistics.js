@@ -79,52 +79,64 @@ async function _dailyPlay(req, res) {
             aggregation = checkLinesByAggregation(dateFrom, dateUntil, aggregation, stats.C);
         }
 
-        const pipeline = [
-            {
-              '$match': {
-                'date': {
-                  '$gte': new Date(from), 
-                  '$lt': new Date(until)
-                }, 
-                'aggregation': aggregation,
-                ...aditionalSearchs
-              }
-            }, {
-              '$project': {
-                'perChannel': 0, 
-                'sessions': 0, 
-                'aggregation': 0, 
-                '__v': 0
-              }
-            }, {
-              '$group': {
-                '_id': '$date', 
-                'concurrency': {
-                  '$sum': '$concurrency'
-                }, 
-                'playTime': {
-                  '$sum': '$playTime'
-                }, 
-                'numberOfSubscribers': {
-                  '$sum': '$numberOfSubscribers'
-                }
-              }
-            }, {
-              '$project': {
-                'date': '$_id', 
-                '_id': 0, 
-                'concurrency': 1, 
-                'playTime': 1, 
-                'numberOfSubscribers': 1
-              }
-            }, {
-              '$sort': {
-                'date': 1
-              }
-            }
-        ];
+        // const pipeline = [
+        //     {
+        //       '$match': {
+        //         'date': {
+        //           '$gte': new Date(from), 
+        //           '$lt': new Date(until)
+        //         }, 
+        //         'aggregation': aggregation,
+        //         ...aditionalSearchs
+        //       }
+        //     }, {
+        //       '$project': {
+        //         'perChannel': 0, 
+        //         'sessions': 0, 
+        //         'aggregation': 0, 
+        //         '__v': 0
+        //       }
+        //     }, {
+        //       '$group': {
+        //         '_id': '$date', 
+        //         'concurrency': {
+        //           '$sum': '$concurrency'
+        //         }, 
+        //         'playTime': {
+        //           '$sum': '$playTime'
+        //         }, 
+        //         'numberOfSubscribers': {
+        //           '$sum': '$numberOfSubscribers'
+        //         }
+        //       }
+        //     }, {
+        //       '$project': {
+        //         'date': '$_id', 
+        //         '_id': 0, 
+        //         'concurrency': 1, 
+        //         'playTime': 1, 
+        //         'numberOfSubscribers': 1
+        //       }
+        //     }, {
+        //       '$sort': {
+        //         'date': 1
+        //       }
+        //     }
+        // ];
+        // let data = await db.StatsResume.aggregate(pipeline);
 
-        let data = await db.StatsResume.aggregate(pipeline);
+        let data = await db.StatsResume.find({
+            date: {$gte: new Date(from), $lt: new Date(until)},
+            aggregation: aggregation, 
+            device: "android_tv"
+            }, {
+                aggregation: 0,
+                perChannel: 0, 
+                __v: 0
+            }
+        );
+
+
         res.send(new api.Success(data));
 
     } else {

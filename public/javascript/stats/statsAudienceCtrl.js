@@ -78,17 +78,18 @@ export default function AudienceCtrl($scope, $timeout, Chart, cleanUp, $NxApi) {
                   display: false,
               },
               scales: {
-                  xAxes: [{
-                      stacked: false,
-                      display: true,
-                  }],
-                  yAxes: [{
-                      display: true,
-                      stacked: false,
-                      ticks: {
-                          beginAtZero: true
-                      }
-                  }]
+                x: {
+                    stacked: false,
+                    display: true,
+                    type: 'time'
+                },
+                y: {
+                    display: true,
+                    stacked: false,
+                    ticks: {
+                        beginAtZero: true
+                    }
+                },
               }
           }
       });
@@ -137,18 +138,19 @@ export default function AudienceCtrl($scope, $timeout, Chart, cleanUp, $NxApi) {
                   display: false,
               },
               scales: {
-                  xAxes: [{
-                      stacked: false,
-                      display: true,
-                  }],
-                  yAxes: [{
-                      display: true,
-                      stacked: false,
-                      ticks: {
-                          beginAtZero: true
-                      }
-                  }]
-              }
+                x: {
+                    stacked: false,
+                    display: true,
+                    type: 'time'
+                },
+                y: {
+                    display: true,
+                    stacked: false,
+                    ticks: {
+                        beginAtZero: true
+                    }
+                },
+              }              
           }
       });
 
@@ -176,17 +178,21 @@ export default function AudienceCtrl($scope, $timeout, Chart, cleanUp, $NxApi) {
               ...$scope.filters.parameters,
           }).then((data) => {
 
-              let uidx = [];
+              // let uidx = [];
+              const uidx = new Set();
 
               for (let item of data) {
 
                   let date = new Date(item.date);
+                  let avgPlayTime = 0;
 
-                  result.date.push(`${date.getDate()}/${date.getMonth() + 1}`);
+                  //result.date.push(`${date.getDate()}/${date.getMonth() + 1}`);
+                  result.date.push(date);
                   //result.uniqueUsers.push(item.peaks.uniqueUsers);
                   result.uniqueUsers.push(item.numberOfSubscribers);
                   //result.avgPTPD.push(Math.round(item.avgPerSub.playingTime / 60000));
-                  result.avgPTPD.push(Math.round(item.playTime / 60000));
+                  avgPlayTime = item.playTime / item.numberOfSubscribers;
+                  result.avgPTPD.push(Math.round(avgPlayTime / 60000));
 
                   // if (item.avgPerSub.playingTime !== 0) {
                   //     $scope.summary.avgPTPD += item.avgPerSub.playingTime;
@@ -194,20 +200,24 @@ export default function AudienceCtrl($scope, $timeout, Chart, cleanUp, $NxApi) {
                   //     $scope.summary.avgPTPD = item.avgPerSub.playingTime;
                   // }
 
-                  $scope.summary.avgPTPD += item.playTime;
-                  $scope.summary.uniqueUsers += item.numberOfSubscribers;
-                  $scope.summary.concurrency += item.concurrency;
+                  // Conver to minutes in html layout
+                  $scope.summary.avgPTPD += avgPlayTime;
 
                   // for (let s in item.subscribers) {
                   //     uidx[s] = 1;
                   // }
 
+                  for (let s in item.sessions) {
+                      uidx.add(s);
+                  }                  
+
               }
 
-            //   for (let id in uidx) {
-            //       $scope.summary.uniqueUsers++;
-            //   }
+              // for (let id in uidx) {
+              //    $scope.summary.uniqueUsers++;
+              // }
 
+              $scope.summary.uniqueUsers = uidx.size;
               $scope.summary.avgPTPD /= data.length;
 
               resolve(result);
