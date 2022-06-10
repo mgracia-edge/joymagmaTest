@@ -917,6 +917,20 @@
                     });
                 }
 
+                function devices(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/statistics/devices", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        }).then(({data}) => {
+                            resolve(data.content);
+                        }).catch((error) => {
+                            reject(error)
+                        });
+                    });
+                }                
+
                 function report(params) {
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/statistics/report", params, {
@@ -934,6 +948,7 @@
                 return {
                     subscribers,
                     dailyPlay,
+                    devices,
                     report
                 }
             }

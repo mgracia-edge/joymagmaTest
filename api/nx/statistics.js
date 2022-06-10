@@ -9,9 +9,14 @@ exports.resourceList = [
         callback: _subscribers,
         method: "post",
         protected: true
-    }, {
+    },{
         path: "dailyPlay",
         callback: _dailyPlay,
+        method: "post",
+        protected: true
+    },{
+        path: "devices",
+        callback: _devices,
         method: "post",
         protected: true
     },{
@@ -155,6 +160,51 @@ async function _report(req, res) {
         }
 
         let data = await db.StatsResume.find({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation, device: "android_tv"},{sessions:0,aggregation:0});
+        res.send(new api.Success(data));
+
+    } else {
+
+        res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+
+}
+
+async function _devices(req, res) {
+    let db = dc.db;
+
+    if (db) {
+
+        if (!req.user.permissions.includes(codes.users_permissions.STATS_ACCESS)) {
+
+            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+            return;
+        }
+
+        let {from, until, aggregation} = req.body;
+
+        let dateFrom = new Date(from);
+        let dateUntil = new Date(until);
+
+        if(!aggregation){
+            aggregation = defAggregation(dateFrom, dateUntil);
+        }else{
+            aggregation = checkLinesByAggregation(dateFrom, dateUntil, aggregation, stats.C);
+        }
+
+        let data = await db.StatsResume.find({
+            date: {$gte: new Date(from), $lt: new Date(until)},
+            aggregation: aggregation
+            }, {
+                sessions: 0,
+                aggregation: 0,
+                perChannel: 0, 
+                __v: 0
+
+            }
+        );
         res.send(new api.Success(data));
 
     } else {
