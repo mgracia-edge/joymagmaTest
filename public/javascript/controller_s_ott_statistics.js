@@ -23,6 +23,7 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
     const parameterDefault = {
         aggregation: "auto"
     };
+    const CONTENT = "Content";
 
     let  nextColor = 0;
 
@@ -37,6 +38,7 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
                     changeParameters: changeParameters,
                     dates: setDatesToLastWeek(),
                     parameters: {},
+                    channels: [],
                     onDateChanged: () => {
                     },
                     onParameterChanged: () => {
@@ -53,7 +55,7 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
                         icon: "/res/drawable/ic_viewing.svg",
                         controller: AudienceCtrl
                     }, {
-                        name: "Content",
+                        name: CONTENT,
                         icon: "/res/drawable/ic_show.svg",
                         controller: ContentCtrl
                     }, {
@@ -121,6 +123,7 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
                                 if ($scope.ctrl.aggregation !== parameterDefault["aggregation"]) {
                                     masterScope.filters.parameters[parameterAvilable["aggregation"]] = $scope.ctrl.aggregation
                                 }
+                                masterScope.filters.channels = $scope.ctrl.channels.map(it => ({...it}));
                                 if (typeof masterScope.filters.onParameterChanged === "function") {
                                     masterScope.filters.onParameterChanged();
                                 }
@@ -128,10 +131,35 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
                                 masterScope.filters.active = Object.entries(masterScope.filters.parameters).length !== 0 ? true : false
                             };
 
-                            $scope.ctrl = {
-                                aggregation: masterScope.filters.parameters[parameterAvilable["aggregation"]] || parameterDefault["aggregation"]
+                            $scope.selectChannel = function (channel) {
+                                let canAdd = $scope.ctrl.totChannelSelected < 15;
+                                const selectHandle = () => {
+                                    $scope.ctrl.channels[$scope.ctrl.channels.findIndex(elm => elm._id === channel._id)].selected = !channel.selected;
+                                }
+                                if (channel.selected) {
+                                    $scope.ctrl.totChannelSelected -= 1;
+                                    selectHandle();
+                                } else {
+                                    if (canAdd) {
+                                        $scope.ctrl.totChannelSelected += 1;
+                                    selectHandle();
+                                    }
+                                }
                             };
 
+                            $scope.ctrl = {
+                                aggregation: masterScope.filters.parameters[parameterAvilable["aggregation"]] || parameterDefault["aggregation"],
+                                channels: [],
+                                showChannelList: masterScope.currentSection.name === CONTENT ? true : false,
+                                totChannelSelected: 0,
+                            };
+
+                            for (const channel of masterScope.filters.channels) {
+                                $scope.ctrl.channels.push({...channel});
+                                if (channel.selected) {
+                                    $scope.ctrl.totChannelSelected += 1;
+                                }
+                            }
                         }
                     })
                 }
@@ -141,6 +169,14 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
                     if (typeof section.controller === "function") {
                         cleanUp();
                         $scope.currentSection = section;
+                        if (section.name === CONTENT) {
+                            $NxApi.channels.read({namesOnly: true}).then((data)=>{
+                                $scope.filters.channels = data.map(channel => ({...channel, selected: false}));
+                                // TODO: Other channel acum
+                                //$scope.filters.channels.unshift({_id: 1234567890, name: "Others", poster: [{url:""}], selected: false});
+                            });
+                            
+                        }
                         section.controller($scope, $timeout, Chart, cleanUp,$NxApi, randomColor) ;
                     }
 

@@ -48,6 +48,7 @@ export default function ContentCtrl($scope, $timeout, Chart, cleanUp, $NxApi, ra
                     channels: {}
                 };
 
+                // Acum total playTime per channel in array by id
                 for (let item of data) {
                     for (let channel of item.perChannel) {
                         if (!channelsTotals[channel.channelId]) {
@@ -59,6 +60,7 @@ export default function ContentCtrl($scope, $timeout, Chart, cleanUp, $NxApi, ra
 
                 let sorted = [];
 
+                // Conver in array of object (Acum total)
                 for (let id in channelsTotals) {
                     sorted.push({
                         id: id,
@@ -70,18 +72,19 @@ export default function ContentCtrl($scope, $timeout, Chart, cleanUp, $NxApi, ra
                     return b.playTime - a.playTime;
                 });
 
-                let topChannels = sorted.slice(0, 20);
+                // Array of channels selected in filter or automatics top
+                let selectedChannels = selectChannels(sorted);
 
                 chartData.channels = {};
 
-                for (let channel of topChannels) {
+                for (let channel of selectedChannels) {
                     chartData.channels[channel.id] = [];
                 }
 
                 for (let item of data) {
                     chartData.date.push(item.date);
 
-                    for (let channel of topChannels) {
+                    for (let channel of selectedChannels) {
                         let match = item.perChannel.find(it => it.channelId === channel.id);
 
                         let value = 0;
@@ -101,6 +104,20 @@ export default function ContentCtrl($scope, $timeout, Chart, cleanUp, $NxApi, ra
             });
 
         });
+    }
+
+    function selectChannels(totSortedChannels) {
+        let selectedChannels = [];
+        if ($scope.filters.channels.some(filterChannel => filterChannel.selected === true)) {
+            selectedChannels = totSortedChannels.filter(totSortedChannel => 
+                $scope.filters.channels.find(filterChannel => 
+                    filterChannel._id === totSortedChannel.id && filterChannel.selected === true
+                )
+            )
+        } else {
+            selectedChannels = totSortedChannels.slice(0, 20);
+        }
+        return selectedChannels;
     }
 
     function addChannelNames(results) {
