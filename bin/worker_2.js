@@ -25,8 +25,8 @@ const C = {
     console.log("Waiting for connection");
     dc.on(dc.event.CONNECTED, async () => {
 
-        let init = new Date("2021-4-6");
-        let until = new Date("2022-4-12");
+        let init = new Date("2021-4-29");
+        let until = new Date("2022-5-3");
 
         for (let date = new Date(until);
              date.getTime() > init.getTime();

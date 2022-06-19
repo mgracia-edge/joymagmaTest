@@ -146,27 +146,31 @@ export default function DevicesCtrl($scope, $timeout, Chart, cleanUp, $NxApi) {
                         "data": chart_data_and,
                         "fill": true,
                         "backgroundColor": 'rgba(47,110,0,0.67)',
-                        "borderWidth": 0
+                        "borderWidth": 0,
+                        "pointRadius": 0
                     }, {
                         "label": "TV Box",
                         "data": chart_data_box,
                         "fill": true,
                         "backgroundColor": 'rgba(0,77,160,0.67)',
-                        "borderWidth": 0
+                        "borderWidth": 0,
+                        "pointRadius": 0
                     },
                     {
                         "label": "iOs",
                         "data": chart_data_iOs,
                         "fill": true,
                         "backgroundColor": 'rgba(0,0,0,0.99)',
-                        "borderWidth": 0
+                        "borderWidth": 0,
+                        "pointRadius": 0
                     },
                     {
                         "label": "Browser",
                         "data": chart_data_browser,
                         "fill": true,
                         "backgroundColor": 'rgba(203,83,35,0.67)',
-                        "borderWidth": 0
+                        "borderWidth": 0,
+                        "pointRadius": 0
                     }]
             },
             "options": {

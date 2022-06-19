@@ -51,7 +51,8 @@ export default function AudienceCtrl($scope, $timeout, Chart, cleanUp, $NxApi) {
                       "data": chart_data_unique,
                       "fill": true,
                       "backgroundColor": 'rgba(57,133,0,0.67)',
-                      "borderWidth": 0
+                      "borderWidth": 0,
+                      "pointRadius": 0
                   }]
           },
           "options": {
@@ -111,7 +112,8 @@ export default function AudienceCtrl($scope, $timeout, Chart, cleanUp, $NxApi) {
                       "data": chart_data_avgPTPD,
                       "fill": true,
                       "backgroundColor": 'rgba(154,1,16,0.67)',
-                      "borderWidth": 0
+                      "borderWidth": 0,
+                      "pointRadius": 0
                   }]
           },
           "options": {
