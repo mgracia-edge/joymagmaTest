@@ -3,7 +3,8 @@
         <h1>Choose filter</h1>
 
         <div class="container-filter choosers">
-            <div class="aggregation-filter">
+
+            <div ng-show="ctrl.showAggregation" class="aggregation-filter">
                 <label>Aggregation</label>
                 <md-select ng-model="ctrl.aggregation" class="md-no-underline">
                     <md-option value="auto">Automatics</md-option>

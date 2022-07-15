@@ -14,6 +14,7 @@
 import ContentCtrl from "./stats/statsContentCtrl"
 import AudienceCtrl from "./stats/statsAudienceCtrl"
 import DevicesCtrl from "./stats/statsDevicesCtrl"
+import GridAudienceCtrl from "./stats/statsGridAudienceCtrl"
 
 (function () {
 
@@ -24,6 +25,7 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
         aggregation: "auto"
     };
     const CONTENT = "Content";
+    const GRID_AUDIENCE = "Grid Audience";
 
     let  nextColor = 0;
 
@@ -36,7 +38,8 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
                     active: false,
                     changeDates: changeDates,
                     changeParameters: changeParameters,
-                    dates: setDatesToLastWeek(),
+                    //dates: setDatesToLastWeek(),
+                    dates: setFilterDates("week"),
                     parameters: {},
                     channels: [],
                     onDateChanged: () => {
@@ -62,6 +65,10 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
                         name: "Devices",
                         icon: "/res/drawable/ic_devices.svg",
                         controller: DevicesCtrl
+                    }, {
+                        name: GRID_AUDIENCE,
+                        icon: "/res/drawable/ic_epg_monitor.svg",
+                        controller: GridAudienceCtrl
                     }
                 ];
 
@@ -151,6 +158,7 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
                                 aggregation: masterScope.filters.parameters[parameterAvilable["aggregation"]] || parameterDefault["aggregation"],
                                 channels: [],
                                 showChannelList: masterScope.currentSection.name === CONTENT ? true : false,
+                                showAggregation: masterScope.currentSection.name !== GRID_AUDIENCE ? true : false,
                                 totChannelSelected: 0,
                             };
 
@@ -175,7 +183,8 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
                                 // TODO: Other channel acum
                                 //$scope.filters.channels.unshift({_id: 1234567890, name: "Others", poster: [{url:""}], selected: false});
                             });
-                            
+                        } else if (section.name === GRID_AUDIENCE) {
+                            $scope.filters.dates = setFilterDates("month");
                         }
                         section.controller($scope, $timeout, Chart, cleanUp,$NxApi, randomColor) ;
                     }
@@ -338,19 +347,46 @@ import DevicesCtrl from "./stats/statsDevicesCtrl"
                 }
                 
 
-                function setDatesToLastWeek() {
-                    const DELTA = 604800000;
+                // function setDatesToLastWeek() {
+                //     const DELTA = 604800000;
+                //     let result = {};
+
+                //     result.start = new Date();
+                //     result.start.setTime(result.start.getTime() - DELTA);
+                //     result.start.setHours(0, 0, 0, 0);
+
+                //     result.end = new Date();
+                //     result.end.setHours(0, 0, 0, 0);
+
+                //     return result;
+                // }
+
+                function setFilterDates(deltaType = "week") {
+
+                    const deltaWeek = 604800000;
+                    let delta;
                     let result = {};
 
+                    switch (deltaType) {
+                        case "week":
+                            delta = deltaWeek;
+                            break;
+                        case "month":
+                            delta = 2629746000;
+                            break;
+                        default:   
+                            delta = deltaWeek; 
+                    }
+
                     result.start = new Date();
-                    result.start.setTime(result.start.getTime() - DELTA);
+                    result.start.setTime(result.start.getTime() - delta);
                     result.start.setHours(0, 0, 0, 0);
 
                     result.end = new Date();
                     result.end.setHours(0, 0, 0, 0);
 
                     return result;
-                }
+                }                
 
 
                 function randomColor() {
