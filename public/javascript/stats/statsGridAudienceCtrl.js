@@ -28,10 +28,10 @@ export default function GridAudienceCtrl($scope, $timeout, Chart, cleanUp, $NxAp
 
     function download() {
 
-        let text = "Channel, Play Time";
+        let text = "Channel, Play Time (Hr)";
 
         for(let item of $scope.dataSet){
-            text += `\n${item.name},${item.playTime}`
+            text += `\n${item.name},${item.playTimeHs}`
         }
 
         let element = document.createElement('a');
@@ -53,7 +53,8 @@ export default function GridAudienceCtrl($scope, $timeout, Chart, cleanUp, $NxAp
           $NxApi.statistics.report({
               from: $scope.filters.dates.start.getTime(),
               until: $scope.filters.dates.end.getTime(),
-              aggregation: "per_day"
+              // TODO: Check worker for "per_day"
+              aggregation: "per_hr"
           }).then((data) => {
 
               let channelsTotals = [];
@@ -76,6 +77,7 @@ export default function GridAudienceCtrl($scope, $timeout, Chart, cleanUp, $NxAp
                       _id: id,
                       name: id,
                       playTime: channelsTotals[id],
+                      playTimeHs: Math.round(channelsTotals[id] / 3600000 * 100) / 100,
                   })
               }
 
