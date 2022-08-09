@@ -77,7 +77,10 @@ export default function GridAudienceCtrl($scope, $timeout, Chart, cleanUp, $NxAp
                       _id: id,
                       name: id,
                       playTime: channelsTotals[id],
-                      playTimeHs: Math.round(channelsTotals[id] / 3600000 * 100) / 100,
+                      // Convert ms to hr
+                      //playTimeHs: Math.round(channelsTotals[id] / 3600000 * 100) / 100,
+                      // Convert sg to hr || divided by 2 for duplicated data in collection
+                      playTimeHs: Math.round((channelsTotals[id] / 2) / 3600 * 100) / 100,                      
                   })
               }
 
