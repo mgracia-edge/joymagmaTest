@@ -287,14 +287,14 @@ import GridAudienceCtrl from "./stats/statsGridAudienceCtrl"
                                     display: false,
                                 },
                                 scales: {
-                                    xAxes: [{
+                                    x: {
                                         stacked: false,
                                         display: true,
-                                    }],
-                                    yAxes: [{
-                                        display: true,
-                                        stacked: false
-                                    }]
+                                    },
+                                    y: {
+                                        stacked: false,
+                                        display: true
+                                    },
                                 }
                             }
                         });
@@ -323,20 +323,20 @@ import GridAudienceCtrl from "./stats/statsGridAudienceCtrl"
 
                                 for (let item of data) {
 
-                                    let date = new Date(item.date);
+                                    let date = new Date(item.fromDate);
 
                                     result.date.push(`${date.getDate()}/${date.getMonth() + 1}`);
-                                    result.active.push(item.active.total);
-                                    result.new.push(item.installs.total);
-                                    result.deletions.push(item.uninstalls.total);
 
-                                    $scope.summary.new += item.installs.total;
-                                    $scope.summary.deletion += item.uninstalls.total;
+                                    result.active.push(item.active);
+                                    result.new.push(item.installs);
+                                    result.deletions.push(item.uninstalls);
+
+                                    $scope.summary.new += item.installs;
+                                    $scope.summary.deletion += item.uninstalls;
 
                                 }
 
                                 $scope.summary.active = result.active[result.active.length - 1];
-
                                 resolve(result);
 
                             })
