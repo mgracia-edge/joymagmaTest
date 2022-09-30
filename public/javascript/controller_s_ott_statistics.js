@@ -345,21 +345,6 @@ import GridAudienceCtrl from "./stats/statsGridAudienceCtrl"
                     }
 
                 }
-                
-
-                // function setDatesToLastWeek() {
-                //     const DELTA = 604800000;
-                //     let result = {};
-
-                //     result.start = new Date();
-                //     result.start.setTime(result.start.getTime() - DELTA);
-                //     result.start.setHours(0, 0, 0, 0);
-
-                //     result.end = new Date();
-                //     result.end.setHours(0, 0, 0, 0);
-
-                //     return result;
-                // }
 
                 function setFilterDates(deltaType = "week") {
 
