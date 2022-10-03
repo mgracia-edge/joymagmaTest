@@ -23,13 +23,16 @@
         }
       ]
     ],
-    "plugins": ["@babel/plugin-proposal-nullish-coalescing-operator"]
+    "plugins": [
+      "@babel/plugin-proposal-nullish-coalescing-operator"
+    ]
   },
   "dependencies": {
     "@babel/core": "^7.3.4",
     "@sendgrid/mail": "^6.3.1",
     "babel-loader": "^8.0.5",
     "body-parser": "^1.18.3",
+    "bree": "^9.1.2",
     "cloudinary": "^1.13.2",
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.3",

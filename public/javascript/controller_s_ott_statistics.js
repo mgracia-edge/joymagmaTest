@@ -325,7 +325,8 @@ import GridAudienceCtrl from "./stats/statsGridAudienceCtrl"
 
                                     let date = new Date(item.fromDate);
 
-                                    result.date.push(`${date.getDate()}/${date.getMonth() + 1}`);
+                                    // result.date.push(`${date.getDate()}/${date.getMonth() + 1}`);
+                                    result.date.push(`${date.getUTCDate()}/${date.getUTCMonth() + 1}`);
 
                                     result.active.push(item.active);
                                     result.new.push(item.installs);

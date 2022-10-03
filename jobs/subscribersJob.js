@@ -4,14 +4,13 @@ const dc = require("../lib/dataConnection");
     console.log("Waiting for connection");
     dc.on(dc.event.CONNECTED, async () => {
 
+        // Range to first load | init & until inclusive
+        // const init = new Date("2022-01-01"); 
+        // const until = new Date("2022-01-31"); 
+
+        // Set today to scheduled job
         const today = new Date();
-
-        // inclusive init
-        // const init = new Date("2022-02-25"); 
         const init = today;
-
-        // inclusive until
-        // const until = new Date("2022-03-03"); 
         const until = today; 
 
         for (let date = new Date(init);
@@ -33,7 +32,7 @@ const dc = require("../lib/dataConnection");
 
 function compileDay(day) {
 
-    console.log("Calculating: ", day);
+    console.log("Calculating:", day);
 
     let from = new Date(day);
     from.setUTCHours(0, 0, 0, 0);
@@ -65,18 +64,9 @@ async function computeNewSubscriptionsCount(from, until) {
         let uninstalls = 0;
         let lastDailySubscribersActive = 0;
         
-        const activeUsers = await dc.db.Subscribers.count(
-            {
-                creationDate: {$lt: until}
-                // used to simulate users uninstall by period
-                // ,$and: [
-                //     {cid: {$ne: "503001"}}, 
-                //     {cid: {$ne: "115294"}}, 
-                //     {cid: {$ne: "56176"}}, 
-                //     {cid: {$ne: "60265"}} 
-                // ]
-            }
-        );
+        const activeUsers = await dc.db.Subscribers.count({
+            creationDate: {$lt: until}
+        });
 
         // find the last document generated to continue with the next calculation
         const lastDailySubscribers = await dc.db.StatsDailySubscribers.findOne({fromDate: {$lt: from}},{}, { sort: { fromDate : -1 }});
@@ -85,7 +75,7 @@ async function computeNewSubscriptionsCount(from, until) {
         // if does not exist we will create the first 
         if (lastDailySubscribers) {
 
-            console.log("Before calculated ->", lastDailySubscribers.fromDate);
+            console.log("Last Calculated:", lastDailySubscribers.fromDate);
 
             // value used to calculate difference
             lastDailySubscribersActive = lastDailySubscribers.active;
@@ -93,13 +83,6 @@ async function computeNewSubscriptionsCount(from, until) {
             // uninstalls calculation
             const actualBeforeActiveUsers = await dc.db.Subscribers.count({
                 creationDate: {$lt: lastDailySubscribers.untilDate}
-                // used to simulate users uninstall by period
-                // ,$and: [
-                //     {cid: {$ne: "503001"}}, 
-                //     {cid: {$ne: "115294"}}, 
-                //     {cid: {$ne: "56176"}}, 
-                //     {cid: {$ne: "60265"}} 
-                // ]
             });
             uninstalls = lastDailySubscribers.active - actualBeforeActiveUsers;
 
