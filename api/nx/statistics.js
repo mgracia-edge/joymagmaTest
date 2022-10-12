@@ -41,7 +41,7 @@ function _subscribers(req, res) {
 
         let {from, until} = req.body;
 
-        db.StatsDailyInstalls.find({date: {$gte: new Date(from), $lte: new Date(until)}}, (error, data) => {
+        db.StatsDailySubscribers.find({fromDate: {$gte: new Date(from), $lte: new Date(until)}}, (error, data) => {
             res.send(new api.Success(data));
         });
 
