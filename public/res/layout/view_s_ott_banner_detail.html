@@ -1,0 +1,77 @@
+<div secction layout-fill layout="column">
+    <h1>{{isNew ? "New Banner" : "Banner"}}</h1>
+
+    <scroll-view orientation="vertical" class="form" layout="row">
+
+        <div layout="row">
+
+            <div layout="column">
+                <div layout="row">            
+                    <item>
+                        <label>Banner Logo</label>
+                        <div layout="row">
+                            <div flex layout="row">
+                                <div class="channel-logo"
+                                    ng-style='getUrlPoster(channelData)'
+                                    ng-click="uploadImage()"></div>
+                            </div>
+
+                        </div>
+                    </item>
+                </div>
+                <div layout="row">
+
+                    <div layout="column" style="min-width: 300px">
+                        <item>
+                            <label>Name</label>
+                            <input type="text" ng-model="bannerData.name" aria-label="Category Name"
+                                   title="Category Name"
+                                   autocomplete="off" required="true">
+                        </item>
+                        <item>
+                            <label>Start Date</label>
+                            <input type="datetime-local" ng-model="bannerData.start" aria-label="Start date"
+                                      title="Large Description" required="true">
+                            </input>
+                        </item>
+                        <item>
+                            <label>End Date</label>
+                            <input type="datetime-local" ng-model="bannerData.end" aria-label="Start date"
+                                      title="Large Description" required="true">
+                            </input>
+                        </item>
+                        <item>
+                            <label>Banner Text</label>
+                            <textarea ng-model="bannerData.description" aria-label="Text"
+                                      title="Large Description"
+                                      autocomplete="off" rows="4" required="true">
+                            </textarea>
+                        </item>
+                        <item flex>
+                            <label>Priority</label>
+                            <input type="text" ng-model="bannerData.priority" aria-label="first name"
+                                   title="priority"
+                                   autocomplete="off"
+                                   style="width: 100px;">
+                        </item>
+                    </div>
+
+                </div>
+
+                <md-button ng-click="updateBanner()" class="md-raised md-primary" layout="row"
+                           layout-align="center center">
+                    <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                          md-diameter="30"></md-progress-circular>
+                    <span ng-show="!loading">Save</span>
+                </md-button>
+
+            </div>
+            <div style="padding:16px">
+                <!--todo unify this using classes-->
+                <md-button ng-hide="isNew" md-no-ink class="md-raised md-primary"
+                           ng-click="removeBanner()">Remove Banner
+                </md-button>
+            </div>
+        </div>
+    </scroll-view>
+</div>

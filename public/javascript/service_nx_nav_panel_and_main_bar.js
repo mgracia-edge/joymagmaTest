@@ -87,6 +87,11 @@
                                 iconURL: "/res/drawable/ic_notification.svg",
                                 name: "Notifications",
                                 path: "/s/ott/notifications"
+                            },
+                            {
+                                iconURL: "/res/drawable/ic_notification.svg",
+                                name: "Banners",
+                                path: "/s/ott/banners"
                             }
                         ]
                     },
