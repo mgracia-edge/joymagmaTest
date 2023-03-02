@@ -10,8 +10,6 @@
 
         <div layout="column" class="data-box" ng-repeat="item in baners | orderBy: item.priority | filter:customFilter() " ng-click="channelDetails(item)">
             <h1>{{item.name}}</h1>
-            <p flex style="margin-top: 2px; margin-bottom: 10px; font-weight: bold; color: #222">{{item.descriptionShort}}</p>
-            <p flex>Priority: {{item.priority}}</p>
         </div>
 
     </scroll-view>

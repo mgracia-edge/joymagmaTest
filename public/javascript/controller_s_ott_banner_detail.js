@@ -19,10 +19,11 @@
         $scope.isNew = $routeParams.id === "new";
         $scope.bannerData = {
             name: '',
-            description: '',
+            duration: 1,
             start : new Date('YYYY-MM-DDTHH:mm:ss'),
             end : new Date('YYYY-MM-DDTHH:mm:ss'),
-            enabled: false
+            enabled: false,
+            poster :[]
         };
 
         $scope.uploadImage = uploadImage;
@@ -56,8 +57,11 @@
 
         function _getImage() {
             return $q((resolve, reject) => {
-                let file = document.createElement('input');
+                let file = document.createElement('input')
+                file.accept = 'image/*';
                 let maxSize = 500; //kb
+                let width = 1920; //px
+                let height = 150; //px
                 file.type = 'file';
                 file.click();
 
@@ -67,20 +71,33 @@
                         reject(`The image can not be larger than ${maxSize}kb`)
                     }
 
-                    let reader = new FileReader();
+                    //check the size
+                    var fileObj = file.files[0];
+                    var img;
+                    var _URL = window.URL || window.webkitURL;
+                    img = new Image();
+                    var objectUrl = _URL.createObjectURL(fileObj);
+                    img.onload = function () {
+                        _URL.revokeObjectURL(objectUrl);
+                        if(this.width != width || this.height != height){
+                            reject(`The image must be  w:${width}px and h:${height}px`);
+                        }
 
-                    reader.onloadend = function () {
-                        resolve(reader.result)
+                        let reader = new FileReader();
+                        reader.onloadend = function () {
+                            resolve(reader.result)
+                        };
+                        reader.readAsDataURL(file.files[0]);
+                        
                     };
-
-                    reader.readAsDataURL(file.files[0]);
+                    img.src = objectUrl;
                 })
             })
         }
 
         function uploadImage() {
             _getImage().then((img) => {
-                $scope.channelData.poster = [{
+                $scope.bannerData.poster = [{
                     update: true,
                     url: img
                 }];
@@ -91,14 +108,17 @@
 
         function checkForm() {
 
-            let { name, description, start, end} = $scope.bannerData;
+            let { name, start, end, duration} = $scope.bannerData;    
 
-            if (  name == '' || description == '' || isNaN(start.getTime()) || isNaN(end.getTime()) ) {
+            if (  name == '' || duration == '' || isNaN(start.getTime()) || isNaN(end.getTime()) ) {
                 $scope.$parent.toast("The fields cannot be empty");
                 return false
             }
 
-
+            if(duration < 1){
+                $scope.$parent.toast("Duration must be greater than 0.");
+                return false
+            }
 
             if(end < start){
                 $scope.$parent.toast("End cann't be greater than start date.");

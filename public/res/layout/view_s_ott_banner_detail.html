@@ -8,11 +8,11 @@
             <div layout="column">
                 <div layout="row">            
                     <item>
-                        <label>Banner Logo</label>
+                        <label>Banner image</label>
                         <div layout="row">
                             <div flex layout="row">
                                 <div class="channel-logo"
-                                    ng-style='getUrlPoster(channelData)'
+                                    ng-style='getUrlPoster(bannerData)'
                                     ng-click="uploadImage()"></div>
                             </div>
 
@@ -24,8 +24,8 @@
                     <div layout="column" style="min-width: 300px">
                         <item>
                             <label>Name</label>
-                            <input type="text" ng-model="bannerData.name" aria-label="Category Name"
-                                   title="Category Name"
+                            <input type="text" ng-model="bannerData.name" aria-label="Banner Name"
+                                   title="Banner Name"
                                    autocomplete="off" required="true">
                         </item>
                         <item>
@@ -36,23 +36,15 @@
                         </item>
                         <item>
                             <label>End Date</label>
-                            <input type="datetime-local" ng-model="bannerData.end" aria-label="Start date"
+                            <input type="datetime-local" ng-model="bannerData.end" aria-label="End date"
                                       title="Large Description" required="true">
                             </input>
                         </item>
                         <item>
-                            <label>Banner Text</label>
-                            <textarea ng-model="bannerData.description" aria-label="Text"
-                                      title="Large Description"
-                                      autocomplete="off" rows="4" required="true">
-                            </textarea>
-                        </item>
-                        <item flex>
-                            <label>Priority</label>
-                            <input type="text" ng-model="bannerData.priority" aria-label="first name"
-                                   title="priority"
-                                   autocomplete="off"
-                                   style="width: 100px;">
+                            <label>duration (seconds)</label>
+                            <input type="number" min="1" ng-model="bannerData.duration" aria-label="Duration"
+                                      title="duration of the banner" required="true">
+                        </input>
                         </item>
                     </div>
 

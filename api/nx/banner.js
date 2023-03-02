@@ -42,7 +42,7 @@ function _create(req, res) {
             return;
         }
 
-        const {name, descriptionShort, descriptionLong} = req.body;
+        const {name, description, duration, enabled} = req.body;
 
         db.Banner
             .findOne({"name": name}, (error, data) => {
@@ -57,8 +57,9 @@ function _create(req, res) {
 
                         let json = {
                             name: name,
-                            descriptionShort: descriptionShort,
-                            descriptionLong: descriptionLong
+                            description: description,
+                            duration: duration,
+                            enabled: enabled,
                         };
 
                         json.updateHistory = [{
@@ -68,8 +69,7 @@ function _create(req, res) {
                             }
                         }];
 
-                        if (typeof descriptionShort === 'undefined') delete json.descriptionShort;
-                        if (typeof descriptionLong === 'undefined') delete json.descriptionLong;
+                        if (typeof description === 'undefined') delete json.description;
 
 
                         _create();
@@ -180,7 +180,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, descriptionShort, descriptionLong, priority} = data;
+        const {name, description, duration,enabled} = data;
 
         let query = {
             find: {
@@ -189,16 +189,15 @@ function _update(req, res) {
             update: {
                 $set: {
                     name: name,
-                    descriptionShort: descriptionShort,
-                    descriptionLong: descriptionLong,
-                    priority: priority
+                    description: description,
+                    duration: duration,
+                    enabled: enabled
                 }
             }
         };
 
         if (typeof name === 'undefined') delete query.update.$set.name;
-        if (typeof descriptionShort === 'undefined') delete query.update.$set.descriptionShort;
-        if (typeof descriptionLong === 'undefined') delete query.update.$set.descriptionLong;
+        if (typeof description === 'undefined') delete query.update.$set.description;
 
         _update();
 
