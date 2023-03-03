@@ -43,6 +43,7 @@
                         </md-select>
                         <md-switch ng-model="channelData.featured" aria-label="Switch 1">Featrured Channel</md-switch>
                         <md-switch ng-model="channelData.liveNow" aria-label="Switch 1">Now Live Channel</md-switch>
+                        <md-switch ng-model="channelData.cineNow" aria-label="Switch 1">Now Cine carrousel</md-switch>
                     </item>
 
                     <item>
@@ -167,14 +168,11 @@
                                style="width: 106px;">
                     </item>
                 </div>
-
             </div>
 
 
-            <md-button ng-click="updateChannel()" class="md-raised md-primary" layout="row"
-                       layout-align="center center">
-                <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
-                                      md-diameter="30"></md-progress-circular>
+            <md-button ng-click="updateChannel()" class="md-raised md-primary" layout="row" layout-align="center center">
+                <md-progress-circular ng-show="loading" class="md-primary md-hue-3" md-diameter="30"></md-progress-circular>
                 <span ng-show="!loading">Save</span>
             </md-button>
 

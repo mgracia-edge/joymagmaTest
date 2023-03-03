@@ -25,7 +25,9 @@
             poster: [],
             notes: '',
             enabled: false,
-            transcoder: null
+            transcoder: null,
+            cineNow: false
+            
         };
 
         $scope.uploadImage = uploadImage;
