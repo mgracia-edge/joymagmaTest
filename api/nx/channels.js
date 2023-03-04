@@ -49,7 +49,7 @@ function _create(req, res) {
             return;
         }
 
-        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled} = req.body;
+        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, cineNow} = req.body;
 
         db.Channels
             .findOne({"name": name}, (error, data) => {
@@ -77,7 +77,8 @@ function _create(req, res) {
                             entryPoint: {
                                 type: db.Channels.entryPoint.RTMP,
                                 streamKey: api.newStreamKeyCode()
-                            }
+                            },
+                            cineNow: cineNow ? cineNow : false,
                         };
 
                         json.updateHistory = [{
