@@ -49,7 +49,7 @@ function _create(req, res) {
             return;
         }
 
-        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, cineNow} = req.body;
+        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, moviesNow} = req.body;
 
         db.Channels
             .findOne({"name": name}, (error, data) => {
@@ -78,7 +78,7 @@ function _create(req, res) {
                                 type: db.Channels.entryPoint.RTMP,
                                 streamKey: api.newStreamKeyCode()
                             },
-                            cineNow: cineNow ? cineNow : false,
+                            moviesNow: moviesNow ? moviesNow : false,
                         };
 
                         json.updateHistory = [{
@@ -267,7 +267,7 @@ function _update(req, res) {
             channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, source,
             transcoder, profile, deinterlace, aspectRatio, forceX264, sd, priority, monitoring,
             h265, useMpkg, dvr24,featured, liveNow, 
-            cineNow
+            moviesNow
         } = data;
 
         let query = {
@@ -297,7 +297,7 @@ function _update(req, res) {
                     dvr24: dvr24,
                     liveNow: liveNow,
                     featured: featured,
-                    cineNow: cineNow
+                    moviesNow: moviesNow
                 },
                 $push: {
                     updateHistory: {

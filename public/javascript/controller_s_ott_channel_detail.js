@@ -26,7 +26,7 @@
             notes: '',
             enabled: false,
             transcoder: null,
-            cineNow: false
+            moviesNow: false
             
         };
 
