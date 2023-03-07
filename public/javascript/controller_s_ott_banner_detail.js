@@ -37,6 +37,8 @@
                     .read({_id: $routeParams.id})
                     .then((banner) => {
                         $scope.bannerData = banner[0];
+                        $scope.bannerData.start = new Date(banner[0].start) 
+                        $scope.bannerData.end = new Date(banner[0].end) 
                     })
                     .catch((error) => {
                         $location.path("/s/ott/banners");
