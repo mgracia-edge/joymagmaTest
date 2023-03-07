@@ -19,13 +19,14 @@
                 $scope.banners = [];
                 $scope.bannerDetails = bannerDetails;
                 $scope.customFilter = customFilter;
+                $scope.isBetween = isBetween;
 
                 function init() {
 
                     $NxApi.banners
                         .read({})
-                        .then((channels) => {
-                            $scope.banners = channels;
+                        .then((banners) => {
+                            $scope.banners = banners;
                         })
                         .catch((error) => {
                             console.log(error);
@@ -36,6 +37,12 @@
                 function bannerDetails(banner) {
                     $location.path('/s/ott/banners/' + banner._id)
                 }
+
+                 // Define the isBetween function
+                function isBetween(start, end) {
+                    var now = new Date();
+                    return new Date(start)  <= now && now <= new Date(end);
+                };
 
                 function customFilter() {
                     return function (item) {

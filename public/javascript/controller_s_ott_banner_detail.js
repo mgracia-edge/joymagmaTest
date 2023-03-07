@@ -37,6 +37,8 @@
                     .read({_id: $routeParams.id})
                     .then((banner) => {
                         $scope.bannerData = banner[0];
+                        $scope.bannerData.start = new Date(banner[0].start) 
+                        $scope.bannerData.end = new Date(banner[0].end) 
                     })
                     .catch((error) => {
                         $location.path("/s/ott/banners");
@@ -108,9 +110,9 @@
 
         function checkForm() {
 
-            let { name, start, end, duration} = $scope.bannerData;    
+            let { name, start, end, duration, poster} = $scope.bannerData;    
 
-            if (  name == '' || duration == '' || isNaN(start.getTime()) || isNaN(end.getTime()) ) {
+            if ( !poster || poster.length == 0 ||  name == '' || duration == '' || isNaN(start.getTime()) || isNaN(end.getTime()) ) {
                 $scope.$parent.toast("The fields cannot be empty");
                 return false
             }

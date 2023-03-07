@@ -22,6 +22,7 @@
                         PRODUCTS_WRITE: "products.write",
                         PRODUCTS_READ: "products.read",
                         CHANNELS_WRITE: "channels.write",
+                        BANNERS_WRITE: "banners.write",
                         CHANNELS_READ: "channels.read",
                         STATS_ACCESS: "stats.access",
                         SUBSCRIBERS_READ: "subscribers.read"
@@ -37,6 +38,10 @@
                         },
                         {
                             value: users_permissions.CHANNELS_WRITE,
+                            state: false
+                        },
+                        {
+                            value: users_permissions.BANNERS_WRITE,
                             state: false
                         },
                         {
