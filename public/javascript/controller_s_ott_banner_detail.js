@@ -108,9 +108,9 @@
 
         function checkForm() {
 
-            let { name, start, end, duration} = $scope.bannerData;    
+            let { name, start, end, duration, poster} = $scope.bannerData;    
 
-            if (  name == '' || duration == '' || isNaN(start.getTime()) || isNaN(end.getTime()) ) {
+            if ( !poster || poster.length == 0 ||  name == '' || duration == '' || isNaN(start.getTime()) || isNaN(end.getTime()) ) {
                 $scope.$parent.toast("The fields cannot be empty");
                 return false
             }

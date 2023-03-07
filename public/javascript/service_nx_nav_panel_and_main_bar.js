@@ -23,6 +23,8 @@
                 PRODUCTS_READ: "products.read",
                 CHANNELS_WRITE: "channels.write",
                 CHANNELS_READ: "channels.read",
+                BANNERS_WRITE: "channels.write",
+                BANNERS_READ: "channels.read",
                 STATS_ACCESS: "stats.access",
                 SUBSCRIBERS_READ: "subscribers.read"
             };
@@ -89,7 +91,7 @@
                                 path: "/s/ott/notifications"
                             },
                             {
-                                iconURL: "/res/drawable/ic_notification.svg",
+                                iconURL: "/res/drawable/ic_banner.svg",
                                 name: "Banners",
                                 path: "/s/ott/banners"
                             }

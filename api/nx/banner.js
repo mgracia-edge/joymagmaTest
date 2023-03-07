@@ -34,7 +34,7 @@ function _create(req, res) {
 
     if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
+        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
@@ -42,7 +42,7 @@ function _create(req, res) {
             return;
         }
 
-        const {name, description, duration, enabled} = req.body;
+        const {name, duration, enabled,start,end,poster} = req.body;
 
         db.Banner
             .findOne({"name": name}, (error, data) => {
@@ -55,41 +55,65 @@ function _create(req, res) {
                             .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
                     } else {
 
-                        let json = {
-                            name: name,
-                            description: description,
-                            duration: duration,
-                            enabled: enabled,
-                        };
+                        db.Banner.findOne({
+                            start: {$lte: end},
+                            end: {$gte: start}
+                          }, (error, data) => {
+                            if (error) {
+                              res.status(codes.error.database.DISCONNECTED.httpCode).send(new api.Error(codes.error.database.DISCONNECTED));
+                            } else if (data) {
+                              res.status(codes.error.operation.OVERLAPPING_BANNER.httpCode).send(new api.Error(codes.error.operation.OVERLAPPING_BANNER));
+                            } else {
+                                let json = {
+                                    name: name,
+                                    start: start,
+                                    end: end,
+                                    duration: duration,
+                                    enabled: enabled,
+                                };
 
-                        json.updateHistory = [{
-                            date: new Date(),
-                            payload: {
-                                ...json
-                            }
-                        }];
+                                json.updateHistory = [{
+                                    date: new Date(),
+                                    payload: {
+                                        ...json
+                                    }
+                                }];
 
-                        if (typeof description === 'undefined') delete json.description;
+                                // if (typeof poster !== 'undefined' && poster[0].update && poster[0].update === true) {
+                                //     cloudinary.uploader.upload(poster[0].url, (result) => {
 
+                                //         let poster = {
+                                //             url: result.url,
+                                //             type: db.Channels.poster.LANDSCAPE
+                                //         };
 
-                        _create();
+                                //         json.poster = [poster];
 
-                        function _create() {
-                            let banner = new db.Banner(json);
+                                //         _create();
+                                //     });
 
-                            banner.save(json, (err) => {
-                                if (err) {
-                                    console.log(err)
-                                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                                } else {
-                                    res.status(200).send(new api.Success({}));
+                                // } else {
+                                //     _create()
+                                // }
+                                _create();
 
+                                function _create() {
+                                    let banner = new db.Banner(json);
+
+                                    banner.save(json, (err) => {
+                                        if (err) {
+                                            console.log(err)
+                                            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                                                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+                                        } else {
+                                            res.status(200).send(new api.Success({}));
+
+                                        }
+
+                                    });
                                 }
-
-                            });
-                        }
-
+                            }
+                        })
                     }
                 }
             });
@@ -107,7 +131,7 @@ function _read(req, res) {
 
     if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_READ)) {
+        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_READ)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
@@ -148,9 +172,9 @@ function _read(req, res) {
         db.Banner
             .find(query.find, query.projection)
             .sort(query.sort)
-            .then((channels) => {
+            .then((banners) => {
 
-                res.status(200).send(new api.Success(channels));
+                res.status(200).send(new api.Success(banners));
 
             }).catch((error) => {
             console.log(error)
@@ -170,7 +194,7 @@ function _update(req, res) {
 
     if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
+        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
@@ -180,7 +204,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, description, duration,enabled} = data;
+        const {name, duration,enabled,start,end,poster} = data;
 
         let query = {
             find: {
@@ -189,7 +213,8 @@ function _update(req, res) {
             update: {
                 $set: {
                     name: name,
-                    description: description,
+                    start:start,
+                    end:end,
                     duration: duration,
                     enabled: enabled
                 }
@@ -197,9 +222,23 @@ function _update(req, res) {
         };
 
         if (typeof name === 'undefined') delete query.update.$set.name;
-        if (typeof description === 'undefined') delete query.update.$set.description;
 
-        _update();
+        if (typeof poster !== 'undefined' && poster[0].update === true) {
+            cloudinary.uploader.upload(poster[0].url, (result) => {
+
+                let poster = {
+                    url: result.url,
+                    type: db.Channels.poster.LANDSCAPE
+                };
+
+                query.update["$set"].poster = [poster];
+
+                _update();
+            });
+
+        } else {
+            _update()
+        }
 
         function _update() {
             db.Banner.updateOne(query.find, query.update, (error, products) => {
@@ -227,7 +266,7 @@ function _delete(req, res) {
 
     if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_WRITE)) {
+        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
                 .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
