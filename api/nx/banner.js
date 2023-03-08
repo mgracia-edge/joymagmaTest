@@ -42,7 +42,7 @@ function _create(req, res) {
             return;
         }
 
-        const {name, duration, enabled,start,end,poster} = req.body;
+        const {name, duration, start,end,poster} = req.body;
 
         db.Banner
             .findOne({"name": name}, (error, data) => {
@@ -68,8 +68,7 @@ function _create(req, res) {
                                     name: name,
                                     start: start,
                                     end: end,
-                                    duration: duration,
-                                    enabled: enabled,
+                                    duration: duration
                                 };
 
                                 json.updateHistory = [{
@@ -204,7 +203,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, duration,enabled,start,end,poster} = data;
+        const {name, duration,start,end,poster} = data;
 
         let query = {
             find: {
@@ -215,8 +214,7 @@ function _update(req, res) {
                     name: name,
                     start:start,
                     end:end,
-                    duration: duration,
-                    enabled: enabled
+                    duration: duration
                 }
             }
         };

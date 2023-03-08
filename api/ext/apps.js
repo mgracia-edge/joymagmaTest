@@ -50,6 +50,12 @@ exports.resourceList = [
         protected: false
     },
     {
+        path: "get_current_banner",
+        callback: getCurrentBanner,
+        method: "post",
+        protected: false
+    },
+    {
         path: "get_a_week",
         callback: getAWeek,
         method: "post",
@@ -291,6 +297,45 @@ function getCurrentProgramme(req, res) {
 
     }
 
+}
+
+function getCurrentBanner(req,res){
+    let db = pdc.db;
+
+    if (db) {
+
+        let query = {
+            find: {
+                start: {
+                    $lt: new Date()
+                },
+                end: {
+                    $gte: new Date()
+                }
+            }
+        };
+
+        db.Banner
+            .findOne(query.find)
+            .then((channels) => {
+
+                res.status(200).send(channels);
+
+            }).catch((error) => {
+            res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        })
+
+    } else {
+
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+
+    }
 }
 
 function getAWeek(req, res) {
