@@ -26,7 +26,8 @@
             notes: '',
             enabled: false,
             transcoder: null,
-            moviesNow: false
+            moviesNow: false,
+            psVOD: false
             
         };
 

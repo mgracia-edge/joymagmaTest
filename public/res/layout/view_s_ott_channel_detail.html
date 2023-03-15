@@ -44,6 +44,7 @@
                         <md-switch ng-model="channelData.featured" aria-label="Switch 1">Featrured Channel</md-switch>
                         <md-switch ng-model="channelData.liveNow" aria-label="Switch 1">Now Live Channel</md-switch>
                         <md-switch ng-model="channelData.moviesNow" aria-label="Switch 1">Movies Now carrousel</md-switch>
+                        <md-switch ng-model="channelData.psVOD" aria-label="Switch 1">Ps-VOD</md-switch>
                     </item>
 
                     <item>
@@ -56,7 +57,7 @@
                     <div layout="row">
                         <item flex>
                             <label>Priority</label>
-                            <input type="text" ng-model="channelData.priority" aria-label="first name"
+                            <input type="number" ng-model="channelData.priority" aria-label="first name"
                                    title="priority"
                                    autocomplete="off"
                                    style="width: 100px;">
