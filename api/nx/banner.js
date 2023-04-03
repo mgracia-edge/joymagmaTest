@@ -78,22 +78,22 @@ function _create(req, res) {
                                     }
                                 }];
 
-                                // if (typeof poster !== 'undefined' && poster[0].update && poster[0].update === true) {
-                                //     cloudinary.uploader.upload(poster[0].url, (result) => {
+                                if (typeof poster !== 'undefined' && poster[0].update && poster[0].update === true) {
+                                    cloudinary.uploader.upload(poster[0].url, (result) => {
 
-                                //         let poster = {
-                                //             url: result.url,
-                                //             type: db.Channels.poster.LANDSCAPE
-                                //         };
+                                        let poster = {
+                                            url: result.url,
+                                            type: db.Channels.poster.LANDSCAPE
+                                        };
 
-                                //         json.poster = [poster];
+                                        json.poster = [poster];
 
-                                //         _create();
-                                //     });
+                                        _create();
+                                    });
 
-                                // } else {
-                                //     _create()
-                                // }
+                                } else {
+                                    _create()
+                                }
                                 _create();
 
                                 function _create() {
@@ -221,22 +221,22 @@ function _update(req, res) {
 
         if (typeof name === 'undefined') delete query.update.$set.name;
 
-        // if (typeof poster !== 'undefined' && poster[0].update === true) {
-        //     cloudinary.uploader.upload(poster[0].url, (result) => {
+        if (typeof poster !== 'undefined' && poster[0].update === true) {
+            cloudinary.uploader.upload(poster[0].url, (result) => {
 
-        //         let poster = {
-        //             url: result.url,
-        //             type: db.Channels.poster.LANDSCAPE
-        //         };
+                let poster = {
+                    url: result.url,
+                    type: db.Channels.poster.LANDSCAPE
+                };
 
-        //         query.update["$set"].poster = [poster];
+                query.update["$set"].poster = [poster];
 
-        //         _update();
-        //     });
+                _update();
+            });
 
-        // } else {
-        //     _update()
-        // }
+        } else {
+            _update()
+        }
 
         _update();
 
