@@ -12,53 +12,38 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sOttChannelDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', '$q', '$location', '$mdDialog', controller]);
+        .controller("sBannersDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', '$q', '$location', '$mdDialog', controller]);
 
     function controller($scope, $interval, $routeParams, $NxApi, $q, $location, $mdDialog) {
 
         $scope.isNew = $routeParams.id === "new";
-        $scope.channelData = {
+        $scope.bannerData = {
             name: '',
-            descriptionShort: '',
-            channelEPGId: '',
-            descriptionLong: '',
-            poster: [],
-            notes: '',
+            duration: 1,
+            start : new Date('YYYY-MM-DDTHH:mm:ss'),
+            end : new Date('YYYY-MM-DDTHH:mm:ss'),
             enabled: false,
-            transcoder: null,
-            moviesNow: false,
-            psVOD: false
-            
+            poster :[]
         };
 
         $scope.uploadImage = uploadImage;
         $scope.getUrlPoster = getUrlPoster;
-        $scope.updateChannel = updateChannel;
-        $scope.removeChannel = removeChannel;
-        $scope.restartPush = restartPush;
-
-        $scope.categories = [];
+        $scope.updateBanner = updateBanner;
+        $scope.removeBanner = removeBanner;
 
         function init() {
-            $NxApi.categories
-                .read({})
-                .then((categories) => {
-                    $scope.categories = categories;
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-
             if (!$scope.isNew) {
-
-                $NxApi.channels
+                $NxApi.banners
                     .read({_id: $routeParams.id})
-                    .then((channel) => {
-                        $scope.channelData = channel[0];
+                    .then((banner) => {
+                        $scope.bannerData = banner[0];
+                        $scope.bannerData.start = new Date(banner[0].start) 
+                        $scope.bannerData.end = new Date(banner[0].end) 
                     })
                     .catch((error) => {
-                        $location.path("/s/ott/channel");
-                        $scope.$parent.toast('The channel not exist');
+                        $location.path("/s/ott/banners");
+                        $scope.$parent.toast('The banner doesn\'t exist');
+
                     })
             }
 
@@ -74,8 +59,11 @@
 
         function _getImage() {
             return $q((resolve, reject) => {
-                let file = document.createElement('input');
+                let file = document.createElement('input')
+                file.accept = 'image/*';
                 let maxSize = 500; //kb
+                let width = 1920; //px
+                let height = 150; //px
                 file.type = 'file';
                 file.click();
 
@@ -85,20 +73,33 @@
                         reject(`The image can not be larger than ${maxSize}kb`)
                     }
 
-                    let reader = new FileReader();
+                    //check the size
+                    var fileObj = file.files[0];
+                    var img;
+                    var _URL = window.URL || window.webkitURL;
+                    img = new Image();
+                    var objectUrl = _URL.createObjectURL(fileObj);
+                    img.onload = function () {
+                        _URL.revokeObjectURL(objectUrl);
+                        if(this.width != width || this.height != height){
+                            reject(`The image must be  w:${width}px and h:${height}px`);
+                        }
 
-                    reader.onloadend = function () {
-                        resolve(reader.result)
+                        let reader = new FileReader();
+                        reader.onloadend = function () {
+                            resolve(reader.result)
+                        };
+                        reader.readAsDataURL(file.files[0]);
+                        
                     };
-
-                    reader.readAsDataURL(file.files[0]);
+                    img.src = objectUrl;
                 })
             })
         }
 
         function uploadImage() {
             _getImage().then((img) => {
-                $scope.channelData.poster = [{
+                $scope.bannerData.poster = [{
                     update: true,
                     url: img
                 }];
@@ -109,48 +110,45 @@
 
         function checkForm() {
 
-            let {name, descriptionShort, channelEPGId, descriptionLong, poster} = $scope.channelData;
+            let { name, start, end, duration, poster} = $scope.bannerData;    
 
-            if (name !== '' && descriptionShort !== '' && channelEPGId !== '' && descriptionLong !== '' && poster.length !== 0) {
-                return true
+            if ( !poster || poster.length == 0 ||  name == '' || duration == '' || isNaN(start.getTime()) || isNaN(end.getTime()) ) {
+                $scope.$parent.toast("The fields cannot be empty");
+                return false
             }
 
-            $scope.$parent.toast("The fields cannot be empty");
+            if(duration < 1){
+                $scope.$parent.toast("Duration must be greater than 0.");
+                return false
+            }
 
-            return false
+            if(end < start){
+                $scope.$parent.toast("End cann't be greater than start date.");
+                return false    
+            }
+
+            if(end < new Date()){
+                $scope.$parent.toast("End cann't be in the past.");
+                return false    
+            }
+
+            return true
         }
 
-        function removeChannel() {
+        function removeBanner() {
 
             dialog_alert()
                 .then(() => {
-                    $location.path('/s/ott/channel');
-                })
-                .catch((error) => {
-                    $scope.$parent.toast(error.message)
-                })
-        }
-
-        function restartPush() {
-
-            let channelId = $routeParams.id;
-            $scope.loading = true;
-            $NxApi.channels.restartPush({id: channelId})
-                .then(() => {
-                    $scope.$parent.toast("Channel push restarted.");
-                    $scope.loading = false;
-                })
-                .catch(() => {
-                    $scope.$parent.toast("Something happened. Channel push couldn't be restart.");
-                    $scope.loading = false;
-                })
-
+                    $location.path('/s/ott/banners');
+                }).catch((error) => {
+                $scope.$parent.toast(error.message)
+            })
         }
 
         function dialog_alert() {
 
-            let title = 'Remove Channel';
-            let description = 'You are sure to delete the current Channel?';
+            let title = 'Remove Banner';
+            let description = 'You are sure you want to delete the current banner?';
             let templateUrl = "/res/layout/dialog_alert.html";
             let channelId = $routeParams.id;
 
@@ -186,7 +184,7 @@
 
                     function ok() {
                         $scope.loading = true;
-                        $NxApi.channels
+                        $NxApi.banners
                             .delete({
                                 _id: channelId
                             })
@@ -207,19 +205,19 @@
 
         }
 
-        function updateChannel() {
+        function updateBanner() {
             if (checkForm()) {
 
                 $scope.loading = true;
 
                 if ($scope.isNew) {
 
-                    $NxApi.channels
-                        .create($scope.channelData)
+                    $NxApi.banners
+                        .create($scope.bannerData)
                         .then(() => {
-                            $scope.$parent.toast('The channel was created');
+                            $scope.$parent.toast('The banner was created');
                             $scope.loading = false;
-                            $location.path("/s/ott/channel");
+                            $location.path("/s/ott/banners");
 
                         })
                         .catch((error) => {
@@ -229,10 +227,10 @@
                         })
 
                 } else {
-                    $NxApi.channels
-                        .update($scope.channelData)
+                    $NxApi.banners
+                        .update($scope.bannerData)
                         .then(() => {
-                            $scope.$parent.toast('Channel updated');
+                            $scope.$parent.toast('The banner was update');
                             $scope.loading = false;
                             if ($scope.channelData.poster) $scope.channelData.poster.update = false;
 

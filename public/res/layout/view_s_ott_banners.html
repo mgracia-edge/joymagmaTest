@@ -1,0 +1,75 @@
+
+<style>
+    /* Style for the scroll-view container */
+    scroll-view {
+        height: 300px; /* Set the height of the scroll-view container */
+        overflow-y: auto; /* Enable vertical scrolling */
+    }
+
+    /* Style for the data box container */
+    .data-box {
+        border: 1px solid #ccc; /* Add a border */
+        padding: 10px; /* Add some padding */
+        margin-bottom: 10px; /* Add some margin between data boxes */
+        position: relative; /* Enable absolute positioning for the circles */
+    }
+
+    /* Style for the channel label */
+    .channel_label {
+        font-weight: bold; /* Make the label bold */
+        margin-right: 5px; /* Add some margin to the right */
+    }
+
+    /* Style for the green circle */
+    .green-circle {
+        position: absolute; /* Position the circle absolutely */
+        top: 5px; /* Position it 5px from the top */
+        right: 5px; /* Position it 5px from the right */
+        display: inline-block; /* Display as inline element */
+        width: 10px; /* Set the width */
+        height: 10px; /* Set the height */
+        border-radius: 50%; /* Make it a circle */
+        background-color: green; /* Set the background color */
+        margin-right: 5px; /* Add some margin to the right */
+    }
+
+    /* Style for the red circle */
+    .red-circle {
+        position: absolute; /* Position the circle absolutely */
+        top: 5px; /* Position it 5px from the top */
+        right: 5px; /* Position it 5px from the right */
+        display: inline-block; /* Display as inline element */
+        width: 10px; /* Set the width */
+        height: 10px; /* Set the height */
+        border-radius: 50%; /* Make it a circle */
+        background-color: red; /* Set the background color */
+        margin-right: 5px; /* Add some margin to the right */
+    }
+</style>
+<div secction layout-fill layout="column">
+    <h1>Banners</h1>
+    <div block layout="row">
+        <search-box layout="row">
+            <input type="search" ng-model="search" flex>
+            <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
+        </search-box>
+    </div>    
+    <scroll-view orientation="vertical" flex>
+    
+        <div layout="column" class="data-box" ng-repeat="item in banners | filter:customFilter() " ng-click="bannerDetails(item)">
+            <div>
+                <div ng-class="{'green-circle': isBetween(item.start, item.end), 'red-circle': !isBetween(item.start, item.end)}"></div>
+            </div>
+            <h1>{{item.name}}</h1>
+            <div>
+                
+                <div><span class="channel_label">start:</span> {{item.start | date:'MM/dd/yyyy h:mma'}}</div>
+            </div>
+            <div>
+                <div><span class="channel_label">end: </span>{{item.end | date:'MM/dd/yyyy h:mma'}}</div>
+            </div>
+            
+        </div>
+    
+    </scroll-view>
+</div>

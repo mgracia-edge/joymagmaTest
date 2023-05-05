@@ -49,7 +49,7 @@ function _create(req, res) {
             return;
         }
 
-        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled} = req.body;
+        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, moviesNow, psVOD} = req.body;
 
         db.Channels
             .findOne({"name": name}, (error, data) => {
@@ -77,7 +77,9 @@ function _create(req, res) {
                             entryPoint: {
                                 type: db.Channels.entryPoint.RTMP,
                                 streamKey: api.newStreamKeyCode()
-                            }
+                            },
+                            moviesNow: moviesNow ? moviesNow : false,
+                            psVOD : psvod ? psvod : false
                         };
 
                         json.updateHistory = [{
@@ -265,7 +267,8 @@ function _update(req, res) {
         const {
             channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, source,
             transcoder, profile, deinterlace, aspectRatio, forceX264, sd, priority, monitoring,
-            h265, useMpkg, dvr24,featured, liveNow
+            h265, useMpkg, dvr24,featured, liveNow, 
+            moviesNow,psVOD
         } = data;
 
         let query = {
@@ -294,7 +297,9 @@ function _update(req, res) {
                     monitoring: monitoring,
                     dvr24: dvr24,
                     liveNow: liveNow,
-                    featured: featured
+                    featured: featured,
+                    moviesNow: moviesNow,
+                    psVOD: psVOD
                 },
                 $push: {
                     updateHistory: {
@@ -339,6 +344,7 @@ function _update(req, res) {
                         .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
                 } else {
                     res.status(200).send(new api.Success(products));
+                    console.log('Upd:' + JSON.stringify(products))
                 }
 
             });

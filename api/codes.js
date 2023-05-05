@@ -32,6 +32,8 @@ const users_permissions = {
     PRODUCTS_READ: "products.read",
     CHANNELS_WRITE: "channels.write",
     CHANNELS_READ: "channels.read",
+    BANNERS_WRITE: "banners.write",
+    BANNERS_READ: "banners.read",
     STATS_ACCESS: "stats.access",
     SUBSCRIBERS_READ: "subscribers.read"
 };
@@ -158,6 +160,12 @@ const errorCode = {
         DUPLICATED_ENTITY: {
             code: 0X304,
             message: "Cannot create, entity already exists.",
+            httpCode: 409
+
+        },
+        OVERLAPPING_BANNER: {
+            code: 0X304,
+            message: "Cannot create, another banner is active given times.",
             httpCode: 409
 
         },

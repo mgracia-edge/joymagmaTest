@@ -50,6 +50,12 @@ exports.resourceList = [
         protected: false
     },
     {
+        path: "get_current_banner",
+        callback: getCurrentBanner,
+        method: "post",
+        protected: false
+    },
+    {
         path: "get_a_week",
         callback: getAWeek,
         method: "post",
@@ -155,33 +161,12 @@ function get_promo_channels(req, res) {
             uri: "https://play.google.com/store/apps/details?id=com.amazon.avod.thirdpartyclient",
             scope: "mobile"
         }, {
-            name: "Prime Video",
-            poster: "https://play-lh.googleusercontent.com/OWpGnzHvIMGzxQ4TSiNwZKex_Nq8ZLjvKmiSiCfPO26Ncy5DFhID-v3vQ_1dWCVPqA=s360-rw",
-            action: "playStore",
-            appId: "com.amazon.amazonvideo.livingroom",
-            uri: "https://play.google.com/store/apps/details?id=com.amazon.amazonvideo.livingroom",
-            scope: "tv"
-        }, {
-            name: "Netflix",
-            poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1584315834/Netflix_icon.svg.jpg",
-            action: "playStore",
-            appId: "com.netflix.ninja",
-            uri: "https://play.google.com/store/apps/details?id=com.netflix.ninja",
-            scope: "tv"
-        }, {
             name: "Netflix",
             poster: "https://res.cloudinary.com/hus16zuq6/image/upload/v1584315834/Netflix_icon.svg.jpg",
             action: "playStore",
             appId: "com.netflix.mediaclient",
             uri: "https://play.google.com/store/apps/details?id=com.netflix.mediaclient",
             scope: "mobile"
-        }, {
-            name: "YouTube",
-            poster: "https://play-lh.googleusercontent.com/lMoItBgdPPVDJsNOVtP26EKHePkwBg-PkuY9NOrc-fumRtTFP4XhpUNk_22syN4Datc=s360-rw",
-            action: "playStore",
-            appId: "com.google.android.youtube.tv",
-            uri: "https://play.google.com/store/apps/details?id=com.google.android.youtube",
-            scope: "tv"
         }, {
             name: "YouTube",
             poster: "https://play-lh.googleusercontent.com/lMoItBgdPPVDJsNOVtP26EKHePkwBg-PkuY9NOrc-fumRtTFP4XhpUNk_22syN4Datc=s360-rw",
@@ -291,6 +276,45 @@ function getCurrentProgramme(req, res) {
 
     }
 
+}
+
+function getCurrentBanner(req,res){
+    let db = pdc.db;
+
+    if (db) {
+
+        let query = {
+            find: {
+                start: {
+                    $lt: new Date()
+                },
+                end: {
+                    $gte: new Date()
+                }
+            }
+        };
+
+        db.Banner
+            .findOne(query.find)
+            .then((channels) => {
+
+                res.status(200).send(channels);
+
+            }).catch((error) => {
+            res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        })
+
+    } else {
+
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+
+    }
 }
 
 function getAWeek(req, res) {

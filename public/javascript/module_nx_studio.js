@@ -55,6 +55,14 @@
                     templateUrl: '/res/layout/view_s_ott_category_detail.html',
                     controller: 'sCategoriesDetailCtrl'
                 })
+                .when('/s/ott/banners', {
+                    templateUrl: '/res/layout/view_s_ott_banners.html',
+                    controller: 'sBannersCtrl'
+                })
+                .when('/s/ott/banners/:id', {
+                    templateUrl: '/res/layout/view_s_ott_banner_detail.html',
+                    controller: 'sBannersDetailCtrl'
+                })
                 .when('/s/ott/epg_monitor', {
                     templateUrl: '/res/layout/view_s_ott_epg_monitor.html',
                     controller: 'sOttEPGMonitorCtrl'

@@ -1,0 +1,69 @@
+<div secction layout-fill layout="column">
+    <h1>{{isNew ? "New Banner" : "Banner"}}</h1>
+
+    <scroll-view orientation="vertical" class="form" layout="row">
+
+        <div layout="row">
+
+            <div layout="column">
+                <div layout="row">            
+                    <item>
+                        <label>Banner image</label>
+                        <div layout="row">
+                            <div flex layout="row">
+                                <div class="channel-logo"
+                                    ng-style='getUrlPoster(bannerData)'
+                                    ng-click="uploadImage()"></div>
+                            </div>
+
+                        </div>
+                    </item>
+                </div>
+                <div layout="row">
+
+                    <div layout="column" style="min-width: 300px">
+                        <item>
+                            <label>Name</label>
+                            <input type="text" ng-model="bannerData.name" aria-label="Banner Name"
+                                   title="Banner Name"
+                                   autocomplete="off" required="true">
+                        </item>
+                        <item>
+                            <label>Start Date</label>
+                            <input type="datetime-local" ng-model="bannerData.start" aria-label="Start date"
+                                      title="Large Description" required="true">
+                            </input>
+                        </item>
+                        <item>
+                            <label>End Date</label>
+                            <input type="datetime-local" ng-model="bannerData.end" aria-label="End date"
+                                      title="Large Description" required="true">
+                            </input>
+                        </item>
+                        <item>
+                            <label>duration (seconds)</label>
+                            <input type="number" min="1" ng-model="bannerData.duration" aria-label="Duration"
+                                      title="duration of the banner" required="true">
+                        </input>
+                        </item>
+                    </div>
+
+                </div>
+
+                <md-button ng-click="updateBanner()" class="md-raised md-primary" layout="row"
+                           layout-align="center center">
+                    <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                          md-diameter="30"></md-progress-circular>
+                    <span ng-show="!loading">Save</span>
+                </md-button>
+
+            </div>
+            <div style="padding:16px">
+                <!--todo unify this using classes-->
+                <md-button ng-hide="isNew" md-no-ink class="md-raised md-primary"
+                           ng-click="removeBanner()">Remove Banner
+                </md-button>
+            </div>
+        </div>
+    </scroll-view>
+</div>
