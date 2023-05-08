@@ -91,7 +91,8 @@
                                 path: "/s/ott/notifications"
                             },
                             {
-                                iconURL: "/res/drawable/ic_banner.svg",
+                                
+                                iconURL: "/res/drawable/ic_magmanx_banner2.svg",
                                 name: "Banners",
                                 path: "/s/ott/banners"
                             }
