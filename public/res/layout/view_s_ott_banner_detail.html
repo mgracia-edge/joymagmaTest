@@ -1,5 +1,5 @@
 <div secction layout-fill layout="column">
-    <h1>{{isNew ? "New Banner" : "Banner"}}</h1>
+    <h1 title="Banner Size: 150x1920px | Max 2MB | jpg, jpeg, png">{{isNew ? "New Banner" : "Banner"}} </h1>
 
     <scroll-view orientation="vertical" class="form" layout="row">
 
@@ -28,19 +28,19 @@
                                    title="Banner Name"
                                    autocomplete="off" required="true">
                         </item>
-                        <item>
-                            <label>Start Date</label>
+                        <item title="Note: Only one banner can be active during the selected period of time.">
+                            <label >Start Date</label>
                             <input type="datetime-local" ng-model="bannerData.start" aria-label="Start date"
                                       title="Large Description" required="true">
                             </input>
                         </item>
-                        <item>
-                            <label>End Date</label>
+                        <item title="Note: Only one banner can be active during the selected period of time.">
+                            <label >End Date</label>
                             <input type="datetime-local" ng-model="bannerData.end" aria-label="End date"
                                       title="Large Description" required="true">
                             </input>
                         </item>
-                        <item>
+                        <item title="Time on display within the app. ">
                             <label>duration (seconds)</label>
                             <input type="number" min="1" ng-model="bannerData.duration" aria-label="Duration"
                                       title="duration of the banner" required="true">
@@ -50,12 +50,22 @@
 
                 </div>
 
-                <md-button ng-click="updateBanner()" class="md-raised md-primary" layout="row"
-                           layout-align="center center">
-                    <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
-                                          md-diameter="30"></md-progress-circular>
-                    <span ng-show="!loading">Save</span>
-                </md-button>
+                <div layout="col">
+
+                    <md-button ng-click="updateBanner()" class="md-raised md-primary" layout="row"
+                               layout-align="center center">
+                        <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                              md-diameter="30"></md-progress-circular>
+                        <span ng-show="!loading">Save</span>
+                    </md-button>
+    
+                    <md-button ng-click="backBanner()" class="md-raised md-primary" layout="row"
+                               layout-align="center center">
+                        <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                              md-diameter="30"></md-progress-circular>
+                        <span ng-show="!loading">Back</span>
+                    </md-button>
+                </div>
 
             </div>
             <div style="padding:16px">

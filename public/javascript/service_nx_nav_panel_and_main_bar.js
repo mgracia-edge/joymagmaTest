@@ -91,9 +91,14 @@
                                 path: "/s/ott/notifications"
                             },
                             {
-                                iconURL: "/res/drawable/ic_magmanx_banner2.svg",
+                                iconURL: "/res/drawable/ic_magmanx_banner3.png",
                                 name: "Banners",
                                 path: "/s/ott/banners"
+                            },
+                            {
+                                iconURL: "/res/drawable/ic_magmanx_banner3.png",
+                                name: "Banners Home",
+                                path: "/s/ott/ott-banners-home"
                             }
                         ]
                     },

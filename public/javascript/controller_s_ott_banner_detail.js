@@ -30,6 +30,8 @@
         $scope.getUrlPoster = getUrlPoster;
         $scope.updateBanner = updateBanner;
         $scope.removeBanner = removeBanner;
+        $scope.backBanner = backBanner;
+
 
         function init() {
             if (!$scope.isNew) {
@@ -245,6 +247,10 @@
                 }
 
             }
+        }
+
+        function backBanner(){
+            $location.path("/s/ott/banners");
         }
 
         $NxApi.setAfterLogin(init);

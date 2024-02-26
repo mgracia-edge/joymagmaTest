@@ -106,7 +106,13 @@
                 .when('/s/n/a', {
                     templateUrl: '/res/layout/view_n_a.html',
                     controller: 'sNACtrl'
-                });
+                })
+
+                // para manejo de banners home ott
+                .when('/s/ott/ott-banners-home', {
+                    templateUrl: '/res/layout/view_s_ott_banners_home.html',
+                    controller: 'sOttBannerHomeCtrl'
+                })
 
             $locationProvider.html5Mode(true);
 
