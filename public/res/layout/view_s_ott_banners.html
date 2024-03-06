@@ -48,17 +48,20 @@
 </style>
 <div secction layout-fill layout="column">
     <h1>Banners</h1>
+    
     <div block layout="row">
         <search-box layout="row">
             <input type="search" ng-model="search" flex>
             <md-icon md-svg-src="/res/drawable/ic_search.svg"></md-icon>
         </search-box>
     </div>    
+
     <scroll-view orientation="vertical" flex>
     
         <div layout="column" class="data-box" ng-repeat="item in banners | filter:customFilter() " ng-click="bannerDetails(item)">
             <div>
                 <div ng-class="{'green-circle': isBetween(item.start, item.end), 'red-circle': !isBetween(item.start, item.end)}"></div>
+                
             </div>
             <h1>{{item.name}}</h1>
             <div>
@@ -68,8 +71,21 @@
             <div>
                 <div><span class="channel_label">end: </span>{{item.end | date:'MM/dd/yyyy h:mma'}}</div>
             </div>
+            <div>
+                <md-icon md-svg-src="/res/drawable/delete-svgrepo-com.svg" ng-click="" title="Eliminar Banner"></md-icon>
+            </div>
             
         </div>
-    
+
+        <h2>VOD Posters</h2>
+            <div layout="column" class="data-box" ng-repeat="item in bannersVOD  ">
+                
+                <div ng-click="posterVODDetails(item)">
+                    <h3>{{ item.name }}</h3>
+                </div>
+                <div>
+                    <div><md-icon md-svg-src="/res/drawable/delete-svgrepo-com.svg" ng-click="" title="Elimiar"></md-icon></div>
+                </div>
+            </div>
     </scroll-view>
 </div>

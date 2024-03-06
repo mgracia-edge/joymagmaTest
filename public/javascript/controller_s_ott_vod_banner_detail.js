@@ -12,14 +12,18 @@
  */
 (function () {
     angular.module('NxStudio')
-        .controller("sBannersDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', '$q', '$location', '$mdDialog', controller]);
+        .controller("sVODBannersDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', '$q', '$location', '$mdDialog', controller]);
 
     function controller($scope, $interval, $routeParams, $NxApi, $q, $location, $mdDialog) {
+
         $scope.isNew = $routeParams.id === "new";
         $scope.bannerData = {
             name: '',
-            internalName: '',
-            poster :[],
+            duration: 1,
+            start : new Date('YYYY-MM-DDTHH:mm:ss'),
+            end : new Date('YYYY-MM-DDTHH:mm:ss'),
+            enabled: false,
+            poster :[]
         };
 
         $scope.uploadImage = uploadImage;
@@ -31,16 +35,19 @@
 
         function init() {
             if (!$scope.isNew) {
-                $NxApi.banners
+                $NxApi.vodPosters
                     .read({_id: $routeParams.id})
-                    .then((banner) => {
-                        $scope.bannerData = banner[0];
+                    .then((vodPoster) => {
+                        
+                        $scope.bannerData = vodPoster[0];
                     })
                     .catch((error) => {
                         $location.path("/s/ott/banners");
                         $scope.$parent.toast('The banner doesn\'t exist');
+
                     })
             }
+
         }
 
         function getUrlPoster(channel) {

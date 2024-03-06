@@ -126,6 +126,7 @@ function _create(req, res) {
 }
 
 function _read(req, res) {
+   
     let db = dc.db;
 
     if (db) {
@@ -153,32 +154,27 @@ function _read(req, res) {
         };
 
         if (id) {
-
             query.find = {_id: Array.isArray(id) ? {$in: id} : id}
 
         } else if (name) {
-
-            query.find = {productName: Array.isArray(name) ? {$in: name} : name}
-
+            query.find = {name: Array.isArray(name) ? {$in: name} : name}
         }
 
         if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
-
             delete query.projection.updateHistory;
-
         }
 
-        db.Banner
-            .find(query.find, query.projection)
-            .sort(query.sort)
-            .then((banners) => {
+        db.BannerVOD
+        .find(query.find, query.projection)
+        .sort(query.sort)
+        .then((banners) => {
+            res.status(200).send(new api.Success(banners));
 
-                res.status(200).send(new api.Success(banners));
-
-            }).catch((error) => {
-            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-        })
+        }).catch((error) => {
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+        })        
+    
 
     } else {
 
@@ -299,6 +295,3 @@ function _delete(req, res) {
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
 }
-
-
-

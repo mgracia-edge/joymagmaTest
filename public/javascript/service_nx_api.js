@@ -515,6 +515,92 @@
                 }
             }
 
+            function vodPostersDelegation($http, $q) {
+
+                function create(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/vodPoster/create", params, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve(data);
+
+                            })
+                            .catch(({data}) => {
+                                reject(data.error)
+                            });
+                    });
+                }
+
+                function read(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/vodPoster/read", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+
+                                resolve(data.content);
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            });
+                    });
+                }
+
+                function update(params) {
+
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/vodPoster/update", {
+                            id: params._id,
+                            data: params
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch(({data}) => {
+                                reject(data.error)
+                            });
+                    });
+                }
+
+                function remove(params) {
+                    return $q((resolve, reject) => {
+                        $http.post("/api/1.0/vodPoster/delete", {
+                            id: params._id
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer " + session.token
+                            }
+                        })
+                            .then(({data}) => {
+                                resolve({});
+                            })
+                            .catch(({data}) => {
+                                reject(data.error)
+                            });
+                    });
+                }
+
+                return {
+                    create,
+                    read,
+                    update,
+                    delete: remove,
+                }
+            }
+
             
 
             function privateCloudDelegation($http, $q) {
@@ -1060,7 +1146,8 @@
                 products: Products($http, $q),
                 avProfiles: AvProfiles($http, $q),
                 ottConfigurations: OttConfigurations($http, $q),
-                statistics: StatisticsDelegation($http, $q)
+                statistics: StatisticsDelegation($http, $q),
+                vodPosters: vodPostersDelegation($http, $q),
             }
         }]);
 

@@ -108,11 +108,13 @@
                     controller: 'sNACtrl'
                 })
 
-                // para manejo de banners home ott
-                .when('/s/ott/ott-banners-home', {
-                    templateUrl: '/res/layout/view_s_ott_banners_home.html',
-                    controller: 'sOttBannerHomeCtrl'
+                // para manejo de Poster VOD 
+                .when('/s/ott/vod-poster-detail/:id', {
+                    templateUrl: '/res/layout/view_s_ott_poster_vod_detail.html',
+                    controller: 'sVODBannersDetailCtrl'
                 })
+
+                
 
             $locationProvider.html5Mode(true);
 
