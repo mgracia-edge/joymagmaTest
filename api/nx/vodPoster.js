@@ -42,7 +42,7 @@ function _create(req, res) {
             return;
         }
 
-        const {name, duration, start,end,poster} = req.body;
+        const {name, poster} = req.body;
 
         db.Banner
             .findOne({"name": name}, (error, data) => {
@@ -198,7 +198,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, duration,start,end,poster} = data;
+        const {name, internalName,poster} = data;
 
         let query = {
             find: {
@@ -207,9 +207,6 @@ function _update(req, res) {
             update: {
                 $set: {
                     name: name,
-                    start:start,
-                    end:end,
-                    duration: duration
                 }
             }
         };
@@ -221,7 +218,7 @@ function _update(req, res) {
 
                 let poster = {
                     url: result.url,
-                    type: db.Channels.poster.LANDSCAPE
+                    type: 'LANDSCAPE'
                 };
 
                 query.update["$set"].poster = [poster];
@@ -236,7 +233,7 @@ function _update(req, res) {
         _update();
 
         function _update() {
-            db.Banner.updateOne(query.find, query.update, (error, products) => {
+            db.vodPosters.updateOne(query.find, query.update, (error, products) => {
                 if (error) {
                     res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                         .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));

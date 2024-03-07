@@ -23,7 +23,8 @@
             start : new Date('YYYY-MM-DDTHH:mm:ss'),
             end : new Date('YYYY-MM-DDTHH:mm:ss'),
             enabled: false,
-            poster :[]
+            poster :[],
+            defaultPoster: "",
         };
 
         $scope.uploadImage = uploadImage;
@@ -58,7 +59,8 @@
             return {'background-image': 'url(/res/drawable/ph_noimage.png)'}
         }
 
-        function _getImage() {
+        function _getImage(internalName) {
+            alert('InternalName: ' + internalName)
             return $q((resolve, reject) => {
                 let file = document.createElement('input')
                 file.accept = 'image/*';
@@ -82,10 +84,25 @@
                     var objectUrl = _URL.createObjectURL(fileObj);
                     img.onload = function () {
                         _URL.revokeObjectURL(objectUrl);
-                        if(this.width != width || this.height != height){
-                            reject(`The image must be  w:${width}px and h:${height}px`);
+                        // Según internalName valido tamaños
+                        if ( internalName === 'VODPoster') {
+                            width = 1280;
+                            height = 1920; //px
+                            if(this.width != width || this.height != height){
+                                reject(`The image must be  w:${width}px and h:${height}px`);
+                            }
+
+                        }
+                        if (internalName === 'VODHero'){
+                            width = 1800;
+                            height = 583; //px
+                            if(this.width != width || this.height != height){
+                                reject(`The image must be  w:${width}px and h:${height}px`);
+                            }
                         }
 
+
+                        
                         let reader = new FileReader();
                         reader.onloadend = function () {
                             resolve(reader.result)
@@ -98,8 +115,9 @@
             })
         }
 
-        function uploadImage() {
-            _getImage().then((img) => {
+        function uploadImage(internalName) {
+
+            _getImage(internalName).then((img) => {
                 $scope.bannerData.poster = [{
                     update: true,
                     url: img
@@ -111,28 +129,12 @@
 
         function checkForm() {
 
-            let { name, start, end, duration, poster} = $scope.bannerData;    
+            let { name, poster} = $scope.bannerData;    
 
-            if ( !poster || poster.length == 0 ||  name == '' || duration == '' || isNaN(start.getTime()) || isNaN(end.getTime()) ) {
+            if ( !poster || poster.length == 0 ||  name == '' ) {
                 $scope.$parent.toast("The fields cannot be empty");
                 return false
             }
-
-            if(duration < 1){
-                $scope.$parent.toast("Duration must be greater than 0.");
-                return false
-            }
-
-            if(end < start){
-                $scope.$parent.toast("End cann't be greater than start date.");
-                return false    
-            }
-
-            if(end < new Date()){
-                $scope.$parent.toast("End cann't be in the past.");
-                return false    
-            }
-
             return true
         }
 
@@ -213,22 +215,22 @@
 
                 if ($scope.isNew) {
 
-                    $NxApi.banners
-                        .create($scope.bannerData)
-                        .then(() => {
-                            $scope.$parent.toast('The banner was created');
-                            $scope.loading = false;
-                            $location.path("/s/ott/banners");
+                    // $NxApi.vodPosters
+                    //     .create($scope.bannerData)
+                    //     .then(() => {
+                    //         $scope.$parent.toast('The banner was created');
+                    //         $scope.loading = false;
+                    //         $location.path("/s/ott/banners");
 
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            $scope.$parent.toast(error.message);
-                            $scope.loading = false;
-                        })
+                    //     })
+                    //     .catch((error) => {
+                    //         console.log(error);
+                    //         $scope.$parent.toast(error.message);
+                    //         $scope.loading = false;
+                    //     })
 
                 } else {
-                    $NxApi.banners
+                    $NxApi.vodPosters
                         .update($scope.bannerData)
                         .then(() => {
                             $scope.$parent.toast('The banner was update');

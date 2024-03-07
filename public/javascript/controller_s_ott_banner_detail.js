@@ -52,6 +52,7 @@
         }
 
         function _getImage() {
+            
             return $q((resolve, reject) => {
                 let file = document.createElement('input')
                 file.accept = 'image/*';
@@ -92,7 +93,8 @@
         }
 
         function uploadImage() {
-            _getImage().then((img) => {
+            
+            _getImage(bannerType).then((img) => {
                 $scope.bannerData.poster = [{
                     update: true,
                     url: img

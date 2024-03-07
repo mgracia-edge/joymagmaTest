@@ -13,7 +13,7 @@
                             <div flex layout="row">
                                 <div class="channel-logo"
                                     ng-style='getUrlPoster(bannerData)'
-                                    ng-click="uploadImage()"></div>
+                                    ng-click="uploadImage(bannerData.internalName)"></div>
                             </div>
 
                         </div>
@@ -31,7 +31,12 @@
                         <item>
                             <label>Internal Name</label>
                             <input type="text" ng-model="bannerData.internalName" aria-label="Internal Name"
-                                   title="Banner Name" disabled autocomplete="off" required="true">
+                                   title="Internal Name" disabled autocomplete="off" required="true">
+                        </item>
+                        <item>
+                            <label>Default Poster</label>
+                            <input type="text" ng-model="bannerData.defaultPoster" aria-label="Default Poster"
+                                   title="Default Poster" disabled autocomplete="off" >
                         </item>
                         
                     </div>
