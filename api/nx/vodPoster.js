@@ -32,97 +32,97 @@ exports.resourceList = [
 function _create(req, res) {
     let db = dc.db;
 
-    if (db) {
+    // if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
+    //     if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    //         res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+    //             .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
-            return;
-        }
+    //         return;
+    //     }
 
-        const {name, poster} = req.body;
+    //     const {name, poster} = req.body;
 
-        db.Banner
-            .findOne({"name": name}, (error, data) => {
-                if (error) {
-                    res.status(codes.error.database.DISCONNECTED.httpCode)
-                        .send(new api.Error(codes.error.database.DISCONNECTED));
-                } else {
-                    if (data) {
-                        res.status(codes.error.operation.DUPLICATED_ENTITY.httpCode)
-                            .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
-                    } else {
+    //     db.Banner
+    //         .findOne({"name": name}, (error, data) => {
+    //             if (error) {
+    //                 res.status(codes.error.database.DISCONNECTED.httpCode)
+    //                     .send(new api.Error(codes.error.database.DISCONNECTED));
+    //             } else {
+    //                 if (data) {
+    //                     res.status(codes.error.operation.DUPLICATED_ENTITY.httpCode)
+    //                         .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
+    //                 } else {
 
-                        db.Banner.findOne({
-                            start: {$lte: end},
-                            end: {$gte: start}
-                          }, (error, data) => {
-                            if (error) {
-                              res.status(codes.error.database.DISCONNECTED.httpCode).send(new api.Error(codes.error.database.DISCONNECTED));
-                            } else if (data) {
-                              res.status(codes.error.operation.OVERLAPPING_BANNER.httpCode).send(new api.Error(codes.error.operation.OVERLAPPING_BANNER));
-                            } else {
-                                let json = {
-                                    name: name,
-                                    start: start,
-                                    end: end,
-                                    duration: duration
-                                };
+    //                     db.Banner.findOne({
+    //                         start: {$lte: end},
+    //                         end: {$gte: start}
+    //                       }, (error, data) => {
+    //                         if (error) {
+    //                           res.status(codes.error.database.DISCONNECTED.httpCode).send(new api.Error(codes.error.database.DISCONNECTED));
+    //                         } else if (data) {
+    //                           res.status(codes.error.operation.OVERLAPPING_BANNER.httpCode).send(new api.Error(codes.error.operation.OVERLAPPING_BANNER));
+    //                         } else {
+    //                             let json = {
+    //                                 name: name,
+    //                                 start: start,
+    //                                 end: end,
+    //                                 duration: duration
+    //                             };
 
-                                json.updateHistory = [{
-                                    date: new Date(),
-                                    payload: {
-                                        ...json
-                                    }
-                                }];
+    //                             json.updateHistory = [{
+    //                                 date: new Date(),
+    //                                 payload: {
+    //                                     ...json
+    //                                 }
+    //                             }];
 
-                                if (typeof poster !== 'undefined' && poster[0].update && poster[0].update === true) {
-                                    cloudinary.uploader.upload(poster[0].url, (result) => {
+    //                             if (typeof poster !== 'undefined' && poster[0].update && poster[0].update === true) {
+    //                                 cloudinary.uploader.upload(poster[0].url, (result) => {
 
-                                        let poster = {
-                                            url: result.url,
-                                            type: db.Channels.poster.LANDSCAPE
-                                        };
+    //                                     let poster = {
+    //                                         url: result.url,
+    //                                         type: db.Channels.poster.LANDSCAPE
+    //                                     };
 
-                                        json.poster = [poster];
+    //                                     json.poster = [poster];
 
-                                        _create();
-                                    });
+    //                                     _create();
+    //                                 });
 
-                                } else {
-                                    _create()
-                                }
-                                _create();
+    //                             } else {
+    //                                 _create()
+    //                             }
+    //                             _create();
 
-                                function _create() {
-                                    let banner = new db.Banner(json);
+    //                             function _create() {
+    //                                 let banner = new db.Banner(json);
 
-                                    banner.save(json, (err) => {
-                                        if (err) {
-                                            console.log(err)
-                                            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                                                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                                        } else {
-                                            res.status(200).send(new api.Success({}));
+    //                                 banner.save(json, (err) => {
+    //                                     if (err) {
+    //                                         console.log(err)
+    //                                         res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+    //                                             .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+    //                                     } else {
+    //                                         res.status(200).send(new api.Success({}));
 
-                                        }
+    //                                     }
 
-                                    });
-                                }
-                            }
-                        })
-                    }
-                }
-            });
+    //                                 });
+    //                             }
+    //                         }
+    //                     })
+    //                 }
+    //             }
+    //         });
 
 
-    } else {
+    // } else {
 
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
+    //     res.status(codes.error.database.DISCONNECTED.httpCode)
+    //         .send(new api.Error(codes.error.database.DISCONNECTED));
+    // }
 }
 
 function _read(req, res) {
@@ -198,7 +198,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, internalName,poster} = data;
+        const {name, internalName, poster} = data;
 
         let query = {
             find: {
