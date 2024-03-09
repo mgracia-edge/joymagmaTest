@@ -60,7 +60,6 @@
         }
 
         function _getImage(internalName) {
-            alert('InternalName: ' + internalName)
             return $q((resolve, reject) => {
                 let file = document.createElement('input')
                 file.accept = 'image/*';
@@ -94,8 +93,8 @@
 
                         }
                         if (internalName === 'VODHero'){
-                            width = 1800;
-                            height = 583; //px
+                            width = 2400;
+                            height = 600; //px
                             if(this.width != width || this.height != height){
                                 reject(`The image must be  w:${width}px and h:${height}px`);
                             }
@@ -235,8 +234,6 @@
                         .then(() => {
                             $scope.$parent.toast('The banner was update');
                             $scope.loading = false;
-                            if ($scope.channelData.poster) $scope.channelData.poster.update = false;
-
                         })
                         .catch((error) => {
                             console.log(error);
