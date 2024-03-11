@@ -205,9 +205,10 @@ function checkSubscriberCredentials(req, res) {
 
         if (db) {
 
-            db.Subscribers.findOne(query, function (error, storedSubscriber) {
+            db.Subscribers.findOne(query, {updateHistory: 0}, function (error, storedSubscriber) {
 
                 if (storedSubscriber && storedSubscriber.password && storedSubscriber.password === password) {
+                    storedSubscriber.password = undefined;
                     res.status(200).send(new api.Success(storedSubscriber));
                 } else if (error) {
                     res.status(C.error.database.ERROR.httpCode).send(new
@@ -592,9 +593,19 @@ function getChannels(req, res) {
             };
         }
 
+        query.projection = {
+                updateHistory: 0,
+                source: 0,
+                monitoring: 0,
+                notes: 0,
+                __v: 0,
+                transcoder: 0,
+                useMpkg: 0,
+                deinterlace: 0
+            };
 
         db.Channels
-            .find(query.find)
+            .find(query.find, query.projection)
             .sort(query.sort)
             .then((channels) => {
 
