@@ -91,7 +91,7 @@
                                 path: "/s/ott/notifications"
                             },
                             {
-                                iconURL: "/res/drawable/ic_Mbanner.svg",
+                                iconURL: "/res/drawable/ic_banners.svg",
                                 name: "Banners",
                                 path: "/s/ott/banners"
                             },
