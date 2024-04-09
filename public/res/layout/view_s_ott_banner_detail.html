@@ -8,7 +8,7 @@
             <div layout="column">
                 <div layout="row">            
                     <item>
-                        <label>Banner image</label>
+                        <label>Banner image <spam title="Banner Size 150x1920px - Max 2MB"> <img width="16px" src="/res/drawable/info.svg"></spam> </label>
                         <div layout="row">
                             <div flex layout="row">
                                 <div class="channel-logo"
@@ -29,21 +29,21 @@
                                    autocomplete="off" required="true">
                         </item>
                         <item title="Note: Only one banner can be active during the selected period of time.">
-                            <label >Start Date</label>
+                            <label >Start Date <spam title="Only one banner can be active during the selected period of time."> <img width="16px" src="/res/drawable/info.svg"></spam></label>
                             <input type="datetime-local" ng-model="bannerData.start" aria-label="Start date"
-                                      title="Large Description" required="true">
+                                       required="true">
                             </input>
                         </item>
                         <item title="Note: Only one banner can be active during the selected period of time.">
-                            <label >End Date</label>
+                            <label >End Date <spam > <img width="16px" src="/res/drawable/info.svg"></spam></label>
                             <input type="datetime-local" ng-model="bannerData.end" aria-label="End date"
-                                      title="Large Description" required="true">
+                                       required="true">
                             </input>
                         </item>
                         <item title="Time on display within the app. ">
-                            <label>duration (seconds)</label>
+                            <label>duration (seconds) <spam title="Time on display within the app"> <img width="16px" src="/res/drawable/info.svg"></spam> </label>
                             <input type="number" min="1" ng-model="bannerData.duration" aria-label="Duration"
-                                      title="duration of the banner" required="true">
+                                       required="true">
                         </input>
                         </item>
                     </div>

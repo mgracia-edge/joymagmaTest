@@ -26,7 +26,9 @@
             poster :[],
             defaultPoster: "",
         };
-
+        $scope.setDefault = {
+            vodInternalName : ''
+        }
         $scope.uploadImage = uploadImage;
         $scope.getUrlPoster = getUrlPoster;
         $scope.updateBanner = updateBanner;
@@ -137,14 +139,27 @@
             return true
         }
 
-        function removeBanner() {
+        function removeBanner(internalName) {
+            alert(internalName)
+            // $NxApi.vodPosters
+            // .update($scope.setDefault.internalName = internalName)
+            // .then(() => {
+            //     $scope.$parent.toast('The banner was update');
+            //     $scope.loading = false;
+            // })
+            // .catch((error) => {
+            //     console.log(error);
+            //     $scope.$parent.toast(error.message);
+            //     $scope.loading = false;
 
-            dialog_alert()
-                .then(() => {
-                    $location.path('/s/ott/banners');
-                }).catch((error) => {
-                $scope.$parent.toast(error.message)
-            })
+            // })
+
+            // dialog_alert()
+            //     .then(() => {
+            //         $location.path('/s/ott/banners');
+            //     }).catch((error) => {
+            //     $scope.$parent.toast(error.message)
+            // })
         }
 
         function dialog_alert() {

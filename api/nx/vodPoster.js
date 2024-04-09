@@ -211,7 +211,10 @@ function _update(req, res) {
             }
         };
 
-        if (typeof name === 'undefined') delete query.update.$set.name;
+        if (typeof name === 'undefined') {
+            delete query.update.$set.name
+            
+        };
 
         if (typeof poster !== 'undefined' && poster[0].update === true) {
             cloudinary.uploader.upload(poster[0].url, (result) => {
@@ -274,17 +277,28 @@ function _delete(req, res) {
             }
         };
 
-        db.Banner
-            .remove(query.find)
-            .then((data) => {
+        db.BannerVOD
+        .find(query.find, query.projection)
+        .sort(query.sort)
+        .then((banners) => {
+            res.status(200).send(new api.Success(banners));
 
-                res.status(200).send(new api.Success({}));
+        }).catch((error) => {
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+        })        
+        
+        // db.Banner
+        //     .remove(query.find)
+        //     .then((data) => {
 
-            }).catch((error) => {
+        //         res.status(200).send(new api.Success({}));
 
-            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-        })
+        //     }).catch((error) => {
+
+        //     res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+        //         .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+        // })
 
     } else {
 
