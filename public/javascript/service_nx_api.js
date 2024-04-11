@@ -556,7 +556,7 @@
                 }
 
                 function update(params) {
-                    alert('nx_api update')
+                    
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/vodPoster/update", {
                             id: params._id,

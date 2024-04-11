@@ -21,30 +21,10 @@
                 </div>
                 <div layout="row">
                     
-                    <!-- <img src="{{bannerData.poster[0].url}}" sizes="100px" alt="Italian Trulli"> -->
-                    <div layout="column" style="min-width: 300px">
-                        <item>
-                            <label>Name </label>
-                            <input type="text" ng-model="bannerData.name" aria-label="Banner Name"
-                                   title="Name" autocomplete="off" required="true">
-                        </item>
-                        <item>
-                            <label>Internal Name</label>
-                            <input type="text" ng-model="bannerData.internalName" aria-label="Internal Name"
-                                   title="Internal Name" disabled autocomplete="off" required="true">
-                        </item>
-                        <item>
-                            <label>Default Poster 
-                                <md-icon title="Default poster" md-svg-src="/res/drawable/ic_info-small.svg"></md-icon>
-                                </label>
-                            <input type="text" ng-model="bannerData.defaultPoster" aria-label="Default Poster"
-                                    disabled autocomplete="off" >
-                                   
-                                   
-                                
-                        </item>
-                        
-                    </div>
+                        <span style="margin-right: 10px">Use default</span>
+                        <md-switch ng-model="bannerData.useDefault" aria-label="Use Default"></md-switch>
+                    
+                    
 
                 </div>
 
@@ -66,12 +46,7 @@
                 </div>
 
             </div>
-            <div style="padding:16px">
-                <!--todo unify this using classes-->
-                <md-button ng-hide="isNew" md-no-ink class="md-raised md-primary"
-                           ng-click="removeBanner(bannerData.internalName)">Reset Banner
-                </md-button>
-            </div>
+            
         </div>
     </scroll-view>
 </div>

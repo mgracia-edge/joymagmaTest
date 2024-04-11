@@ -198,7 +198,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, internalName, poster} = data;
+        const {name, internalName, poster, useDefault} = data;
 
         let query = {
             find: {
@@ -207,6 +207,7 @@ function _update(req, res) {
             update: {
                 $set: {
                     name: name,
+                    useDefault: useDefault
                 }
             }
         };

@@ -25,6 +25,7 @@
             enabled: false,
             poster :[],
             defaultPoster: "",
+            useDefault: false
         };
         $scope.setDefault = {
             vodInternalName : ''
