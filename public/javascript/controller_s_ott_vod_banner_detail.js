@@ -35,8 +35,18 @@
         $scope.updateBanner = updateBanner;
         $scope.removeBanner = removeBanner;
         $scope.backBanner = backBanner;
+        $scope.setDefaultPoster = setDefaultPoster;
 
-
+        function setDefaultPoster(defaultPoster){
+            
+            $scope.isNew = true 
+            let poster = {
+                update: true,
+                url: defaultPoster.defaultPoster
+            }
+            $scope.bannerData = poster;
+            init()
+        }
         function init() {
             if (!$scope.isNew) {
                 $NxApi.vodPosters
@@ -50,6 +60,9 @@
                         $scope.$parent.toast('The banner doesn\'t exist');
 
                     })
+            }
+            if ($scope.isNew) {
+                $scope.bannerData
             }
 
         }
