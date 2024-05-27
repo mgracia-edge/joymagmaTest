@@ -145,10 +145,11 @@
         function checkForm() {
 
             let { name, poster} = $scope.bannerData;    
-
+            
             if ( !poster || poster.length == 0 ||  name == '' ) {
-                $scope.$parent.toast("The fields cannot be empty");
-                return false
+                // $scope.$parent.toast("The fields cannot be empty");
+                // puede venir setaedo a useDefault
+                return true
             }
             return true
         }
@@ -242,20 +243,21 @@
                 $scope.loading = true;
 
                 if ($scope.isNew) {
+                    alert($routeParams.id)
+                    let banner = $scope.bannerData 
+                    $NxApi.vodPosters
+                        .update({banner, _id: $routeParams.id })
+                        .then(() => {
+                            $scope.$parent.toast('The banner was updated');
+                            $scope.loading = false;
+                            $location.path("/s/ott/banners");
 
-                    // $NxApi.vodPosters
-                    //     .create($scope.bannerData)
-                    //     .then(() => {
-                    //         $scope.$parent.toast('The banner was created');
-                    //         $scope.loading = false;
-                    //         $location.path("/s/ott/banners");
-
-                    //     })
-                    //     .catch((error) => {
-                    //         console.log(error);
-                    //         $scope.$parent.toast(error.message);
-                    //         $scope.loading = false;
-                    //     })
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            $scope.$parent.toast(error.message);
+                            $scope.loading = false;
+                        })
 
                 } else {
                     $NxApi.vodPosters

@@ -187,7 +187,6 @@ function _update(req, res) {
     let db = dc.db;
 
     if (db) {
-
         if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
 
             res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
@@ -198,7 +197,8 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, internalName, poster, useDefault} = data;
+        const {name, internalName, poster, useDefault} = data.banner;
+        console.log('data: ', JSON.stringify(data.banner))
 
         let query = {
             find: {
@@ -211,7 +211,7 @@ function _update(req, res) {
                 }
             }
         };
-
+        console.log('Query: ', JSON.stringify(query))
         if (typeof name === 'undefined') {
             delete query.update.$set.name
             

@@ -114,6 +114,11 @@
                     controller: 'sVODBannersDetailCtrl'
                 })
 
+                .when('/s/ott/eventsports', {
+                    templateUrl: '/res/layout/view_s_ott_eventsports.html',
+                    controller: 'sEventSportsCtrl'
+                })
+
                 
 
             $locationProvider.html5Mode(true);

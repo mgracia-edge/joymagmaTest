@@ -95,6 +95,11 @@
                                 name: "Banners",
                                 path: "/s/ott/banners"
                             },
+                            {
+                                iconURL: "/res/drawable/ic_sports.svg",
+                                name: "Sports",
+                                path: "/s/ott/eventsports"
+                            },
                             
                             
                         ]
