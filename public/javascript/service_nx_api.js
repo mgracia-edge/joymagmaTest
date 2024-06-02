@@ -556,7 +556,6 @@
                 }
 
                 function update(params) {
-                    console.log('nxUpdate ', JSON.stringify(params))
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/vodPoster/update", {
                             id: params._id,
@@ -642,7 +641,7 @@
                 }
 
                 function update(params) {
-                    console.log('nxUpdate ', JSON.stringify(params))
+                    console.log('nxUpdate desde controler ', JSON.stringify(params))
                     return $q((resolve, reject) => {
                         $http.post("/api/1.0/eventSport/update", {
                             id: params._id,

@@ -198,7 +198,7 @@ function _update(req, res) {
         const {id, data} = req.body;
 
         const {name, internalName, poster, useDefault} = data.banner;
-        console.log('data: ', JSON.stringify(data.banner))
+        
 
         let query = {
             find: {
@@ -211,7 +211,7 @@ function _update(req, res) {
                 }
             }
         };
-        console.log('Query: ', JSON.stringify(query))
+        
         if (typeof name === 'undefined') {
             delete query.update.$set.name
             
