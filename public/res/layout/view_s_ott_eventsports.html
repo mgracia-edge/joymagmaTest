@@ -1,0 +1,156 @@
+
+<!-- <style>
+    /* Style for the scroll-view container */
+    
+    scroll-view {
+        height: 300px; /* Set the height of the scroll-view container */
+        overflow-y: auto; /* Enable vertical scrolling */
+    }
+
+    /* Style for the data box container */
+    .data-box {
+        border: 1px solid #ccc; /* Add a border */
+        padding: 10px; /* Add some padding */
+        margin-bottom: 10px; /* Add some margin between data boxes */
+        position: relative; /* Enable absolute positioning for the circles */
+    }
+
+    /* Style for the channel label */
+    .channel_label {
+        font-weight: bold; /* Make the label bold */
+        margin-right: 5px; /* Add some margin to the right */
+    }
+
+    /* Style for the green circle */
+    .green-circle {
+        position: absolute; /* Position the circle absolutely */
+        top: 5px; /* Position it 5px from the top */
+        right: 5px; /* Position it 5px from the right */
+        display: inline-block; /* Display as inline element */
+        width: 10px; /* Set the width */
+        height: 10px; /* Set the height */
+        border-radius: 50%; /* Make it a circle */
+        background-color: green; /* Set the background color */
+        margin-right: 5px; /* Add some margin to the right */
+    }
+
+    /* Style for the red circle */
+    .red-circle {
+        position: absolute; /* Position the circle absolutely */
+        top: 5px; /* Position it 5px from the top */
+        right: 5px; /* Position it 5px from the right */
+        display: inline-block; /* Display as inline element */
+        width: 10px; /* Set the width */
+        height: 10px; /* Set the height */
+        border-radius: 50%; /* Make it a circle */
+        background-color: red; /* Set the background color */
+        margin-right: 5px; /* Add some margin to the right */
+    } */
+
+</style> -->
+<style>
+    /* EVENTOS */
+    .events-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 90%;
+    max-width: 1400px;
+    margin: 20px auto;
+}
+
+.card-event {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card.large {
+    grid-column: span 2; /* Hace que la tarjeta ocupe ambas columnas */
+}
+
+.record-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.record {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Estilos para el switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    background-color: hsl(14, 90%, 54%);
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: hsl(14, 90%, 54%);
+}
+
+input:checked + .slider:before {
+    transform: translateX(14px);
+}
+</style>
+<div secction layout-fill layout="column">
+    <h1>Event Sports <spam title="You have the option to feature selected competitions and add external information (title, schedule, channel) to those"> <img width="16px" src="/res/drawable/info.svg"></spam> </h1>
+    <!-- Enable <md-switch ng-click="" ng-model="" aria-label="Use Default"></md-switch> -->
+                    
+    <br>
+    <div class="events-container" >
+        <div class="card-event" ng-repeat="groups in events" ng-class="{'large': groups.deportName.length > 10}">
+            <h3>{{ groups.deportGroupName }}</h3>
+            <div class="record-container"  >
+    
+                <div class="record" ng-repeat="deport in groups.deportName">
+                    <md-switch ng-model="deport.addInfo" ng-click="" class="switch"></md-switch>
+                    <input ng-model="deport.enabled" type="checkbox" id="checkbox1" >
+                    <span> {{ deport.eventName }}</span> 
+                    
+                </div>
+            </div>
+            <br>
+            <md-button ng-click="updateEvents(groups)" class="md-raised md-primary" >Save</md-button>
+        </div>
+    </div>
+
+
+    </div>
