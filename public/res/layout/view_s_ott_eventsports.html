@@ -141,8 +141,8 @@ input:checked + .slider:before {
             <div class="record-container"  >
     
                 <div class="record" ng-repeat="deport in groups.deportName">
-                    <md-switch ng-model="deport.addInfo" ng-click="" class="switch"></md-switch>
-                    <input ng-model="deport.enabled" type="checkbox" id="checkbox1" >
+                    <md-switch ng-model="deport.enabled" ng-click="" class="switch"></md-switch>
+                    <input ng-model="deport.addInfo" type="checkbox" id="checkbox1" disabled >
                     <span> {{ deport.eventName }}</span> 
                     
                 </div>
