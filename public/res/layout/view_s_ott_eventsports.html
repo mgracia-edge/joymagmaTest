@@ -50,11 +50,19 @@
 </style> -->
 <style>
     /* EVENTOS */
-    .events-container {
+body{
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    
+}
+
+.events-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    width: 90%;
+    gap: 20px;
+    width: 80%;
     max-width: 1400px;
     margin: 20px auto;
 }
@@ -67,7 +75,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.card.large {
+.card-large {
     grid-column: span 2; /* Hace que la tarjeta ocupe ambas columnas */
 }
 
@@ -136,19 +144,19 @@ input:checked + .slider:before {
                     
     <br>
     <div class="events-container" >
-        <div class="card-event" ng-repeat="groups in events" ng-class="{'large': groups.deportName.length > 10}">
+        <div class="card-event" ng-repeat="groups in events" ng-class="{'card-large': groups.deportName.length > 10}">
             <h3>{{ groups.deportGroupName }}</h3>
             <div class="record-container"  >
     
                 <div class="record" ng-repeat="deport in groups.deportName">
-                    <md-switch ng-model="deport.enabled" ng-click="" class="switch"></md-switch>
-                    <input ng-model="deport.addInfo" type="checkbox" id="checkbox1" disabled >
+                    <md-switch ng-model="deport.enabled" ng-change="updateEvents(groups)" class="switch"></md-switch>
+                    <!-- <input ng-model="deport.addInfo" type="checkbox" id="checkbox1" disabled > -->
                     <span> {{ deport.eventName }}</span> 
                     
                 </div>
             </div>
             <br>
-            <md-button ng-click="updateEvents(groups)" class="md-raised md-primary" >Save</md-button>
+            <!-- <md-button ng-click="updateEvents(groups)" class="md-raised md-primary" >Save</md-button> -->
         </div>
     </div>
 

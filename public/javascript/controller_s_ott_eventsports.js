@@ -17,7 +17,9 @@
 
                 $scope.search = '';
                 $scope.events = null;
+                $scope.eventsInitials = null
                 $scope.updateEvents = updateEvents;
+                $scope.compareObjects = compareObjects;
                 // $scope.banners = [];
                 // $scope.bannerDetails = bannerDetails;
                 // $scope.customFilter = customFilter;
@@ -30,8 +32,9 @@
                     $NxApi.eventSports
                         .read({})
                         .then((events) => {
-                            console.log('eventos ',  events)
+                            
                             $scope.events = events;
+                            $scope.eventsInitials = events;
                         })
                         .catch((error) => {
                             console.log(error);
@@ -43,7 +46,15 @@
                 //     $location.path("/s/ott/eventsports");
                 // }
 
+                
+                function compareObjects(){
+                    var _ = require('lodash')
+                    // comparo Objetos
+                    console.log(_.isEqual(events,eventSports))
+
+                }
                 function updateEvents(eventSports){
+
                     $NxApi.eventSports
                         .update(eventSports)
                         .then(() => {
