@@ -686,7 +686,9 @@
                 }
             }
 
-            
+            function RadiosDelegation($http,$q){
+                
+            }
 
             function privateCloudDelegation($http, $q) {
 
@@ -1234,6 +1236,7 @@
                 statistics: StatisticsDelegation($http, $q),
                 vodPosters: vodPostersDelegation($http, $q),
                 eventSports : EventSportsDelegation($http, $q),
+                radios: RadiosDelegation($http, $q)
             }
         }]);
 

@@ -101,6 +101,12 @@
                                 path: "/s/ott/eventsports"
                             },
 
+                            {
+                                iconURL: "/res/drawable/ic_sports2.svg",
+                                name: "Radios",
+                                path: "/s/ott/radios"
+                            },
+
 
                             
                             
