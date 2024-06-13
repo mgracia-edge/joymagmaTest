@@ -91,10 +91,20 @@
                                 path: "/s/ott/notifications"
                             },
                             {
-                                iconURL: "/res/drawable/ic_magmanx_banner2.svg",
+                                iconURL: "/res/drawable/ic_banners.svg",
                                 name: "Banners",
                                 path: "/s/ott/banners"
-                            }
+                            },
+                            {
+                                iconURL: "/res/drawable/ic_sports2.svg",
+                                name: "Sports",
+                                path: "/s/ott/eventsports"
+                            },
+
+
+                            
+                            
+                            
                         ]
                     },
                     {

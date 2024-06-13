@@ -1,0 +1,52 @@
+<div secction layout-fill layout="column">
+    <h1 title="Banner Size: 150x1920px | Max 2MB | jpg, jpeg, png">  {{bannerData.name}} </h1>
+
+    <scroll-view orientation="vertical" class="form" layout="row">
+        
+        <div layout="row">
+            <div layout="column">
+                <div layout="row">            
+                    
+                    <item>
+                        <label>Banner image <spam title="Banner Size: 150x1920px. Max 2MB. jpg, jpeg, png"> <img width="16px" src="/res/drawable/info.svg"></spam></label>
+                        <div layout="row">
+                            <div flex layout="row">
+                                <div class="channel-logo"
+                                    ng-style='getUrlPoster(bannerData)'
+                                    ng-click="uploadImage(bannerData.internalName)"></div>
+                            </div>
+
+                        </div>
+                    </item>
+                </div>
+                <div layout="row">
+                    
+                        <span style="margin-right: 10px">Use default</span>
+                        <md-switch ng-click="setDefaultPoster(bannerData)" ng-model="bannerData.useDefault" aria-label="Use Default"></md-switch>
+                    
+                    
+
+                </div>
+
+                <div layout="col">
+
+                    <md-button ng-click="updateBanner()" class="md-raised md-primary" layout="row"
+                               layout-align="center center">
+                        <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                              md-diameter="30"></md-progress-circular>
+                        <span ng-show="!loading">Save</span>
+                    </md-button>
+    
+                    <md-button ng-click="backBanner()" class="md-raised md-primary" layout="row"
+                               layout-align="center center">
+                        <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                              md-diameter="30"></md-progress-circular>
+                        <span ng-show="!loading">Back</span>
+                    </md-button>
+                </div>
+
+            </div>
+            
+        </div>
+    </scroll-view>
+</div>

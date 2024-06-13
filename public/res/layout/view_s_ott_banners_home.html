@@ -1,0 +1,134 @@
+
+<style>
+    /* Style for the scroll-view container */
+    scroll-view {
+        height: 300px; /* Set the height of the scroll-view container */
+        overflow-y: auto; /* Enable vertical scrolling */
+    }
+
+    /* Style for the data box container */
+    .data-box {
+        border: 1px solid #ccc; /* Add a border */
+        padding: 10px; /* Add some padding */
+        margin-bottom: 10px; /* Add some margin between data boxes */
+        position: relative; /* Enable absolute positioning for the circles */
+    }
+
+    /* Style for the channel label */
+    .channel_label {
+        font-weight: bold; /* Make the label bold */
+        margin-right: 5px; /* Add some margin to the right */
+    }
+
+    /* Style for the green circle */
+    .green-circle {
+        position: absolute; /* Position the circle absolutely */
+        top: 5px; /* Position it 5px from the top */
+        right: 5px; /* Position it 5px from the right */
+        display: inline-block; /* Display as inline element */
+        width: 10px; /* Set the width */
+        height: 10px; /* Set the height */
+        border-radius: 50%; /* Make it a circle */
+        background-color: green; /* Set the background color */
+        margin-right: 5px; /* Add some margin to the right */
+    }
+
+    /* Style for the red circle */
+    .red-circle {
+        position: absolute; /* Position the circle absolutely */
+        top: 5px; /* Position it 5px from the top */
+        right: 5px; /* Position it 5px from the right */
+        display: inline-block; /* Display as inline element */
+        width: 10px; /* Set the width */
+        height: 10px; /* Set the height */
+        border-radius: 50%; /* Make it a circle */
+        background-color: red; /* Set the background color */
+        margin-right: 5px; /* Add some margin to the right */
+    }
+</style>
+<div secction layout-fill layout="column">
+    <h1>OTT Banners Home VOD</h1>
+    
+    <scroll-view orientation="vertical" flex>
+    
+        
+        <div layout="row">
+            <div layout="column">
+                <div layout="row">            
+                    <item>
+                        <label>VOD hero image</label>
+                        <div layout="row">
+                            <div flex layout="row">
+                                <div class="channel-logo"
+                                    ng-style='getUrlPoster(bannerData)'
+                                    ng-click="uploadImage()"></div>
+                            </div>
+
+                        </div>
+                    </item>
+                </div>
+                <div layout="col">
+                    <md-button ng-click="updateBanner()" class="md-raised md-primary" layout="row"
+                               layout-align="center center">
+                        <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                              md-diameter="30"></md-progress-circular>
+                        <span ng-show="!loading">Save</span>
+                    </md-button>
+    
+                    <md-button ng-click="backBanner()" class="md-raised md-primary" layout="row"
+                               layout-align="center center">
+                        <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                              md-diameter="30"></md-progress-circular>
+                        <span ng-show="!loading">Back</span>
+                    </md-button>
+                </div>
+            </div>
+            <div style="padding:16px">
+                <!--todo unify this using classes-->
+                <md-button ng-hide="isNew" md-no-ink class="md-raised md-primary"
+                           ng-click="removeBanner()">Remove Banner
+                </md-button>
+            </div>
+        </div>
+
+
+        <div layout="row">
+            <div layout="column">
+                <div layout="row">            
+                    <item>
+                        <label>VOD poster image</label>
+                        <div layout="row">
+                            <div flex layout="row">
+                                <div class="channel-logo"
+                                    ng-style='getUrlPoster(bannerData)'
+                                    ng-click="uploadImage()"></div>
+                            </div>
+
+                        </div>
+                    </item>
+                </div>
+                <div layout="col">
+                    <md-button ng-click="addBannerVODHOme()" class="md-raised md-primary" layout="row"
+                               layout-align="center center">
+                        <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                              md-diameter="30"></md-progress-circular>
+                        <span ng-show="!loading">Save</span>
+                    </md-button>
+    
+                    <md-button ng-click="bannerVODHome()" class="md-raised md-primary" layout="row" layout-align="center center">
+                        <md-progress-circular ng-show="loading" class="md-primary md-hue-3"
+                                              md-diameter="30"></md-progress-circular>
+                        <span ng-show="!loading">Back</span>
+                    </md-button>
+                </div>
+            </div>
+            <div style="padding:16px">
+                <!--todo unify this using classes-->
+                <md-button ng-hide="isNew" md-no-ink class="md-raised md-primary"
+                           ng-click="removeBanner()">Remove Banner
+                </md-button>
+            </div>
+        </div>
+    
+    </scroll-view>
+</div>

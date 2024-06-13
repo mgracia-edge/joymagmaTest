@@ -15,21 +15,19 @@
         .controller("sBannersDetailCtrl", ['$scope', '$interval', '$routeParams', '$NxApi', '$q', '$location', '$mdDialog', controller]);
 
     function controller($scope, $interval, $routeParams, $NxApi, $q, $location, $mdDialog) {
-
         $scope.isNew = $routeParams.id === "new";
         $scope.bannerData = {
             name: '',
-            duration: 1,
-            start : new Date('YYYY-MM-DDTHH:mm:ss'),
-            end : new Date('YYYY-MM-DDTHH:mm:ss'),
-            enabled: false,
-            poster :[]
+            internalName: '',
+            poster :[],
         };
 
         $scope.uploadImage = uploadImage;
         $scope.getUrlPoster = getUrlPoster;
         $scope.updateBanner = updateBanner;
         $scope.removeBanner = removeBanner;
+        $scope.backBanner = backBanner;
+
 
         function init() {
             if (!$scope.isNew) {
@@ -37,16 +35,12 @@
                     .read({_id: $routeParams.id})
                     .then((banner) => {
                         $scope.bannerData = banner[0];
-                        $scope.bannerData.start = new Date(banner[0].start) 
-                        $scope.bannerData.end = new Date(banner[0].end) 
                     })
                     .catch((error) => {
                         $location.path("/s/ott/banners");
                         $scope.$parent.toast('The banner doesn\'t exist');
-
                     })
             }
-
         }
 
         function getUrlPoster(channel) {
@@ -58,6 +52,7 @@
         }
 
         function _getImage() {
+            
             return $q((resolve, reject) => {
                 let file = document.createElement('input')
                 file.accept = 'image/*';
@@ -98,7 +93,8 @@
         }
 
         function uploadImage() {
-            _getImage().then((img) => {
+            
+            _getImage(bannerType).then((img) => {
                 $scope.bannerData.poster = [{
                     update: true,
                     url: img
@@ -245,6 +241,10 @@
                 }
 
             }
+        }
+
+        function backBanner(){
+            $location.path("/s/ott/banners");
         }
 
         $NxApi.setAfterLogin(init);

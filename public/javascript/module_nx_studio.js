@@ -106,7 +106,20 @@
                 .when('/s/n/a', {
                     templateUrl: '/res/layout/view_n_a.html',
                     controller: 'sNACtrl'
-                });
+                })
+
+                // para manejo de Poster VOD 
+                .when('/s/ott/vod-poster-detail/:id', {
+                    templateUrl: '/res/layout/view_s_ott_poster_vod_detail.html',
+                    controller: 'sVODBannersDetailCtrl'
+                })
+
+                .when('/s/ott/eventsports', {
+                    templateUrl: '/res/layout/view_s_ott_eventsports.html',
+                    controller: 'sEventSportsCtrl'
+                })
+
+                
 
             $locationProvider.html5Mode(true);
 

@@ -79,7 +79,7 @@ function _create(req, res) {
                                 streamKey: api.newStreamKeyCode()
                             },
                             moviesNow: moviesNow ? moviesNow : false,
-                            psVOD : psVOD ? psVOD : false
+                            psVOD : psvod ? psvod : false
                         };
 
                         json.updateHistory = [{

@@ -176,7 +176,6 @@ function _read(req, res) {
                 res.status(200).send(new api.Success(banners));
 
             }).catch((error) => {
-            console.log(error)
             res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                 .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         })
@@ -300,4 +299,6 @@ function _delete(req, res) {
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
 }
+
+
 

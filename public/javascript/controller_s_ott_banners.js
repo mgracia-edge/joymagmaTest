@@ -20,9 +20,14 @@
                 $scope.bannerDetails = bannerDetails;
                 $scope.customFilter = customFilter;
                 $scope.isBetween = isBetween;
+                $scope.backBanner = backBanner;
 
+                // bannerVOD
+                $scope.posterVOD = [];
+                $scope.bannersVOD = [];
+                $scope.posterVODDetails = posterVODDetails;
+                
                 function init() {
-
                     $NxApi.banners
                         .read({})
                         .then((banners) => {
@@ -30,15 +35,22 @@
                         })
                         .catch((error) => {
                             console.log(error);
-
                         })
+                    
+                    $NxApi.vodPosters
+                        .read({})
+                        .then( (vodPosters) => {
+                            $scope.bannersVOD = vodPosters
+                        })                    
                 }
-
+                function backBanner(){
+                    $location.path("/s/ott/banners");
+                }
                 function bannerDetails(banner) {
                     $location.path('/s/ott/banners/' + banner._id)
                 }
 
-                 // Define the isBetween function
+                // Define the isBetween function
                 function isBetween(start, end) {
                     var now = new Date();
                     return new Date(start)  <= now && now <= new Date(end);
@@ -46,13 +58,15 @@
 
                 function customFilter() {
                     return function (item) {
-
                         if($scope.search === '') return true;
-
                         return !item.name.toLowerCase().indexOf($scope.search.toLowerCase()) ||
                             !item.channelEPGId.toLowerCase().indexOf($scope.search.toLowerCase()) ||
                             !item.entryPoint.streamKey.toLowerCase().indexOf($scope.search.toLowerCase())
                     }
+                }
+
+                function posterVODDetails(posterVOD) {
+                    $location.path('/s/ott/vod-poster-detail/' + posterVOD._id)
                 }
 
                 $NxApi.setAfterLogin(init);
