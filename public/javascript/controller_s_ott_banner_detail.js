@@ -94,7 +94,7 @@
 
         function uploadImage() {
             
-            _getImage(bannerType).then((img) => {
+            _getImage().then((img) => {
                 $scope.bannerData.poster = [{
                     update: true,
                     url: img
