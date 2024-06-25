@@ -140,18 +140,18 @@ function get_promo_channels(req, res) {
     res.send([
         {
             name: "HBO NOW",
-            poster: "https://play-lh.googleusercontent.com/GmIOtlRHzTffK3WSyNrz4NNrWFh_yUuhQb9UHXztk0ZxeeFzAUD52b9YVTGh7nsdJ8c=s360-rw",
+            poster: "https://play-lh.googleusercontent.com/VODqBhdZXQIkQlcv_A2nAq1gPNO7fwfDlUO3UZcgcMy6jAVx05CSU-vFuVFsr9gFUuo=w240-h480-rw",
             action: "playStore",
             appId: "com.hbo.hbonow",
-            uri: "https://play.google.com/store/apps/details?id=com.wbd.stream&pcampaignid=web_share", 
+            uri: "https://play.google.com/store/apps/details?id=com.wbd.stream", 
             scope: "mobile"
         },
         {
             name: "HBO NOW",
-            poster: "https://play-lh.googleusercontent.com/GmIOtlRHzTffK3WSyNrz4NNrWFh_yUuhQb9UHXztk0ZxeeFzAUD52b9YVTGh7nsdJ8c=s360-rw",
+            poster: "https://play-lh.googleusercontent.com/VODqBhdZXQIkQlcv_A2nAq1gPNO7fwfDlUO3UZcgcMy6jAVx05CSU-vFuVFsr9gFUuo=w240-h480-rw",
             action: "playStore",
             appId: "com.hbo.hbonow",
-            uri: "https://play.google.com/store/apps/details?id=com.wbd.stream&pcampaignid=web_share",
+            uri: "https://play.google.com/store/apps/details?id=com.wbd.stream",
             scope: "tv"
         }, {
             name: "Prime Video",
