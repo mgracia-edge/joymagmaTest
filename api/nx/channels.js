@@ -49,7 +49,7 @@ function _create(req, res) {
             return;
         }
 
-        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, moviesNow, psVOD} = req.body;
+        const {channelEPGId, name, descriptionShort, descriptionLong, category, poster, notes, enabled, moviesNow, psVOD, source} = req.body;
 
         db.Channels
             .findOne({"name": name}, (error, data) => {
@@ -71,6 +71,7 @@ function _create(req, res) {
                                 type: db.Channels.publishingType.HLS,
                                 streamName: api.newStreamKeyCode()
                             },
+                            source,
                             enabled: enabled,
                             notes: notes,
                             category: category,
@@ -78,8 +79,8 @@ function _create(req, res) {
                                 type: db.Channels.entryPoint.RTMP,
                                 streamKey: api.newStreamKeyCode()
                             },
-                            moviesNow: moviesNow ? moviesNow : false,
-                            psVOD : psvod ? psvod : false
+                            moviesNow: moviesNow ?? false,
+                            psVOD : psVOD ?? false
                         };
 
                         json.updateHistory = [{
@@ -95,36 +96,41 @@ function _create(req, res) {
                         if (typeof enabled === 'undefined') delete json.enabled;
 
                         if (typeof poster !== 'undefined' && poster[0].update && poster[0].update === true) {
-                            cloudinary.uploader.upload(poster[0].url, (result) => {
+                            try {
+                                cloudinary.uploader.upload(poster[0].url, (result) => {
 
-                                let poster = {
-                                    url: result.url,
-                                    type: db.Channels.poster.LANDSCAPE
-                                };
-
-                                json.poster = [poster];
-
-                                _create();
-                            });
+                                    let poster = {
+                                        url: result.url,
+                                        type: db.Channels.poster.LANDSCAPE
+                                    };
+    
+                                    json.poster = [poster];
+    
+                                    _create();
+                                });
+                            } catch (error) {
+                                console.log(`Error in cloudinary service: \n ${error}`)
+                            }
+                            json.poster = [{
+                                url: 'url',
+                                type: 'LANDSCAPE'
+                            }]
+                            _create()
 
                         } else {
                             _create()
                         }
 
-                        function _create() {
-                            let Channels = new db.Channels(json);
+                        async function _create() {
+                            try {
+                                let Channels = new db.Channels(json);
 
-                            Channels.save(json, (err) => {
-                                if (err) {
-                                    console.log(err)
-                                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                                } else {
-                                    res.status(200).send(new api.Success({}));
-
-                                }
-
-                            });
+                                await Channels.save(json);
+                                res.status(200).send(new api.Success({}));
+                            } catch (error) {
+                                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+                            }
                         }
 
                     }
