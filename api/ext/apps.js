@@ -15,8 +15,8 @@ pdc.on("connected", () => {
     preChacheDays();
 });
 
-setInterval(updateOttConfig, 60000);
-setInterval(preChacheDays, 1800000);
+setInterval(updateOttConfig, 120000);
+setInterval(preChacheDays, 3600000);
 
 
 function updateOttConfig() {
