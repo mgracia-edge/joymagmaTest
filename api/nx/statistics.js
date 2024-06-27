@@ -41,8 +41,10 @@ function _subscribers(req, res) {
 
         let {from, until} = req.body;
 
-        db.StatsDailySubscribers.find({fromDate: {$gte: new Date(from), $lte: new Date(until)}}, (error, data) => {
-            res.send(new api.Success(data));
+        db.StatsDailySubscribers.find({
+            fromDate: {$gte: new Date(from), $lte: new Date(until)}
+        }, (error, data) => {
+            res.send(new api.Success(data));    
         });
 
     } else {
@@ -125,20 +127,27 @@ async function _dailyPlay(req, res) {
         // ];
         // let data = await db.StatsResume.aggregate(pipeline);
 
-        let data = await db.StatsResume.find({
-            date: {$gte: new Date(from), $lt: new Date(until)},
-            aggregation: aggregation, 
-            device: "android_tv"
-            }, {
+
+
+        let data = await db.StatsResume.find(
+            {
+                date: {$gte: new Date(from), $lt: new Date(until)},
+                aggregation: aggregation, 
+                device: 'android_tv',
+                sessions: {
+                    $exists: true,
+                    $not: {
+                        $size: 0
+                    }
+                },
+            }, 
+            {
                 aggregation: 0,
                 perChannel: 0, 
                 __v: 0
-            }
-        );
-
+            });
 
         res.send(new api.Success(data));
-
     } else {
 
         res.status(codes.error.database.DISCONNECTED.httpCode)
@@ -208,15 +217,15 @@ async function _devices(req, res) {
 
         let data = await db.StatsResume.find({
             date: {$gte: new Date(from), $lt: new Date(until)},
-            aggregation: aggregation
-            }, {
-                sessions: 0,
-                aggregation: 0,
-                perChannel: 0, 
-                __v: 0
+            aggregation: aggregation,
+            sessions: {
+                $exists: true,
+                $not: {
+                    $size: 0
+                }
+            },
+        });
 
-            }
-        );
         res.send(new api.Success(data));
 
     } else {

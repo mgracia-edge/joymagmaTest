@@ -15,8 +15,8 @@ pdc.on("connected", () => {
     preChacheDays();
 });
 
-setInterval(updateOttConfig, 60000);
-setInterval(preChacheDays, 1800000);
+setInterval(updateOttConfig, 120000);
+setInterval(preChacheDays, 3600000);
 
 
 function updateOttConfig() {
@@ -140,18 +140,18 @@ function get_promo_channels(req, res) {
     res.send([
         {
             name: "HBO NOW",
-            poster: "https://play-lh.googleusercontent.com/GmIOtlRHzTffK3WSyNrz4NNrWFh_yUuhQb9UHXztk0ZxeeFzAUD52b9YVTGh7nsdJ8c=s360-rw",
+            poster: "https://play-lh.googleusercontent.com/VODqBhdZXQIkQlcv_A2nAq1gPNO7fwfDlUO3UZcgcMy6jAVx05CSU-vFuVFsr9gFUuo=w240-h480-rw",
             action: "playStore",
             appId: "com.hbo.hbonow",
-            uri: "https://play.google.com/store/apps/details?id=com.wbd.stream&pcampaignid=web_share", 
+            uri: "https://play.google.com/store/apps/details?id=com.wbd.stream", 
             scope: "mobile"
         },
         {
             name: "HBO NOW",
-            poster: "https://play-lh.googleusercontent.com/GmIOtlRHzTffK3WSyNrz4NNrWFh_yUuhQb9UHXztk0ZxeeFzAUD52b9YVTGh7nsdJ8c=s360-rw",
+            poster: "https://play-lh.googleusercontent.com/VODqBhdZXQIkQlcv_A2nAq1gPNO7fwfDlUO3UZcgcMy6jAVx05CSU-vFuVFsr9gFUuo=w240-h480-rw",
             action: "playStore",
             appId: "com.hbo.hbonow",
-            uri: "https://play.google.com/store/apps/details?id=com.wbd.stream&pcampaignid=web_share",
+            uri: "https://play.google.com/store/apps/details?id=com.wbd.stream",
             scope: "tv"
         }, {
             name: "Prime Video",
@@ -205,9 +205,10 @@ function checkSubscriberCredentials(req, res) {
 
         if (db) {
 
-            db.Subscribers.findOne(query, function (error, storedSubscriber) {
+            db.Subscribers.findOne(query, {updateHistory: 0}, function (error, storedSubscriber) {
 
                 if (storedSubscriber && storedSubscriber.password && storedSubscriber.password === password) {
+                    storedSubscriber.password = undefined;
                     res.status(200).send(new api.Success(storedSubscriber));
                 } else if (error) {
                     res.status(C.error.database.ERROR.httpCode).send(new
@@ -592,9 +593,19 @@ function getChannels(req, res) {
             };
         }
 
+        query.projection = {
+                updateHistory: 0,
+                source: 0,
+                monitoring: 0,
+                notes: 0,
+                __v: 0,
+                transcoder: 0,
+                useMpkg: 0,
+                deinterlace: 0
+            };
 
         db.Channels
-            .find(query.find)
+            .find(query.find, query.projection)
             .sort(query.sort)
             .then((channels) => {
 
