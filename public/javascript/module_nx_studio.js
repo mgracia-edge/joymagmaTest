@@ -119,6 +119,16 @@
                     controller: 'sEventSportsCtrl'
                 })
 
+                .when('/s/ott/radios', {
+                    templateUrl: '/res/layout/view_s_ott_radios.html',
+                    controller: 'sRadiosCtrl'
+                })
+
+                .when('/s/ott/radio-datail/:id', {
+                    templateUrl: '/res/layout/view_s_ott_radios_detail.html',
+                    controller: 'sRadioDetailsCtrl'
+                })
+
                 
 
             $locationProvider.html5Mode(true);

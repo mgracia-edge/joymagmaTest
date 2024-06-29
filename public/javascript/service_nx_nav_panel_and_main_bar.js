@@ -102,7 +102,7 @@
                             },
 
                             {
-                                iconURL: "/res/drawable/ic_sports2.svg",
+                                iconURL: "/res/drawable/live_streaming_icon.svg",
                                 name: "Radios",
                                 path: "/s/ott/radios"
                             },

@@ -1,0 +1,101 @@
+<div secction layout-fill layout="column">
+    <h1>Radio</h1>
+    
+    <scroll-view orientation="vertical" class="form" layout="row">
+        <div layout="row">
+            <div layout="column">
+                <div layout="row">            
+                    <item>
+                        <label>Background<spam title="2560x1440px | .jpg | 2mb máx"> <img width="16px" src="/res/drawable/info.svg"></spam> </label>
+                        <div layout="row">
+                            <div flex layout="row">
+                                <div class="channel-logo"
+                                    ng-style=getUrlBackground(radioData[0])
+                                    ng-click="uploadImage()"></div>
+                            </div>
+                        </div>
+                    </item>
+                    
+                    
+                </div>
+                
+                <div layout="row">
+                    <div layout="column" style="min-width: 180px">
+                        <item>
+                            <label>Name</label>
+                            <input type="text" ng-model="radioData[0].name" aria-label="Radio Name"
+                           title="Radio Name"
+                           autocomplete="off" required="true">
+                        </item>
+
+                       
+                    </div>
+
+                </div>
+                <div layout="row">
+                    <div layout="column" style="min-width: 180px">
+                        <item>
+                            <label>MediaUrl</label>
+                            <input type="text" ng-model="radioData[0].url" aria-label="MediaUrl"
+                                title="MediaUrl" required="true" disabled>
+                        </item>
+                    </div>
+                </div>
+                
+               
+                <div style="padding:16px">
+                    <md-button md-no-ink class="md-raised md-primary"
+                        ng-click="updateRadio()">Update</md-button>
+
+                    <md-button md-no-ink class="md-raised md-primary"
+                               ng-click="back()">Back</md-button>
+                </div>
+
+               
+            </div>
+
+            <div layout="column" style="margin-left: 20px">
+                <item>
+                    <label>Logo<spam title="800px .PNG | 200kb máx | transparent background"> <img width="16px" src="/res/drawable/info.svg"></spam> </label>
+                    <div layout="row">
+                        <div flex layout="row">
+                            <div class="channel-logo"
+                                ng-style=getUrlLogo(radioData[0])
+                                ng-click="uploadImage()"></div>
+                        </div>
+                        
+
+                    </div>
+                </item>
+                <item>
+                    
+                    <label>Priority</label>
+                    <input type="number" ng-model="radioData[0].priority" aria-label="Priority"
+                           title="Priority" required="true">
+        
+                </item>
+                <div layout="column" style="min-width: 180px">
+                    <item>
+                        <span style="margin-right: 10px">Enabled</span>
+                        <md-switch ng-model="radioData[0].enabled" aria-label="Enabled"></md-switch>
+                    
+                    </item>
+                </div>
+                
+                
+            </div>
+           
+        </div>
+
+        <div layout="row">
+            <div layout="column" style="min-width: 360px">
+                
+
+              
+            </div>
+
+        </div>
+        
+        
+    </scroll-view>
+</div>
