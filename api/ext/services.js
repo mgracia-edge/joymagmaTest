@@ -76,7 +76,7 @@ async function _entrypoint_post_status(req, res) {
     }
 
     try {
-        const channel = await db.Channels.update({"_id": req.body.channelId,})
+        const channel = await db.Channels.updateOne({"_id": req.body.channelId,})
         
         res.send(new api.Success(channel));
     } catch (error) {

@@ -34,27 +34,28 @@ exports.resourceList = [
         protected: true
     }];
 
-function _get(req, res) {
+async function _get(req, res) {
     let db = dc.db;
 
-    if (db) {
-
-        // TODO Check if user can access the account
-        db.Account.findOne({_id: req.body.id},(error, data)=>{
-            if(error){
-                res.status(codes.error.database.OPERATION_ERROR.httpCode)
-                    .send(new api.Error(codes.error.database.OPERATION_ERROR));
-            }else if(data === null){
-                res.status(codes.error.operation.TARGET_NOT_FOUND.httpCode)
-                    .send(new api.Error(codes.error.operation.TARGET_NOT_FOUND));
-            }else{
-                res.send(new api.Success(data));
-            }
-        })
-
-    } else {
-        res.status(codes.error.database.DISCONNECTED.httpCode)
+    if (!db) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+
+    try {
+        // TODO Check if user can access the account
+        const data = await db.Account.findOne({_id: req.body.id})
+
+        if (!data) {
+            return res.status(codes.error.operation.TARGET_NOT_FOUND.httpCode)
+            .send(new api.Error(codes.error.operation.TARGET_NOT_FOUND));
+        }
+
+        res.status(200).send(new api.Success(data));
+    } catch (error) {
+        console.log(`Error in api/nx/account.js -- _get service: ${error.message}`)
+        res.status(codes.error.database.OPERATION_ERROR.httpCode)
+            .send(new api.Error(codes.error.database.OPERATION_ERROR));
     }
 }
 
@@ -101,62 +102,52 @@ function _read(req, res) {
     }
 }
 
-function _update(req, res) {
+async function _update(req, res) {
     let db = dc.db;
 
-    if (db) {
-
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        const {id, data} = req.body;
-
-        const {name, description, logo} = data;
-
-        let query = {
-            find: {
-                _id: id
-            },
-            update: {
-                $set: {}
-            }
-        };
-
-        if (typeof name !== 'undefined') query.update.$set["name"] = name;
-        if (typeof description !== 'undefined') query.update.$set["description"] = description;
-
-        if(typeof logo !== 'undefined' && logo.update === true){
-            cloudinary.uploader.upload(logo.url, (result) => {
-                query.update.$set["logo.url"] = result.url;
-                _update();
-            })
-        }else{
-            _update();
-        }
-
-        function _update(){
-            db.Account.updateOne(query.find, query.update, (error, products) => {
-                if (error) {
-                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                } else {
-                    res.status(200).send(new api.Success(products));
-                }
-
-            });
-        }
-
-
-
-    } else {
-
-        res.status(codes.error.operation.DISCONNECTED.httpCode)
+    if (!db) {
+        return res.status(codes.error.operation.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    const {id, data} = req.body;
+
+    const {name, description, logo} = data;
+
+    let query = {
+        find: {
+            _id: id
+        },
+        update: {
+            $set: {}
+        }
+    };
+
+    if (typeof name !== 'undefined') query.update.$set["name"] = name;
+    if (typeof description !== 'undefined') query.update.$set["description"] = description;
+
+    if(typeof logo !== 'undefined' && logo.update === true){
+        cloudinary.uploader.upload(logo.url, (result) => {
+            query.update.$set["logo.url"] = result.url;
+        })
+    }
+
+    try {
+        const products = await db.Account.updateOne(query.find, query.update);
+        
+        res.status(200).send(new api.Success(products));
+    } catch (error) {
+        console.error(`Error in api/nx/account.js -- _update service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
     }
 }
 /* TODO: */
