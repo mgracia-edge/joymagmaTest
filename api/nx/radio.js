@@ -200,7 +200,7 @@ function _update(req, res) {
 
         const {id, data} = req.body;
 
-        const {name, duration,start,end,poster} = data;
+        // const {name, duration,start,end,poster} = data;
 
         let query = {
             find: {
@@ -208,26 +208,26 @@ function _update(req, res) {
             },
             update: {
                 $set: {
-                    name: name,
-                    start:start,
-                    end:end,
-                    duration: duration
+                    format: data.format,
+                    name: data.name,
+                    url: data.url,
+                    // logo: data.logo,
+                    // background: data.background,
+                    priority: data.priority,
+                    enabled: data.enabled
                 }
             }
         };
 
-        if (typeof name === 'undefined') delete query.update.$set.name;
+        
 
-        if (typeof poster !== 'undefined' && poster[0].update === true) {
-            cloudinary.uploader.upload(poster[0].url, (result) => {
-
+        if (typeof data.background !== 'undefined' ) {
+            cloudinary.uploader.upload(data.url, (result) => {
                 let poster = {
                     url: result.url,
-                    type: db.Channels.poster.LANDSCAPE
                 };
 
-                query.update["$set"].poster = [poster];
-
+                query.update["$set"].background = poster.url;
                 _update();
             });
 
@@ -235,10 +235,26 @@ function _update(req, res) {
             _update()
         }
 
+        if (typeof data.logo !== 'undefined' ) {
+            cloudinary.uploader.upload(data.url, (result) => {
+                let poster = {
+                    url: result.url,
+                };
+
+                query.update["$set"].logo = poster.url;
+                _update();
+            });
+
+        } else {
+            _update()
+        }
+
+
+
         _update();
 
         function _update() {
-            db.Banner.updateOne(query.find, query.update, (error, products) => {
+            db.Radio.updateOne(query.find, query.update, (error, products) => {
                 if (error) {
                     res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                         .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));

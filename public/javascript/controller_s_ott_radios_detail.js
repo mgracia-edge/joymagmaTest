@@ -44,8 +44,6 @@
                         $scope.radioData = radio;
                     })
                     .catch((error) => {
-                        
-                        //$location.path("/s/ott/radios");
                         $scope.$parent.toast('The radio doesn\'t exist');
                     })
             }
@@ -123,7 +121,7 @@
 
         function checkForm() {
 
-            let { name, priority, logo, background, enabled} = $scope.radioData;    
+            let { name, priority, logo, background, enabled} = $scope.radioData[0];    
 
             if(priority < 1){
                 $scope.$parent.toast("Priority must be greater than 0.");
@@ -212,10 +210,7 @@
 
         function updateRadio() {
             if (checkForm()) {
-
                 $scope.loading = true;
-
-                
                     $NxApi.radios
                         .update($scope.radioData)
                         .then(() => {
@@ -228,9 +223,6 @@
                             $scope.loading = false;
 
                         })
-
-                
-
             }
         }
 
