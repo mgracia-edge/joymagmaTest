@@ -212,7 +212,7 @@
             if (checkForm()) {
                 $scope.loading = true;
                     $NxApi.radios
-                        .update($scope.radioData)
+                        .update($scope.radioData[0])
                         .then(() => {
                             $scope.$parent.toast('The radio was update');
                             $scope.loading = false;

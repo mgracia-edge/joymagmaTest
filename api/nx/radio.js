@@ -139,7 +139,7 @@ function _read(req, res) {
         }
 
         let {id, data} = req.body;
-        console.log(JSON.stringify(req.body))
+       
         // let {name, includeUpdateHistory} = data;
 
         let query = {
@@ -201,7 +201,7 @@ function _update(req, res) {
         const {id, data} = req.body;
 
         // const {name, duration,start,end,poster} = data;
-
+        console.log('Query update Radio: ', JSON.stringify(req.body))
         let query = {
             find: {
                 _id: id
@@ -211,8 +211,8 @@ function _update(req, res) {
                     format: data.format,
                     name: data.name,
                     url: data.url,
-                    // logo: data.logo,
-                    // background: data.background,
+                    logo: data.logo,
+                    background: data.background,
                     priority: data.priority,
                     enabled: data.enabled
                 }
@@ -228,11 +228,11 @@ function _update(req, res) {
                 };
 
                 query.update["$set"].background = poster.url;
-                _update();
+                //_update();
             });
 
-        } else {
-            _update()
+        // } else {
+        //     _update()
         }
 
         if (typeof data.logo !== 'undefined' ) {
@@ -242,19 +242,19 @@ function _update(req, res) {
                 };
 
                 query.update["$set"].logo = poster.url;
-                _update();
+            //    _update();
             });
 
-        } else {
-            _update()
+        // } else {
+        //     _update()
         }
 
-
+        console.log(query)
 
         _update();
 
         function _update() {
-            db.Radio.updateOne(query.find, query.update, (error, products) => {
+            db.Radios.updateOne(query.find, query.update, (error, products) => {
                 if (error) {
                     res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                         .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
