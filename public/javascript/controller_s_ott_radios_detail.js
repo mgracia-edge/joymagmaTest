@@ -24,11 +24,12 @@
             logo: '',
             background: '',
             url : '',
-            initialPoster : {
-                logo : '',
-                background : ''
-            }
         };
+
+        $scope.initialPoster = {
+            logo : '',
+            background : ''
+        }
         
         $scope.uploadImage = uploadImage;
         $scope.getUrlLogo = getUrlLogo;
@@ -45,17 +46,9 @@
                 $NxApi.radios
                     .read({_id: $routeParams.id})
                     .then((radio) => {
-                        let initialPoster = { logo:'', background : ''}
                         $scope.radioData = radio;
-                        
-                        initialPoster.logo = radio[0].logo
-                        initialPoster.background = radio[0].background
-                        
-                        
-                        
-                        
-                        console.log(JSON.stringify($scope.radioData[0]))
-                            
+                        $scope.initialPoster.logo = radio[0].logo
+                        $scope.initialPoster.background = radio[0].background
                     })
                     .catch((error) => {
                         $scope.$parent.toast('The radio doesn\'t exist');
@@ -121,9 +114,20 @@
             })
         }
 
-        function uploadImage() {
+        function uploadImage(name) {
+            switch (name) {
+                case 'logo':
+                    console.log('Logo')        
+                    break;
             
+                default:
+                    console.log('background')        
+                    break;
+            }
+
+
             _getImage().then((img) => {
+                $scope.initialPoster.logo = img
                 $scope.bannerData.poster = [{
                     update: true,
                     url: img
@@ -233,7 +237,7 @@
                             $scope.loading = false;
                         })
                         .catch((error) => {
-                            console.log(error);
+                            
                             $scope.$parent.toast(error.message);
                             $scope.loading = false;
 
