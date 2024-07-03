@@ -62,156 +62,150 @@ exports.resourceList = [
     }];
 
 
-function _login(req, res) {
-
+async function _login(req, res) {
     const {email, password} = req.body;
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
 
-    if (dc.db) {
-
-        if (email && password) {
-
-            dc.db.User.findOne({
-                email: email,
-                "authentication.password": api.passHash(password)
-            }, function (error, user) {
-
-                if (error) {
-                    res.status(codes.error.database.ERROR.httpCode)
-                        .send(new api.Error(codes.error.database.ERROR));
-                } else if (!user) {
-                    res.status(codes.error.userRights.BAD_AUTHENTICATION.httpCode)
-                        .send(new api.Error(codes.error.userRights.BAD_AUTHENTICATION));
-                } else {
-
-                    const session = {
-                        date: new Date(),
-                        expires: new Date(Date.now() + 3600000 * 6),
-                        lastAccess: new Date(),
-                        ip: ip,
-                        token: api.newToken()
-                    };
-
-
-                    let sessions = [];
-
-                    if (Array.isArray(user.authentication.sessions)) {
-                        for (let session of user.authentication.sessions) {
-                            if (session.expires.getTime() > Date.now()) {
-                                sessions.push(session);
-                            }
-                        }
-                    }
-                    sessions.push(session);
-
-                    dc.db.User.update({email: email}, {
-                        $set: {
-                            "authentication.sessions": sessions
-                        }
-                    }, (error, data) => {
-
-                    });
-
-
-                    res.send(new api.Success({
-                        session: session,
-                        user: user
-                    }))
-
-                }
-
-            })
-        } else {
-            console.error(new Error(codes.error.operation.OPERATION_INVALID_PARAMETERS.message));
-            res.status(codes.error.operation.OPERATION_INVALID_PARAMETERS.httpCode)
-                .send(new api.Error(codes.error.operation.OPERATION_INVALID_PARAMETERS));
-        }
-    } else {
+    if (!dc.db) {
         console.error(new Error(codes.error.database.DISCONNECTED.message));
-        res.status(codes.error.database.DISCONNECTED.httpCode)
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
 
+    if (!email || !password) {
+        console.error(new Error(codes.error.operation.OPERATION_INVALID_PARAMETERS.message));
+        return res.status(codes.error.operation.OPERATION_INVALID_PARAMETERS.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_INVALID_PARAMETERS));
+    }
+
+
+    try {
+        const user = await dc.db.User.findOne({
+            email: email,
+            "authentication.password": api.passHash(password)
+        })
+
+        if (!user) {
+            return res.status(codes.error.userRights.BAD_AUTHENTICATION.httpCode)
+                .send(new api.Error(codes.error.userRights.BAD_AUTHENTICATION));
+        }
+
+
+        const session = {
+            date: new Date(),
+            expires: new Date(Date.now() + 3600000 * 6),
+            lastAccess: new Date(),
+            ip: ip,
+            token: api.newToken()
+        };
+
+
+        let sessions = [];
+
+        if (Array.isArray(user.authentication.sessions)) {
+            for (let session of user.authentication.sessions) {
+                if (session.expires.getTime() > Date.now()) {
+                    sessions.push(session);
+                }
+            }
+        }
+        sessions.push(session);
+
+        await dc.db.User.updateOne({email: email}, {
+            $set: {
+                "authentication.sessions": sessions
+            }
+        });
+
+
+        res.send(new api.Success({
+            session: session,
+            user: user
+        }))
+    } catch (error) {
+        console.error(`Error in api/nx/user.js -- _login service: ${error.message}`)
+        res.status(codes.error.database.ERROR.httpCode)
+            .send(new api.Error(codes.error.database.ERROR));
+    }
 }
 
-function _loginAsUser(req, res) {
+async function _loginAsUser(req, res) {
 
     const {email, password} = req.body;
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
-    if (dc.db) {
-
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        if (email && password) {
-
-            dc.db.User.findOne({
-                email: email,
-                "authentication.password": password
-            }, function (error, user) {
-
-                if (error) {
-                    res.status(codes.error.database.ERROR.httpCode)
-                        .send(new api.Error(codes.error.database.ERROR));
-                } else if (!user) {
-                    res.status(codes.error.userRights.BAD_AUTHENTICATION.httpCode)
-                        .send(new api.Error(codes.error.userRights.BAD_AUTHENTICATION));
-                } else {
-
-                    const session = {
-                        date: new Date(),
-                        expires: new Date(Date.now() + 3600000 * 6),
-                        lastAccess: new Date(),
-                        ip: ip,
-                        token: api.newToken()
-                    };
-
-
-                    let sessions = [];
-
-                    if (Array.isArray(user.authentication.sessions)) {
-                        for (let session of user.authentication.sessions) {
-                            if (session.expires.getTime() > Date.now()) {
-                                sessions.push(session);
-                            }
-                        }
-                    }
-                    sessions.push(session);
-
-                    dc.db.User.update({email: email}, {
-                        $set: {
-                            "authentication.sessions": sessions
-                        }
-                    }, (error, data) => {
-
-                    });
-
-
-                    res.send(new api.Success({
-                        session: session,
-                        user: user
-                    }))
-
-                }
-
-            })
-        } else {
-            console.error(new Error(codes.error.operation.OPERATION_INVALID_PARAMETERS.message));
-            res.status(codes.error.operation.OPERATION_INVALID_PARAMETERS.httpCode)
-                .send(new api.Error(codes.error.operation.OPERATION_INVALID_PARAMETERS));
-        }
-    } else {
+    if (!dc.db) {
         console.error(new Error(codes.error.database.DISCONNECTED.message));
-        res.status(codes.error.database.DISCONNECTED.httpCode)
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
+
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    if (!email || !password) {
+        console.error(new Error(codes.error.operation.OPERATION_INVALID_PARAMETERS.message));
+        return res.status(codes.error.operation.OPERATION_INVALID_PARAMETERS.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_INVALID_PARAMETERS));
+    }
+
+
+    try {
+
+        const user = await dc.db.User.findOne({
+            email: email,
+            "authentication.password": password
+        })        
+
+        if (!user) {
+            return res.status(codes.error.userRights.BAD_AUTHENTICATION.httpCode)
+                .send(new api.Error(codes.error.userRights.BAD_AUTHENTICATION));
+        } 
+
+        const session = {
+            date: new Date(),
+            expires: new Date(Date.now() + 3600000 * 6),
+            lastAccess: new Date(),
+            ip: ip,
+            token: api.newToken()
+        };
+
+
+        let sessions = [];
+
+        if (Array.isArray(user.authentication.sessions)) {
+            for (let session of user.authentication.sessions) {
+                if (session.expires.getTime() > Date.now()) {
+                    sessions.push(session);
+                }
+            }
+        }
+        sessions.push(session);
+
+        await dc.db.User.updateOne({email: email}, {
+            $set: {
+                "authentication.sessions": sessions
+            }
+        });
+
+        res.send(new api.Success({
+            session: session,
+            user: user
+        }))
+
+    } catch (error) {
+
+        console.error(`Error in api/nx/user.js -- _loginAsUser service: ${error.message}`)
+        res.status(codes.error.database.ERROR.httpCode)
+            .send(new api.Error(codes.error.database.ERROR));
+    }
+
 
 }
 
@@ -239,243 +233,221 @@ function getIp(req) {
 
 /* CRUD */
 
-function _create(req, res) {
+async function _create(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        const {email, firstName, lastName, password, permissions} = req.body;
-
-        db.User
-            .findOne({"email": email}, (error, data) => {
-                if (error) {
-                    res.status(codes.error.database.DISCONNECTED.httpCode)
-                        .send(new api.Error(codes.error.database.DISCONNECTED));
-                } else {
-                    if (data) {
-                        res.status(codes.error.operation.DUPLICATED_ENTITY.httpCode)
-                            .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
-                    } else {
-
-                        let mIpAddress = getIp(req);
-                        let geo = country.get(mIpAddress);
-                        let ua = parser(req.headers['user-agent']);
-
-                        let json = {
-                            email: email,
-                            firstName: firstName,
-                            lastName: lastName,
-                            authentication: {
-                                password: api.passHash(password)
-                            },
-                            creation: {
-                                date: new Date(),
-                                ip: mIpAddress,
-                                device: {
-                                    mobile: typeof ua.device.vendor !== 'undefined',
-                                    osName: ua.os.name,
-                                    osVersion: ua.os.version,
-                                    browserName: ua.browser.name,
-                                    browserVersion: ua.browser.version
-                                }
-                            },
-                            permissions: permissions
-                        };
-
-                        if (geo !== null) {
-                            json.creation.location = {
-                                countryCode: geo.country.iso_code,
-                                city: geo.country.names.es
-                            }
-                        }
-
-                        let User = new db.User(json);
-
-                        User.save(json, (err) => {
-                            if (err) {
-                                console.error(err);
-                                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                            } else {
-                                res.status(200).send(new api.Success({}));
-
-                            }
-
-                        });
-                    }
-                }
-            });
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
-}
 
-function _read(req, res) {
-    let db = dc.db;
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
-    if (db) {
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        let {id, email,account} = req.body;
-
-        let query = {
-            find: {},
-            sort: {
-                email: 1
-            }
-        };
-
-        if (id) {
-
-            query.find = {_id: Array.isArray(id) ? {$in: id} : id}
-
-        } else if (email) {
-
-            query.find = {email: Array.isArray(email) ? {$in: email} : email}
-
-        }
-
-        if(typeof account !== 'undefined'){
-            query.find["account"] = account;
-        }
-
-        db.User
-            .find(query.find)
-            .sort(query.sort)
-            .then((products) => {
-
-                res.status(200).send(new api.Success(products));
-
-            }).catch((error) => {
-            console.log(error)
-            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-        })
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
+        return;
     }
-}
 
-function _update(req, res) {
-    let db = dc.db;
+    const {email, firstName, lastName, password, permissions} = req.body;
 
-    if (db) {
+    try {
+        const data = await db.User.findOne({"email": email});
 
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+        if (data) {
+            return res.status(codes.error.operation.DUPLICATED_ENTITY.httpCode)
+                .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
+        } 
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+        let mIpAddress = getIp(req);
+        let geo = country.get(mIpAddress);
+        let ua = parser(req.headers['user-agent']);
 
-            return;
-        }
-
-        const {id, data} = req.body;
-
-        const {firstName, lastName, password, permissions, photo, email} = data;
-
-        let query = {
-            find: {
-                _id: id
+        let json = {
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            authentication: {
+                password: api.passHash(password)
             },
-            update: {
-                $set: {}
-            }
+            creation: {
+                date: new Date(),
+                ip: mIpAddress,
+                device: {
+                    mobile: typeof ua.device.vendor !== 'undefined',
+                    osName: ua.os.name,
+                    osVersion: ua.os.version,
+                    browserName: ua.browser.name,
+                    browserVersion: ua.browser.version
+                }
+            },
+            permissions: permissions
         };
 
-        if (typeof firstName !== 'undefined') query.update.$set["firstName"] = firstName;
-        if (typeof lastName !== 'undefined') query.update.$set["lastName"] = lastName;
-        if (typeof password !== 'undefined') query.update.$set["authentication.password"] = api.passHash(password);
-        if (typeof permissions !== 'undefined') query.update.$set["permissions"] = permissions;
-        if (typeof email !== 'undefined') query.update.$set["email"] = email;
-
-        if(typeof photo !== 'undefined' && photo.update === true){
-            cloudinary.uploader.upload(photo.url, (result) => {
-                query.update.$set["photo.url"] = result.url;
-                _update();
-            })
-        }else{
-            _update();
+        if (geo !== null) {
+            json.creation.location = {
+                countryCode: geo.country.iso_code,
+                city: geo.country.names.es
+            }
         }
 
-        function _update(){
-            db.User.updateOne(query.find, query.update, (error, products) => {
-                if (error) {
-                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                } else {
-                    res.status(200).send(new api.Success(products));
-                }
+        let User = new db.User(json);
 
-            });
-        }
+        await User.save(json);
+        res.status(200).send(new api.Success({}));
+    } catch (error) {
 
-
-
-    } else {
-
-        res.status(codes.error.operation.DISCONNECTED.httpCode)
+        console.error(`Error in api/nx/user.js -- _create service: ${error.message}`)
+        res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
 }
 
-function _delete(req, res) {
-
+async function _read(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
-            return;
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    let {id, email,account} = req.body;
+
+    let query = {
+        find: {},
+        sort: {
+            email: 1
         }
+    };
 
-        const {id} = req.body;
+    if (id) {
 
-        let query = {
-            find: {
-                _id: Array.isArray(id) ? {$in: id} : id
-            }
-        };
+        query.find = {_id: Array.isArray(id) ? {$in: id} : id}
 
-        db.User
-            .remove(query.find)
-            .then((data) => {
+    } else if (email) {
 
-                res.status(200).send(new api.Success({}));
+        query.find = {email: Array.isArray(email) ? {$in: email} : email}
 
-            }).catch((error) => {
+    }
 
+    if(typeof account !== 'undefined'){
+        query.find["account"] = account;
+    }
+
+    await db.User
+        .find(query.find)
+        .sort(query.sort)
+        .then((products) => {
+
+            res.status(200).send(new api.Success(products));
+        }).catch((error) => {
+
+            console.error(`Error in api/nx/user.js -- _read service: ${error.message}`)
+            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+        })
+}
+
+async function _update(req, res) {
+    let db = dc.db;
+
+    if (!db) {
+
+        return res.status(codes.error.operation.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    const {id, data} = req.body;
+
+    const {firstName, lastName, password, permissions, photo, email} = data;
+
+    let query = {
+        find: {
+            _id: id
+        },
+        update: {
+            $set: {}
+        }
+    };
+
+    if (typeof firstName !== 'undefined') query.update.$set["firstName"] = firstName;
+    if (typeof lastName !== 'undefined') query.update.$set["lastName"] = lastName;
+    if (typeof password !== 'undefined') query.update.$set["authentication.password"] = api.passHash(password);
+    if (typeof permissions !== 'undefined') query.update.$set["permissions"] = permissions;
+    if (typeof email !== 'undefined') query.update.$set["email"] = email;
+
+    if(typeof photo !== 'undefined' && photo.update === true){
+        cloudinary.uploader.upload(photo.url, (result) => {
+            query.update.$set["photo.url"] = result.url;
+        })
+    }
+    
+    try {
+        const user = await db.User.updateOne(query.find, query.update);
+        
+        res.status(200).send(new api.Success(user));
+    } catch (error) {
+
+        console.error(`Error in api/nx/user.js -- _update service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+    }
+}
+
+async function _delete(req, res) {
+    let db = dc.db;
+
+    if (!db) {
+
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    const {id} = req.body;
+
+    let query = {
+        find: {
+            _id: Array.isArray(id) ? {$in: id} : id
+        }
+    };
+
+    await db.User
+        .remove(query.find)
+        .then(() => {
+
+            res.status(200).send(new api.Success({}));
+
+        }).catch((error) => {
+
+            console.error(`Error in api/nx/user.js -- _delete service: ${error.message}`)
             res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                 .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         })
 
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
 }
