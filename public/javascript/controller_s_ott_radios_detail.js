@@ -23,9 +23,13 @@
             enabled: false,
             logo: '',
             background: '',
-            url : ''
+            url : '',
+            initialPoster : {
+                logo : '',
+                background : ''
+            }
         };
-
+        
         $scope.uploadImage = uploadImage;
         $scope.getUrlLogo = getUrlLogo;
         $scope.getUrlBackground = getUrlBackground
@@ -41,7 +45,17 @@
                 $NxApi.radios
                     .read({_id: $routeParams.id})
                     .then((radio) => {
+                        let initialPoster = { logo:'', background : ''}
                         $scope.radioData = radio;
+                        
+                        initialPoster.logo = radio[0].logo
+                        initialPoster.background = radio[0].background
+                        
+                        
+                        
+                        
+                        console.log(JSON.stringify($scope.radioData[0]))
+                            
                     })
                     .catch((error) => {
                         $scope.$parent.toast('The radio doesn\'t exist');
@@ -211,6 +225,7 @@
         function updateRadio() {
             if (checkForm()) {
                 $scope.loading = true;
+                // controlar background y logo, antes de enviar
                     $NxApi.radios
                         .update($scope.radioData[0])
                         .then(() => {
