@@ -32,6 +32,7 @@
         }
         
         $scope.uploadImage = uploadImage;
+        $scope.uploadImageLogo = uploadImageLogo
         $scope.getUrlLogo = getUrlLogo;
         $scope.getUrlBackground = getUrlBackground
         $scope.back = back;
@@ -73,14 +74,29 @@
             return {'background-image': 'url(' + imageUrl + ')'}
         }
 
-        function _getImage() {
-            
+        function _getImage(imgType) {
             return $q((resolve, reject) => {
                 let file = document.createElement('input')
                 file.accept = 'image/*';
-                let maxSize = 500; //kb
-                let width = 1920; //px
-                let height = 150; //px
+                let maxSize = 0; //kb
+                let width = 0; //px
+                let height = 0; //px
+
+                switch (imgType) {
+                    case 'logo':
+                        maxSize = 200;
+                        width = 800;
+                        height = 800;                        
+                        break;
+                    case 'background':
+                        maxSize = 2048;
+                        width = 2560;
+                        height = 1440;                        
+                        break;
+                    default:
+                        break;
+                }
+
                 file.type = 'file';
                 file.click();
 
@@ -114,24 +130,19 @@
             })
         }
 
-        function uploadImage(name) {
-            switch (name) {
-                case 'logo':
-                    console.log('Logo')        
-                    break;
-            
-                default:
-                    console.log('background')        
-                    break;
-            }
+        function uploadImage() {
+            _getImage('background').then((img) => {
+                $scope.initialPoster.background = img
+                
+            }).catch((error) => {
+                $scope.$parent.toast(error);
+            })
+        }
 
-
-            _getImage().then((img) => {
+        function uploadImageLogo() {
+            _getImage('logo').then((img) => {
                 $scope.initialPoster.logo = img
-                $scope.bannerData.poster = [{
-                    update: true,
-                    url: img
-                }];
+                
             }).catch((error) => {
                 $scope.$parent.toast(error);
             })
@@ -230,6 +241,10 @@
             if (checkForm()) {
                 $scope.loading = true;
                 // controlar background y logo, antes de enviar
+                console.log('Inicial: ', JSON.stringify( $scope.initialPoster))
+                console.log('Update: ', JSON.stringify( $scope.radioData[0]))
+
+                
                     $NxApi.radios
                         .update($scope.radioData[0])
                         .then(() => {
