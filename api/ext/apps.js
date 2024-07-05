@@ -19,13 +19,16 @@ setInterval(updateOttConfig, 120000);
 setInterval(preChacheDays, 3600000);
 
 
-function updateOttConfig() {
-    let db = pdc.db;
+async function updateOttConfig() {
+    if (!pdc.db) {
+        return;
+    }
 
-    if (db) {
-        db.OttConfigurations.findOne({}, (error, dbOttConfig) => {
-            ottConfig = dbOttConfig != null ? dbOttConfig : {};
-        })
+    try {
+        const dbOttConfig = await pdc.db.OttConfigurations.findOne({})
+        ottConfig = dbOttConfig != null ? dbOttConfig : {};
+    } catch (error) {
+        console.log(`Error in ext/apps.js -- updateOttConfig function: ${error.message}`)
     }
 }
 
@@ -137,7 +140,7 @@ function LoginWOTT(req, res) {
 }
 
 function get_promo_channels(req, res) {
-    res.send([
+    res.status(200).send([
         {
             name: "HBO NOW",
             poster: "https://play-lh.googleusercontent.com/VODqBhdZXQIkQlcv_A2nAq1gPNO7fwfDlUO3UZcgcMy6jAVx05CSU-vFuVFsr9gFUuo=w240-h480-rw",
@@ -185,209 +188,200 @@ function get_promo_channels(req, res) {
     ])
 }
 
-function checkSubscriberCredentials(req, res) {
-
+async function checkSubscriberCredentials(req, res) {
+    const db = pdc.db;
     const {email, password, cid} = req.body;
 
-    console.log((!!email || !!cid) && password)
+    if ((!email && !cid) || !password) {
+        return res.status(C.error.operation.OPERATION_INVALID_PARAMETERS.httpCode).send(new
+            api.Error(C.error.operation.OPERATION_INVALID_PARAMETERS));
+    }
 
-    if ((!!email || !!cid) && password) {
-
-        let query = {};
-
-        if (cid) {
-            query.cid = cid;
-        } else {
-            query.email = email;
-        }
-
-        let db = pdc.db;
-
-        if (db) {
-
-            db.Subscribers.findOne(query, {updateHistory: 0}, function (error, storedSubscriber) {
-
-                if (storedSubscriber && storedSubscriber.password && storedSubscriber.password === password) {
-                    storedSubscriber.password = undefined;
-                    res.status(200).send(new api.Success(storedSubscriber));
-                } else if (error) {
-                    res.status(C.error.database.ERROR.httpCode).send(new
-                    api.Error(C.error.database.ERROR));
-                } else {
-                    res.status(C.error.userRights.NON_EXISTENT_USER.httpCode).send(new
-                    api.Error(C.error.userRights.NON_EXISTENT_USER));
-                }
-            })
-
-        } else {
-            res.status(C.error.database.DISCONNECTED.httpCode).send(new
+    if (!db) {
+        return res.status(C.error.database.DISCONNECTED.httpCode).send(new
             api.Error(C.error.database.DISCONNECTED));
+    }
+
+    let query = {};
+
+    if (cid) {
+        query.cid = cid;
+    } else {
+        query.email = email;
+    }
+
+    try {
+        const storedSubscriber = await db.Subscribers.findOne(query, {updateHistory: 0})
+
+        if (!storedSubscriber || !storedSubscriber.password || !storedSubscriber.password === password) {
+            return res.status(C.error.userRights.NON_EXISTENT_USER.httpCode).send(new
+                api.Error(C.error.userRights.NON_EXISTENT_USER));
         }
-
-    } else {
-        res.status(C.error.operation.OPERATION_INVALID_PARAMETERS.httpCode).send(new
-        api.Error(C.error.operation.OPERATION_INVALID_PARAMETERS));
+        
+        return storedSubscriber.password = undefined;
+            res.status(200).send(new api.Success(storedSubscriber));
+    } catch (error) {
+        console.log(`Error in ext/apps.js -- checkSubscriberCredentials service: ${error.message}`)
+        
+        res.status(C.error.database.ERROR.httpCode).send(new
+            api.Error(C.error.database.ERROR));
     }
 }
 
-function getCurrentProgramme(req, res) {
-
+async function getCurrentProgramme(req, res) {
     let db = pdc.db;
 
-    if (db) {
+    if (!db) {
+        return res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    }
 
-        let channelEPGId = req.body.channelEPGId;
+    let channelEPGId = req.body.channelEPGId;
 
-        let query = {
-            find: {
-                start: {
-                    $lt: new Date()
-                },
-                stop: {
-                    $gte: new Date()
-                },
-                channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : channelEPGId
+    let query = {
+        find: {
+            start: {
+                $lt: new Date()
             },
-            sort: {
-                channelEPGId: 1,
-                start: 1
-            }
-        };
-
-        db.Programme
-            .find(query.find)
-            .sort(query.sort)
-            .then((programmes) => {
-
-                res.status(200).send(programmes);
-
-            }).catch((error) => {
-            res.status(500).send({
-                error: 0x0010,
-                error_dsc: "Error en la base de datos"
-            });
-        })
-
-    } else {
-
-        res.status(500).send({
-            error: 0x0010,
-            error_dsc: "Error en la base de datos"
-        });
-
-    }
-
-}
-
-function getCurrentBanner(req,res){
-    let db = pdc.db;
-
-    if (db) {
-
-        let query = {
-            find: {
-                start: {
-                    $lt: new Date()
-                },
-                end: {
-                    $gte: new Date()
-                }
-            }
-        };
-
-        db.Banner
-            .findOne(query.find)
-            .then((channels) => {
-
-                res.status(200).send(channels);
-
-            }).catch((error) => {
-            res.status(500).send({
-                error: 0x0010,
-                error_dsc: "Error en la base de datos"
-            });
-        })
-
-    } else {
-
-        res.status(500).send({
-            error: 0x0010,
-            error_dsc: "Error en la base de datos"
-        });
-
-    }
-}
-
-function getAWeek(req, res) {
-
-    let db = pdc.db;
-
-    if (db) {
-
-        let channelEPGId = req.body.channelEPGId;
-
-        if (!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
-
-            res.status(400).send({
-                error: 0x0022,
-                error_dsc: "channelEPGId debe ser del tipo INT o [INT]"
-            });
-
-            return false
+            stop: {
+                $gte: new Date()
+            },
+            channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : channelEPGId
+        },
+        sort: {
+            channelEPGId: 1,
+            start: 1
         }
+    };
 
-        let today = new Date().setHours(0, 0, 0);
-        let week = new Date(today).setDate(new Date().getDate() + 6);
-        week = new Date(week).setHours(23, 59, 59);
+    try {
+        const programmes = await db.Programme.find(query.find).sort(query.sort)
 
-        let query = {
-            find: {
-                start: {
-                    $lt: week,
-                    $gte: today
-                },
-                channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : channelEPGId
+        return res.status(200).send(programmes);
+    } catch (error) {
+        console.error(`Error in ext/apps.js -- getCurrentProgramme service: ${error.message}`)
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    }
+
+}
+
+async function getCurrentBanner(req,res){
+    let db = pdc.db;
+
+    if (!db) {
+        return res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    }
+
+    let query = {
+        find: {
+            start: {
+                $lt: new Date()
             },
-            sort: {
-                channelEPGId: 1,
-                start: 1
+            end: {
+                $gte: new Date()
             }
-        };
+        }
+    };
 
-        db.Programme
-            .find(query.find)
-            .sort(query.sort)
-            .then((programmes) => {
+    await db.Banner
+        .findOne(query.find)
+        .then((channels) => {
 
-                res.status(200).send(programmes);
+            res.status(200).send(channels);
 
-            }).catch((error) => {
+        }).catch((error) => {
+            console.log(`Error in ext/apps.js -- getCurrentBanner service: ${error.message}`)
             res.status(500).send({
                 error: 0x0010,
                 error_dsc: "Error en la base de datos"
             });
         })
 
-    } else {
+}
 
-        res.status(500).send({
+async function getAWeek(req, res) {
+    let db = pdc.db;
+
+    if (!db) {
+        return res.status(500).send({
             error: 0x0010,
             error_dsc: "Error en la base de datos"
         });
-
     }
+
+    let channelEPGId = req.body.channelEPGId;
+
+    if (!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
+
+        res.status(400).send({
+            error: 0x0022,
+            error_dsc: "channelEPGId debe ser del tipo INT o [INT]"
+        });
+
+        return false
+    }
+
+    let today = new Date().setHours(0, 0, 0);
+    let week = new Date(today).setDate(new Date().getDate() + 6);
+    week = new Date(week).setHours(23, 59, 59);
+
+    let query = {
+        find: {
+            start: {
+                $lt: week,
+                $gte: today
+            },
+            channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : channelEPGId
+        },
+        sort: {
+            channelEPGId: 1,
+            start: 1
+        }
+    };
+
+    await db.Programme
+        .find(query.find)
+        .sort(query.sort)
+        .then((programmes) => {
+
+            res.status(200).send(programmes);
+
+        }).catch((error) => {
+            console.log(`Error in ext/apps.js -- getAWeek service: ${error.message}`)
+            res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        })
 }
 
 let getDayCache = [];
 
-function getADay(req, res) {
-    let startDate = Date.now();
-    let justChache = null;
+async function getADay(req, res) {
+    let db = pdc.db;
+
+    if(!db) {
+        return res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    }
 
     if (!res) {
         console.log(`Caching day ${req}`);
         justChache = req;
     }
+
+    let startDate = Date.now();
+    let justChache = null;
 
     let channelEPGId = justChache !== null ? justChache : req.body.channelEPGId;
 
@@ -409,125 +403,123 @@ function getADay(req, res) {
         }
     }
 
-    let db = pdc.db;
 
-    if (db) {
 
-        if (!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
-            if (justChache === null) {
-                res.status(400).send({
-                    error: 0x0022,
-                    error_dsc: "channelEPGId debe ser del tipo INT o [INT]"
-                });
-            }
-
-            return false
+    if (!Number.isInteger(channelEPGId) && !Array.isArray(channelEPGId)) {
+        if (justChache === null) {
+            res.status(400).send({
+                error: 0x0022,
+                error_dsc: "channelEPGId debe ser del tipo INT o [INT]"
+            });
         }
 
-        let today = (new Date()).setHours(0, 0, 0, 0);
-        today = new Date(today - ((new Date()).getTimezoneOffset() - 180) / 60 * 3600000);
-        let day = new Date(today.getTime() + 24 * 3600000);
+        return false
+    }
 
-        let tail = Math.floor(24 - ((Date.now() - today.getTime()) / 3600000));
-        today = new Date(today.getTime() - tail * 3600000);
+    let today = (new Date()).setHours(0, 0, 0, 0);
+    today = new Date(today - ((new Date()).getTimezoneOffset() - 180) / 60 * 3600000);
+    let day = new Date(today.getTime() + 24 * 3600000);
 
-        let query = {
-            find: {
-                start: {
-                    $lt: day,
-                    $gte: today
-                },
-                channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : channelEPGId
+    let tail = Math.floor(24 - ((Date.now() - today.getTime()) / 3600000));
+    today = new Date(today.getTime() - tail * 3600000);
+
+    let query = {
+        find: {
+            start: {
+                $lt: day,
+                $gte: today
             },
-            sort: {
-                channelEPGId: 1,
-                start: 1
+            channelEPGId: Array.isArray(channelEPGId) ? {$in: channelEPGId} : channelEPGId
+        },
+        sort: {
+            channelEPGId: 1,
+            start: 1
+        }
+    };
+
+    console.log(query);
+
+    await db.Programme
+        .find(query.find)
+        .sort(query.sort)
+        .lean()
+        .then((dbp) => {
+            console.log(`Day data fetched from db / ${Date.now() - startDate} ms`);
+
+            let programmes = [];
+
+            if (dbp.length !== 0) {
+                let lastStop = dbp[0].stop.getTime();
+                for (let i = 1; i < dbp.length; i++) {
+
+                    if (lastStop > dbp[i].start.getTime()) {
+                        continue;
+                    }
+
+                    programmes.push(dbp[i]);
+                    lastStop = dbp[i].stop.getTime();
+                }
             }
-        };
 
-        console.log(query);
+            let check = 0;
+            for (let i in programmes) {
 
-        db.Programme
-            .find(query.find)
-            .sort(query.sort)
-            .lean()
-            .then((dbp) => {
-                console.log(`Day data fetched from db / ${Date.now() - startDate} ms`);
+                let p = programmes[i];
 
-                let programmes = [];
+                p.deltaStart = Math.round((p.start.getTime() - today) / 60000);
+                p.deltaStop = Math.round((p.stop.getTime() - today) / 60000);
 
-                if (dbp.length !== 0) {
-                    let lastStop = dbp[0].stop.getTime();
-                    for (let i = 1; i < dbp.length; i++) {
+                if (i == 0) {
 
-                        if (lastStop > dbp[i].start.getTime()) {
-                            continue;
-                        }
-
-                        programmes.push(dbp[i]);
-                        lastStop = dbp[i].stop.getTime();
+                    if (p.deltaStart > 0) {
+                        p.deltaStart = 0;
                     }
                 }
 
-                let check = 0;
-                for (let i in programmes) {
-
-                    let p = programmes[i];
-
-                    p.deltaStart = Math.round((p.start.getTime() - today) / 60000);
-                    p.deltaStop = Math.round((p.stop.getTime() - today) / 60000);
-
-                    if (i == 0) {
-
-                        if (p.deltaStart > 0) {
-                            p.deltaStart = 0;
-                        }
-                    }
-
-                    if (i == (programmes.length - 1)) {
-                        p.deltaStop = (24 + tail) * 60;
-                    }
-
-                    p.last = p.deltaStop - p.deltaStart;
-
-                    check += p.last
+                if (i == (programmes.length - 1)) {
+                    p.deltaStop = (24 + tail) * 60;
                 }
 
+                p.last = p.deltaStop - p.deltaStart;
 
-                if (programmes.length === 0) {
-                    let delta = (day.getTime() - today.getTime()) / 3600000;
+                check += p.last
+            }
 
-                    for (let i = 0; i < delta; i++) {
 
-                        programmes.push({
-                            "_id": "",
-                            "start": new Date(today.getTime() + 3600000 * i),
-                            "stop": new Date(today.getTime() + 3600000 * (i + 1)),
-                            "title": "No hay información.",
-                            "description": "No hay información relacionada con este programa.",
-                            "channelEPGId": 0,
-                            "deltaStart": 60 * i,
-                            "deltaStop": 60 * (i + 1),
-                            "last": 60
-                        })
+            if (programmes.length === 0) {
+                let delta = (day.getTime() - today.getTime()) / 3600000;
 
-                    }
+                for (let i = 0; i < delta; i++) {
+
+                    programmes.push({
+                        "_id": "",
+                        "start": new Date(today.getTime() + 3600000 * i),
+                        "stop": new Date(today.getTime() + 3600000 * (i + 1)),
+                        "title": "No hay información.",
+                        "description": "No hay información relacionada con este programa.",
+                        "channelEPGId": 0,
+                        "deltaStart": 60 * i,
+                        "deltaStop": 60 * (i + 1),
+                        "last": 60
+                    })
+
                 }
+            }
 
-                getDayCache.push({
-                    channelEPGId: channelEPGId,
-                    expires: Date.now() + 3600000,
-                    data: programmes
-                });
+            getDayCache.push({
+                channelEPGId: channelEPGId,
+                expires: Date.now() + 3600000,
+                data: programmes
+            });
 
-                if (justChache === null) {
-                    res.status(200).send(programmes);
-                }
+            if (justChache === null) {
+                res.status(200).send(programmes);
+            }
 
-                console.log(`Day data fetched processed / ${Date.now() - startDate} ms`);
+            console.log(`Day data fetched processed / ${Date.now() - startDate} ms`);
 
-            }).catch((error) => {
-            console.error(error);
+        }).catch((error) => {
+            console.error(`Error in ext/apps.js -- getADay service: ${error.message}`);
 
             if (justChache === null) {
                 res.status(500).send({
@@ -535,226 +527,208 @@ function getADay(req, res) {
                     error_dsc: "Error en la base de datos"
                 });
             }
-
         })
+}
 
-    } else {
+async function getChannels(req, res) {
+    let db = pdc.db;
 
-        res.status(500).send({
+    if (!db) {
+        return res.status(500).send({
             error: 0x0010,
             error_dsc: "Error en la base de datos"
         });
-
     }
-}
 
-function getChannels(req, res) {
+    let channelId = req.body.id;
 
-    let db = pdc.db;
+    let query = {};
 
-    if (db) {
+    if (req.body.streamKey) {
 
-        let channelId = req.body.id;
-
-        let query = {};
-
-        if (req.body.streamKey) {
-
-            query = {
-                find: {
-                    "entryPoint.streamKey": req.body.streamKey,
-                    enabled: true
-                },
-                sort: {
-                    priority: -1,
-                    name: 1
-                }
+        query = {
+            find: {
+                "entryPoint.streamKey": req.body.streamKey,
+                enabled: true
+            },
+            sort: {
+                priority: -1,
+                name: 1
             }
-
-        } else if (!Number.isInteger(channelId) && !Array.isArray(channelId)) {
-
-            query = {
-                find: {},
-                sort: {
-                    priority: -1,
-                    name: 1
-                }
-            };
-
-        } else {
-            query = {
-                find: {
-                    _id: Array.isArray(channelId) ? {$in: channelId} : channelId
-                },
-                sort: {
-                    priority: -1,
-                    name: 1
-                }
-            };
         }
 
-        query.projection = {
-                updateHistory: 0,
-                source: 0,
-                monitoring: 0,
-                notes: 0,
-                __v: 0,
-                transcoder: 0,
-                useMpkg: 0,
-                deinterlace: 0
-            };
+    } else if (!Number.isInteger(channelId) && !Array.isArray(channelId)) {
 
-        db.Channels
-            .find(query.find, query.projection)
-            .sort(query.sort)
-            .then((channels) => {
+        query = {
+            find: {},
+            sort: {
+                priority: -1,
+                name: 1
+            }
+        };
 
-                res.status(200).send(channels);
+    } else {
+        query = {
+            find: {
+                _id: Array.isArray(channelId) ? {$in: channelId} : channelId
+            },
+            sort: {
+                priority: -1,
+                name: 1
+            }
+        };
+    }
 
-            }).catch((error) => {
+    query.projection = {
+            updateHistory: 0,
+            source: 0,
+            monitoring: 0,
+            notes: 0,
+            __v: 0,
+            transcoder: 0,
+            useMpkg: 0,
+            deinterlace: 0
+        };
+
+    await db.Channels
+        .find(query.find, query.projection)
+        .sort(query.sort)
+        .then((channels) => {
+
+            res.status(200).send(channels);
+
+        }).catch((error) => {
+            console.log(`Error in ext/apps.js -- getChannels service: ${error.message}`)
             res.status(500).send({
                 error: 0x0010,
                 error_dsc: "Error en la base de datos"
             });
-        })
+    })
+}
 
-    } else {
+async function getProductChannels(req, res) {
+    let db = pdc.db;
 
-        res.status(500).send({
+    if (!db) {
+        return res.status(500).send({
             error: 0x0010,
             error_dsc: "Error en la base de datos"
         });
-
     }
-}
-
-function getProductChannels(req, res) {
-    let db = pdc.db;
 
     let productId = req.body.id;
 
-    if (db) {
+    if (!productId && !Array.isArray(productId)) {
 
-        if (!productId && !Array.isArray(productId)) {
+        res.status(400).send({
+            error: 0x0022,
+            error_dsc: "productId debe ser del tipo INT o [INT]"
+        });
 
-            res.status(400).send({
-                error: 0x0022,
-                error_dsc: "productId debe ser del tipo INT o [INT]"
-            });
+        return false;
+    } 
 
-            return false
-        } else {
+    try {
+        const product = await db.Products.findOne({ _id: productId })
 
-            db.Products.findOne({
-                _id: productId
-            }, function (error, product) {
-                if (error) {
-                    console.error(error);
-                    res.status(500).send({
-                        error: 0x0010,
-                        error_dsc: "Error en la base de datos"
-                    });
-                } else {
-                    if (product === null) {
-                        res.send([]);
-                    } else {
-                        db.Channels.find({
-                            _id: {
-                                $in: product.channels
-                            },
-                            enabled: true
-                        }, function (error, channels) {
-                            if (channels) {
-                                res.send(channels)
-                            } else {
-                                res.send([]);
-                            }
-                        })
-
-                    }
-                }
-            })
-
+        if (product === null) {
+            return res.send([]);
         }
 
-    } else {
+        const channels = await db.Channels.find({
+            _id: {
+                $in: product.channels
+            },
+            enabled: true
+        })
 
+        if (!channels) {
+            return res.send([]);
+        }
+
+        return res.send(channels)
+    } catch (error) {
+        console.error(`Error in ext/apps.js -- getProductChannels service: ${error.message}`);
         res.status(500).send({
             error: 0x0010,
             error_dsc: "Error en la base de datos"
         });
-
     }
 }
 
-function getSubscriberContents(req, res) {
+async function getSubscriberContents(req, res) {
 
     let db = pdc.db;
 
-    let {subscriberId} = req.body;
+    let { subscriberId } = req.body;
 
-    if (db) {
-        db.Subscribers.findOne({_id: subscriberId}, (error, subscriber) => {
+    if (!db) {
+        return res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    }
 
-            if (subscriber) {
-                let categories = [];
-                let channels = [];
-                let productsQueries = [];
+    try {
+        const subscriber = await db.Subscribers.findOne({_id: subscriberId});
 
-                for (let product of subscriber.products) {
-                    productsQueries.push(getChannelsFor(product))
+        if (!subscriber) {
+            return res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        }
+
+        let categories = [];
+        let channels = [];
+        let productsQueries = [];
+
+        for (let product of subscriber.products) {
+            productsQueries.push(await getChannelsFor(product))
+        }
+
+        Promise.all(productsQueries).then(async (products) => {
+
+            for (let product of products) {
+                for (let channelId of product.channels) {
+                    channels[channelId] = 1
                 }
-
-                Promise.all(productsQueries).then((products) => {
-
-                    for (let product of products) {
-                        for (let channelId of product.channels) {
-                            channels[channelId] = 1
-                        }
-                    }
-
-                    let channelsQueries = [];
-
-                    for (let channelId in channels) {
-                        channelsQueries.push(getChannel(channelId));
-                    }
-
-                    Promise.all(channelsQueries).then((channels) => {
-
-                        channels.sort((a, b) => {
-                            let p1 = a && a.priority ? a.priority : 100;
-                            let p2 = b && b.priority ? b.priority : 100;
-                            return p1 - p2;
-                        });
-
-                        for (let channel of channels) {
-
-
-                            if (!channel || !channel.enabled) continue;
-
-
-                            if (categories[channel.category]) {
-                                categories[channel.category].push(channel)
-                            } else {
-                                categories[channel.category] = [channel]
-                            }
-                        }
-
-                        renderResponse(categories)
-
-                    });
-
-                })
-            } else {
-                res.status(500).send({
-                    error: 0x0010,
-                    error_dsc: "Error en la base de datos"
-                });
             }
 
+            let channelsQueries = [];
 
-        });
-    } else {
+            for (let channelId in channels) {
+                channelsQueries.push(await getChannel(channelId));
+            }
+
+            Promise.all(channelsQueries).then(async (channels) => {
+
+                channels.sort((a, b) => {
+                    let p1 = a && a.priority ? a.priority : 100;
+                    let p2 = b && b.priority ? b.priority : 100;
+                    return p1 - p2;
+                });
+
+                for (let channel of channels) {
+
+
+                    if (!channel || !channel.enabled) continue;
+
+
+                    if (categories[channel.category]) {
+                        categories[channel.category].push(channel)
+                    } else {
+                        categories[channel.category] = [channel]
+                    }
+                }
+            });
+            
+        })
+        
+        await renderResponse(categories)
+    } catch (error) {
+        console.log(`Error in ext/apps.js -- getSubscriberContents service: ${error.message}`)
+        console.error(`Error in ext/apps.js -- getSubscriberContents service: ${error.message}`);
         res.status(500).send({
             error: 0x0010,
             error_dsc: "Error en la base de datos"
@@ -762,11 +736,12 @@ function getSubscriberContents(req, res) {
     }
 
 
-    function renderResponse(categories) {
 
-        db.Category.find({}, function (error, catData) {
+    async function renderResponse(categories) {
+        try {
+            const catData = await db.Category.find({});
             let response = [];
-
+    
             for (let cid in categories) {
 
                 let data = null;
@@ -793,181 +768,160 @@ function getSubscriberContents(req, res) {
             console.log(response)
 
             res.status(200).send(response);
-
-        });
-
-
-    }
-
-
-    function getChannelsFor(id) {
-        return new Promise(resolve => {
-            db.Products.findOne({_id: id}, {updateHistory: 0}, function (error, product) {
-                resolve(product)
-            })
-        })
-    }
-
-    function getChannel(id) {
-        return new Promise(resolve => {
-            db.Channels.findOne({_id: id}, {updateHistory: 0}, function (error, channel) {
-                resolve(channel)
-            })
-        })
-    }
-}
-
-function getOttConfigurations(req, res) {
-
-
-    let db = pdc.db;
-
-    if (db) {
-
-        let query = {
-            find: {}
-        };
-
-        db.OttConfigurations
-            .findOne(query.find)
-            .then((ottConfigurations) => {
-                res.status(200).send(ottConfigurations);
-            }).catch((error) => {
-
+        } catch (error) {
+            console.error(`renderResponse helper error: ${error.message}`);
             res.status(500).send({
                 error: 0x0010,
                 error_dsc: "Error en la base de datos"
             });
-        })
-
-    } else {
-
-
-        res.status(500).send({
-            error: 0x0010,
-            error_dsc: "Error en la base de datos"
-        });
-
-    }
-}
-
-function getProducts(req, res) {
-
-
-    let db = pdc.db;
-
-    if (db) {
-
-        let productId = req.body.id;
-
-        console.log(req.body)
-
-        if (!productId && !Array.isArray(productId)) {
-
-            res.status(400).send({
-                error: 0x0022,
-                error_dsc: "productId debe ser del tipo INT o [INT]"
-            });
-
-            return false
         }
+    }
 
-        let query = {
-            find: {
-                _id: Array.isArray(productId) ? {$in: productId} : productId
-            },
-            sort: {
-                productName: 1
+
+    async function getChannelsFor(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const product = await db.Products.findOne({_id: id}, {updateHistory: 0});
+                
+                resolve(product)
+            } catch (error) {
+                console.error(`getChannelsFor helper error: ${error.message}`);
+                reject({
+                    message: "Error en la base de datos"
+                });   
             }
-        };
+        })
+    }
 
-        db.Products
-            .find(query.find)
-            .sort(query.sort)
-            .then((products) => {
+    async function getChannel(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const channel = await db.Channels.findOne({_id: id}, {updateHistory: 0});
 
-                if (Array.isArray(productId)) {
-                    res.status(200).send(products);
-                } else {
-                    res.status(200).send(products[0]);
-                }
+                resolve(channel)
+            } catch (error) {
+                console.error(`getChannel helper error: ${error.message}`);
+                reject({
+                    message: "Error en la base de datos"
+                });
+            }
+        })
+    }
+}
 
-            }).catch((error) => {
+async function getOttConfigurations(req, res) {
+    let db = pdc.db;
 
+    if (!db) {
+        return res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        }); 
+    }
+
+    let query = {
+        find: {}
+    };
+
+    await db.OttConfigurations
+        .findOne(query.find)
+        .then((ottConfigurations) => {
+            res.status(200).send(ottConfigurations);
+        }).catch((error) => {
+            console.error(`Error in ext/apps.js -- getOttConfigurations service: ${error.message}`)
             res.status(500).send({
                 error: 0x0010,
                 error_dsc: "Error en la base de datos"
             });
         })
+}
 
-    } else {
+async function getProducts(req, res) {
+    let db = pdc.db;
 
-
-        res.status(500).send({
+    if (!db) {
+        return res.status(500).send({
             error: 0x0010,
             error_dsc: "Error en la base de datos"
         });
-
     }
+
+    let productId = req.body.id;
+
+    if (!productId && !Array.isArray(productId)) {
+
+        res.status(400).send({
+            error: 0x0022,
+            error_dsc: "productId debe ser del tipo INT o [INT]"
+        });
+
+        return false;
+    }
+
+    let query = {
+        find: {
+            _id: Array.isArray(productId) ? {$in: productId} : productId
+        },
+        sort: {
+            productName: 1
+        }
+    };
+
+    await db.Products
+        .find(query.find)
+        .sort(query.sort)
+        .then((products) => {
+
+            if (Array.isArray(productId)) {
+                res.status(200).send(products);
+            } else {
+                res.status(200).send(products[0]);
+            }
+
+        }).catch((error) => {
+            console.log(`Error in ext/apps.js -- getProducts service: ${error.message}`)
+            res.status(500).send({
+                error: 0x0010,
+                error_dsc: "Error en la base de datos"
+            });
+        })
 }
 
-function setFavorite(req, res) {
+async function setFavorite(req, res) {
+    let db = pdc.db;
+
+    if (!db) {
+        return res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    }
 
     // TODO VEr esto https://stackoverflow.com/questions/41788688/mongo-schema-array-of-string-with-unique-values,
     // parece ser una mejor forma
-
-    let db = pdc.db;
-
     let {subscriberId, channelId, favorite} = req.body;
 
-    if (db) {
-        db.Subscribers.findOne({_id: subscriberId}, (error, subscriber) => {
+    try {
+        let newVector = [];
 
-            if (error) {
-                console.error(error);
-                res.status(500).send({
-                    error: 0x0010,
-                    error_dsc: "Error en la base de datos"
-                });
-            } else {
-                if (subscriber) {
+        if (favorite) {
+            newVector.push(channelId);
+        }
 
-                    let newVector = [];
+        const subscriber = await db.Subscribers.findOneAndUpdate({_id: subscriberId}, {$addToSet:  {favoriteChannels: newVector}});
 
-                    if (favorite) {
-                        newVector.push(channelId);
-                    }
+        if (!subscriber) {
+            return res.status(400).send({
+                error: 0x0020,
+                error_dsc: "User, not found"
+            });
+        }
 
-                    for (let channel of subscriber.favoriteChannels) {
-                        if (channel.toString() !== channelId) {
-                            newVector.push(channel.toString());
-                        }
-                    }
-
-                    db.Subscribers.update({_id: subscriberId}, {$set: {favoriteChannels: newVector}}, function (error) {
-                        if (error) {
-                            console.error(error);
-                            res.status(500).send({
-                                error: 0x0030,
-                                error_dsc: "Update Error"
-                            });
-                        } else {
-                            res.status(500).send({
-                                error: null
-                            });
-                        }
-                    });
-
-                } else {
-                    res.status(400).send({
-                        error: 0x0020,
-                        error_dsc: "User, not found"
-                    });
-                }
-            }
-
+        res.status(200).send({
+            error: null
         });
-    } else {
+    } catch (error) {
+        console.error(`Error in ext/apps.js -- setFavorite service: ${error.message}`);
         res.status(500).send({
             error: 0x0010,
             error_dsc: "Error en la base de datos"
@@ -975,44 +929,34 @@ function setFavorite(req, res) {
     }
 }
 
-function getFavorite(req, res) {
+async function getFavorite(req, res) {
     let db = pdc.db;
+
+    if (!db) {
+        console.error(`Error in ext/apps.js -- getFavorite service: ${error.message}`);
+        return res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    } 
 
     let {subscriberId, channelId, favorite} = req.body;
 
-    if (db) {
-        db.Subscribers.findOne({_id: subscriberId}, (error, subscriber) => {
-            if (error) {
-                console.error(error);
-                res.status(500).send({
-                    error: 0x0010,
-                    error_dsc: "Error en la base de datos"
-                });
-            } else {
-                if (subscriber) {
+    try {
+        const subscriber = await db.Subscribers.findOne({_id: subscriberId});
+        
+        if (!subscriber) {
+            return res.status(400).send({
+                error: 0x0020,
+                error_dsc: "User, not found"
+            });
+        }
 
-                    db.Channels.find({_id: {$in: subscriber.favoriteChannels}}, {updateHistory: 0}, function (error, data) {
-                        if (error) {
-                            res.status(500).send({
-                                error: 0x0010,
-                                error_dsc: "Error en la base de datos"
-                            });
-                        } else {
-                            res.send(data);
-                        }
-                    });
+        const channels = await db.Channels.find({ _id: { $in: subscriber.favoriteChannels } }, { updateHistory: 0 });
 
-                } else {
-                    res.status(400).send({
-                        error: 0x0020,
-                        error_dsc: "User, not found"
-                    });
-                }
-            }
-
-        });
-    } else {
-        console.error(error);
+        res.send(channels);
+    } catch (error) {
+        console.error(`Error in ext/apps.js -- getFavorite service: ${error.message}`);
         res.status(500).send({
             error: 0x0010,
             error_dsc: "Error en la base de datos"
@@ -1020,93 +964,113 @@ function getFavorite(req, res) {
     }
 }
 
-function sendLogs(req, res) {
-
+async function sendLogs(req, res) {
     let db = pdc.db;
 
-    if (db) {
-        let opt = {
-            subscriberId: req.body.id,
-            agent: req.body.agent,
-            status: req.body.status,
-            session: req.body.session,
-            channelId: req.body.channelId,
-            programmeId: req.body.programmeId,
-            dvrPosition: req.body.dvrPosition,
-            date: new Date()
-        };
-
-        db.StatsLines.create(opt, function () {
-            console.log("LOG LIN INSERTED")
-        })
-
+    if (!db) {
+        return res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
     }
 
+    let opt = {
+        subscriberId: req.body.id,
+        agent: req.body.agent,
+        status: req.body.status,
+        session: req.body.session,
+        channelId: req.body.channelId,
+        programmeId: req.body.programmeId,
+        dvrPosition: req.body.dvrPosition,
+        date: new Date()
+    };
 
-    res.send({});
+    try {
+        await db.StatsLines.create(opt)
+
+        res.status(200).send({});
+    } catch (error) {
+        console.error(`Error in ext/apps.js -- sendLogs service: ${error.message}`);
+
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    }
 }
 
-function check_asset_access(req, res) {
+async function check_asset_access(req, res) {
     let db = pdc.db;
+
+    if (!db) {
+        return res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
+    }
 
     let {subscriberId} = req.body;
     let screens = ottConfig.screens;
 
-    if (db) {
 
-        db.StatsLines.find({
+    try {
+        const sessions = await db.StatsLines.find({
             "status": "playing",
             "date": {
                 $gt: new Date(Date.now() - 10000)
             },
             "subscriberId": subscriberId
-        }, ((error, sessions) => {
+        });
 
-            let sessionsIndex = [];
-            let nSessions = 0;
+        let sessionsIndex = [];
+        let nSessions = 0;
 
-            for (let session of sessions) {
+        for (let session of sessions) {
 
-                if (session.session === req.body.sessionId) {
-                    break;
-                }
-
-                if (sessionsIndex[session.session]) {
-                } else {
-                    nSessions++;
-                    sessionsIndex[session.session] = 1;
-                }
+            if (session.session === req.body.sessionId) {
+                break;
             }
 
-            if (nSessions >= screens) {
-                res.send({
-                    canPlay: false
-                });
+            if (sessionsIndex[session.session]) {
             } else {
-                res.send({
-                    canPlay: true
-                });
+                nSessions++;
+                sessionsIndex[session.session] = 1;
             }
+        }
 
-        }));
+        if (nSessions >= screens) {
+            res.status(200).send({
+                canPlay: false
+            });
+        } else {
+            res.status(200).send({
+                canPlay: true
+            });
+        }
 
+    } catch (error) {
+        console.error(`Error in ext/apps.js -- check_asset_access service: ${error.message}`);
+        res.status(500).send({
+            error: 0x0010,
+            error_dsc: "Error en la base de datos"
+        });
     }
+
 }
 
 
-function preChacheDays() {
-
-    let db = pdc.db;
-
-    if (db) {
-        db.Channels.find({enabled: true}, function (error, data) {
-
-            for (let i in data) {
-                getADay(parseInt(data[i].channelEPGId));
-            }
-
-        });
-
+async function preChacheDays() {
+    if (!pdc.db) {
+        return;
     }
 
+    try {
+        const data = await pdc.db.Channels.find({enabled: true});
+
+        for (let i in data) {
+            getADay(parseInt(data[i].channelEPGId));
+        }
+    } catch (error) {
+        console.log(`Error in ext/apps.js -- preCacheDays function: ${error.message}`)
+    }
 }

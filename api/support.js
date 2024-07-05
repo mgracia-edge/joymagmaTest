@@ -13,50 +13,50 @@ exports.passHash = passHash;
 exports.newToken = newToken;
 exports.newStreamKeyCode = newStreamKeyCode;
 
-function nxAuthenticationFunction(req, res, next) {
+async function nxAuthenticationFunction(req, res, next) {
 
     if (!dc.db) {
-        res.status(codes.error.database.DISCONNECTED.httpCode)
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
-    } else if (!(req.headers.authorization && req.headers.authorization.toLowerCase().startsWith("bearer "))) {
-        res.status(codes.error.userRights.BAD_AUTHENTICATION.httpCode)
+    } 
+
+    if (!(req.headers.authorization && req.headers.authorization.toLowerCase().startsWith("bearer "))) {
+        return res.status(codes.error.userRights.BAD_AUTHENTICATION.httpCode)
             .send(new api.Error(codes.error.userRights.BAD_AUTHENTICATION));
-    } else {
-        const token = req.headers.authorization.split(' ')[1];
+    }
 
-        dc.db.User.findOne({"authentication.sessions.token": token},
-            (error, user) => {
+    const token = req.headers.authorization.split(' ')[1];
 
-                if (error) {
-                    res.status(codes.error.database.ERROR.httpCode)
-                        .send(new api.Error(codes.error.database.ERROR));
-                } else if (user === null) {
-                    res.status(codes.error.userRights.NON_EXISTENT_USER.httpCode)
-                        .send(new api.Error(codes.error.userRights.NON_EXISTENT_USER));
-                } else {
+    try {
+        const user = await dc.db.User.findOne({"authentication.sessions.token": token});
 
-                    if (!sessionIsValid(user, token)) {
-                        res.status(codes.error.userRights.SESSION_EXPIRED.httpCode)
-                            .send(new api.Error(codes.error.userRights.SESSION_EXPIRED));
-                    } else {
+        if (user === null) {
+            return res.status(codes.error.userRights.NON_EXISTENT_USER.httpCode)
+                .send(new api.Error(codes.error.userRights.NON_EXISTENT_USER));
+        } 
 
-                        let currentSession;
+        if (!sessionIsValid(user, token)) {
+            return res.status(codes.error.userRights.SESSION_EXPIRED.httpCode)
+                .send(new api.Error(codes.error.userRights.SESSION_EXPIRED));
+        } 
 
-                        for (let session of user.authentication.sessions) {
-                            if (session.token === token) {
-                                currentSession = session;
-                            }
-                        }
+        let currentSession;
 
-                        req.user = user;
-                        req.session = currentSession;
+        for (let session of user.authentication.sessions) {
+            if (session.token === token) {
+                currentSession = session;
+            }
+        }
 
-                        next();
-                    }
+        req.user = user;
+        req.session = currentSession;
 
-                }
-            });
+        next();
 
+    } catch (error) {
+        console.error(`Error in api/support.js -- nxAuthenticationFunction middleware: ${error.message}`)
+        res.status(codes.error.database.ERROR.httpCode)
+            .send(new api.Error(codes.error.database.ERROR));
     }
 
 }

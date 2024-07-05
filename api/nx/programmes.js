@@ -16,123 +16,118 @@ exports.resourceList = [
     }];
 
 
-function _channels(req, res) {
+async function _channels(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
-            return;
-        }
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
-        db.Programme
-            .distinct("channelEPGId")
-            .then((channels) => {
+        return;
+    }
 
-                res.status(200).send(new api.Success(channels));
+    await db.Programme
+        .distinct("channelEPGId")
+        .then((channels) => {
 
-            }).catch((error) => {
+            res.status(200).send(new api.Success(channels));
+
+        }).catch((error) => {
             console.log(error)
             res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                 .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-        })
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
+    })
 }
 
-function _read(req, res) {
+async function _read(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_READ)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        let {id, name, includeUpdateHistory} = req.body;
-
-        let query = {
-            find: {},
-            projection: {
-                updateHistory: 0
-            },
-            sort: {
-                start: 1
-            }
-        };
-
-        if (id) {
-
-            query.find = {_id: Array.isArray(id) ? {$in: id} : id}
-
-        } else if (name) {
-
-            query.find = {productName: Array.isArray(name) ? {$in: name} : name}
-
-        }
-
-        if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
-
-            delete query.projection.updateHistory;
-
-        }
-
-
-        //let today = new Date().setHours(0, 0, 0);
-        //let todayAtNight = new Date().setHours(23, 59, 59);
-
-        let today = (new Date()).setHours(0, 0, 0, 0);
-        today = new Date(today - ((new Date()).getTimezoneOffset() - 180)/60 * 3600000);
-        let todayAtNight = new Date(today.getTime() + 24 * 3600000);
-
-
-        query.find.start = {$gte: today};
-        query.find.stop = {$lte: todayAtNight};
-
-        db.Channels
-            .find({})
-            .then((channels) => {
-
-                let channelsEPGIds = channels.map((channel) => channel.channelEPGId);
-
-                query.find.channelEPGId = {$in: channelsEPGIds};
-
-                db.Programme
-                    .find(query.find, query.projection)
-                    //.limit(100)
-                    .sort(query.sort)
-                    .then((channels) => {
-                        res.status(200).send(new api.Success(channels));
-                    })
-                    .catch((error) => {
-                        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                    })
-
-
-            })
-            .catch((error) => {
-                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-            });
-
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
+
+    if (!req.user.permissions.includes(codes.users_permissions.CHANNELS_READ)) {
+
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    let {id, name, includeUpdateHistory} = req.body;
+
+    let query = {
+        find: {},
+        projection: {
+            updateHistory: 0
+        },
+        sort: {
+            start: 1
+        }
+    };
+
+    if (id) {
+
+        query.find = {_id: Array.isArray(id) ? {$in: id} : id}
+
+    } else if (name) {
+
+        query.find = {productName: Array.isArray(name) ? {$in: name} : name}
+
+    }
+
+    if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
+
+        delete query.projection.updateHistory;
+
+    }
+
+
+    //let today = new Date().setHours(0, 0, 0);
+    //let todayAtNight = new Date().setHours(23, 59, 59);
+
+    let today = (new Date()).setHours(0, 0, 0, 0);
+    today = new Date(today - ((new Date()).getTimezoneOffset() - 180)/60 * 3600000);
+    let todayAtNight = new Date(today.getTime() + 24 * 3600000);
+
+
+    query.find.start = {$gte: today};
+    query.find.stop = {$lte: todayAtNight};
+
+    await db.Channels
+        .find({})
+        .then(async (channels) => {
+            let channelsEPGIds = channels.map((channel) => channel.channelEPGId);
+
+            query.find.channelEPGId = {$in: channelsEPGIds};
+
+            await db.Programme
+                .find(query.find, query.projection)
+                //.limit(100)
+                .sort(query.sort)
+                .then((channels) => {
+                    res.status(200).send(new api.Success(channels));
+                })
+                .catch((error) => {
+                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+                })
+
+
+        })
+        .catch((error) => {
+            console.error(`Error in api/nx/programmes.js -- _read service: ${error.message}`)
+            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+        });
 }
 

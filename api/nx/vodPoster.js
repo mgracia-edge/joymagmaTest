@@ -125,168 +125,161 @@ function _create(req, res) {
     // }
 }
 
-function _read(req, res) {
-   
+async function _read(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_READ)) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    if (!req.user.permissions.includes(codes.users_permissions.BANNERS_READ)) {
 
-            return;
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    let {id, data} = req.body;
+
+    let {name, includeUpdateHistory} = data;
+
+    let query = {
+        find: {},
+        projection: {
+            updateHistory: 0
+        },
+        sort: {
+            productName: 1
         }
+    };
 
-        let {id, data} = req.body;
+    if (id) {
+        query.find = {_id: Array.isArray(id) ? {$in: id} : id}
 
-        let {name, includeUpdateHistory} = data;
+    } else if (name) {
+        query.find = {name: Array.isArray(name) ? {$in: name} : name}
+    }
 
-        let query = {
-            find: {},
-            projection: {
-                updateHistory: 0
-            },
-            sort: {
-                productName: 1
-            }
-        };
+    if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
+        delete query.projection.updateHistory;
+    }
 
-        if (id) {
-            query.find = {_id: Array.isArray(id) ? {$in: id} : id}
-
-        } else if (name) {
-            query.find = {name: Array.isArray(name) ? {$in: name} : name}
-        }
-
-        if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
-            delete query.projection.updateHistory;
-        }
-
-        db.BannerVOD
+    await db.BannerVOD
         .find(query.find, query.projection)
         .sort(query.sort)
         .then((banners) => {
             res.status(200).send(new api.Success(banners));
 
         }).catch((error) => {
-        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-        })        
+
+            console.error(`Error in api/nx/vodPoster.js -- _read service: ${error.message}`)
+            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+        }) 
+}
+
+async function _update(req, res) {
+    let db = dc.db;
+
+    if (!db) {
+
+        return res.status(codes.error.operation.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+
+    if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
+
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    const {id, data} = req.body;
+
+    const {name, internalName, poster, useDefault} = data.banner;
     
 
-    } else {
+    let query = {
+        find: {
+            _id: id
+        },
+        update: {
+            $set: {
+                name: name,
+                useDefault: useDefault
+            }
+        }
+    };
+    
+    if (typeof name === 'undefined') {
+        delete query.update.$set.name
+        
+    };
 
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
+    if (typeof poster !== 'undefined' && poster[0].update === true) {
+        cloudinary.uploader.upload(poster[0].url, (result) => {
+
+            let poster = {
+                url: result.url,
+                type: 'LANDSCAPE'
+            };
+
+            query.update["$set"].poster = [poster];
+        });
+
+    } 
+
+    try {
+        const bannerVod = await db.BannerVOD.updateOne(query.find, query.update);
+
+        res.status(200).send(new api.Success(bannerVod));
+    } catch (error) {
+        console.error(`Error in api/nx/vodPoster.js -- _update service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
     }
 }
 
-function _update(req, res) {
+async function _delete(req, res) {
     let db = dc.db;
 
-    if (db) {
-        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
+    if (!db) {
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        const {id, data} = req.body;
-
-        const {name, internalName, poster, useDefault} = data.banner;
-        
-
-        let query = {
-            find: {
-                _id: id
-            },
-            update: {
-                $set: {
-                    name: name,
-                    useDefault: useDefault
-                }
-            }
-        };
-        
-        if (typeof name === 'undefined') {
-            delete query.update.$set.name
-            
-        };
-
-        if (typeof poster !== 'undefined' && poster[0].update === true) {
-            cloudinary.uploader.upload(poster[0].url, (result) => {
-
-                let poster = {
-                    url: result.url,
-                    type: 'LANDSCAPE'
-                };
-
-                query.update["$set"].poster = [poster];
-
-                _update();
-            });
-
-        } else {
-            _update()
-        }
-
-        _update();
-
-        function _update() {
-            db.BannerVOD.updateOne(query.find, query.update, (error, products) => {
-                if (error) {
-                    res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                        .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                } else {
-                    res.status(200).send(new api.Success(products));
-                }
-
-            });
-        }
-
-
-    } else {
-
-        res.status(codes.error.operation.DISCONNECTED.httpCode)
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
-}
 
-function _delete(req, res) {
+    if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
 
-    let db = dc.db;
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
-    if (db) {
+        return;
+    }
 
-        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
+    const {id} = req.body;
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
+    let query = {
+        find: {
+            _id: Array.isArray(id) ? {$in: id} : id
         }
+    };
 
-        const {id} = req.body;
-
-        let query = {
-            find: {
-                _id: Array.isArray(id) ? {$in: id} : id
-            }
-        };
-
-        db.BannerVOD
+    await db.BannerVOD
         .find(query.find, query.projection)
         .sort(query.sort)
         .then((banners) => {
             res.status(200).send(new api.Success(banners));
 
         }).catch((error) => {
-        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+
+            console.error(`Error in api/nx/vodPoster.js -- _delete service: ${error.message}`)
+            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         })        
         
         // db.Banner
@@ -300,10 +293,4 @@ function _delete(req, res) {
         //     res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
         //         .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         // })
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
 }

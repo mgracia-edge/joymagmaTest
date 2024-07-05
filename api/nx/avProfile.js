@@ -28,98 +28,87 @@ exports.resourceList = [
         protected: true
     }];
 
-function _create(req, res) {
+async function _create(req, res) {
     let db = dc.db;
 
-    if (db) {
-
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        const {name,description,dvr,aesEncryptor,quality,encoder,profile} = req.body;
-
-        db.AvProfile
-            .findOne({"name": name}, (error, data) => {
-                if (error) {
-                    res.status(codes.error.database.DISCONNECTED.httpCode)
-                        .send(new api.Error(codes.error.database.DISCONNECTED));
-                } else {
-                    if (data) {
-                        res.status(codes.error.operation.DUPLICATED_ENTITY.httpCode)
-                            .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
-                    } else {
-
-                        let json = {
-                            name,
-                            description,
-                            dvr,
-                            aesEncryptor,
-                            quality,
-                            encoder,
-                            profile
-                        };
-
-                        let AvProfile = new db.AvProfile(json);
-
-                        AvProfile.save(json, (err) => {
-                            if (err) {
-                                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                            } else {
-                                res.status(200).send(new api.Success({}));
-
-                            }
-
-                        });
-
-
-                    }
-                }
-            });
-
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
+    if (!db) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    const {name,description,dvr,aesEncryptor,quality,encoder,profile} = req.body;
+
+    try {
+        const data = await db.AvProfile.findOne({"name": name});
+
+        if (data) {
+            return res.status(codes.error.operation.DUPLICATED_ENTITY.httpCode)
+                .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
+        } 
+
+        let json = {
+            name,
+            description,
+            dvr,
+            aesEncryptor,
+            quality,
+            encoder,
+            profile
+        };
+
+        let AvProfile = new db.AvProfile(json);
+
+        await AvProfile.save(json);
+        
+        res.status(200).send(new api.Success({}));
+    } catch (error) {
+        console.error(`Error in api/nx/avProfile.js -- _create service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
     }
 }
 
-function _read(req, res) {
+async function _read(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
-            return;
+        return;
+    }
+
+    let {id} = req.body;
+
+    let query = {
+        find: {},
+        projection: {
+            updateHistory: 0
+        },
+        sort: {
+            productName: 1
         }
+    };
 
-        let {id} = req.body;
+    if (id) {
+        query.find = {_id: Array.isArray(id) ? {$in: id} : id}
+    }
 
-        let query = {
-            find: {},
-            projection: {
-                updateHistory: 0
-            },
-            sort: {
-                productName: 1
-            }
-        };
-
-        if (id) {
-            query.find = {_id: Array.isArray(id) ? {$in: id} : id}
-        }
-
-        db.AvProfile
+    await db.AvProfile
             .find(query.find, query.projection)
             .sort(query.sort)
             .then((channels) => {
@@ -131,113 +120,99 @@ function _read(req, res) {
             res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                 .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         })
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
-
 }
 
-function _update(req, res) {
+async function _update(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
+        return res.status(codes.error.operation.DISCONNECTED.httpCode)
+        .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
-            return;
+        return;
+    }
+
+    const {id, data} = req.body;
+
+    const {name,description,dvr,aesEncryption,codec,profile,fps,chunkFile,keyRate} = data;
+
+    let query = {
+        find: {
+            _id: id
+        },
+        update: {
+            $set: {
+                name,
+                description,
+                dvr,
+                aesEncryption,
+                codec,
+                profile,fps,chunkFile,keyRate
+            }
         }
+    };
 
-        const {id, data} = req.body;
+    if (typeof name === 'undefined') delete query.update.$set.name;
+    if (typeof description === 'undefined') delete query.update.$set.description;
+    if (typeof dvr === 'undefined') delete query.update.$set.dvr;
+    if (typeof aesEncryption === 'undefined') delete query.update.$set.aesEncryption;
+    if (typeof codec === 'undefined') delete query.update.$set.codec;
+    if (typeof profile === 'undefined') delete query.update.$set.profile;
+    if (typeof fps === 'undefined') delete query.update.$set.fps;
+    if (typeof chunkFile === 'undefined') delete query.update.$set.chunkFile;
+    if (typeof keyRate === 'undefined') delete query.update.$set.keyRate;
 
-        const {name,description,dvr,aesEncryption,codec,profile,fps,chunkFile,keyRate} = data;
+    try {
+        const products = await db.AvProfile.updateOne(query.find, query.update);
 
-        let query = {
-            find: {
-                _id: id
-            },
-            update: {
-                $set: {
-                    name,
-                    description,
-                    dvr,
-                    aesEncryption,
-                    codec,
-                    profile,fps,chunkFile,keyRate
-                }
-            }
-        };
-
-        if (typeof name === 'undefined') delete query.update.$set.name;
-        if (typeof description === 'undefined') delete query.update.$set.description;
-        if (typeof dvr === 'undefined') delete query.update.$set.dvr;
-        if (typeof aesEncryption === 'undefined') delete query.update.$set.aesEncryption;
-        if (typeof codec === 'undefined') delete query.update.$set.codec;
-        if (typeof profile === 'undefined') delete query.update.$set.profile;
-        if (typeof fps === 'undefined') delete query.update.$set.fps;
-        if (typeof chunkFile === 'undefined') delete query.update.$set.chunkFile;
-        if (typeof keyRate === 'undefined') delete query.update.$set.keyRate;
-
-        db.AvProfile.updateOne(query.find, query.update, (error, products) => {
-            if (error) {
-                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-            } else {
-                res.status(200).send(new api.Success(products));
-            }
-
-        });
-
-
-    } else {
-
-        res.status(codes.error.operation.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
+        res.status(200).send(new api.Success(products));
+    } catch (error) {
+        console.error(`Error in api/nx/avProfile.js -- _update service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));   
     }
 }
 
-function _delete(req, res) {
+async function _delete(req, res) {
 
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+        .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-        if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
+    if (!req.user.permissions.includes(codes.users_permissions.USER_ADMIN)) {
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
-            return;
+        return;
+    }
+
+    const {id} = req.body;
+
+    let query = {
+        find: {
+            _id: Array.isArray(id) ? {$in: id} : id
         }
+    };
 
-        const {id} = req.body;
+    await db.AvProfile
+        .remove(query.find)
+        .then((data) => {
 
-        let query = {
-            find: {
-                _id: Array.isArray(id) ? {$in: id} : id
-            }
-        };
-
-        db.AvProfile
-            .remove(query.find)
-            .then((data) => {
-
-                res.status(200).send(new api.Success({}));
-
-            }).catch((error) => {
-
+            res.status(200).send(new api.Success({}));
+        }).catch((error) => {
+            console.error(`Error in api/nx/avProfile.js -- _delete service: ${error.message}`)
             res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                 .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         })
 
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
 }
