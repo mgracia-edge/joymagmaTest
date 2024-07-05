@@ -194,7 +194,12 @@ async function _report(req, res) {
             {
                 date: { $gte: new Date(from), $lte: new Date(until) },
                 aggregation:aggregation, 
-                device: "android_tv"
+                device: "android_tv",
+                perChannel: {
+                    $elemMatch: {
+                        concurrency: { $ne: 0 }
+                    }
+                }
             },
             {
                 sessions:0,
