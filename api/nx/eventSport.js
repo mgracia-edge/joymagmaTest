@@ -125,133 +125,129 @@ function _create(req, res) {
     // }
 }
 
-function _read(req, res) {
+async function _read(req, res) {
     let db = dc.db;
-    if (db) {
-        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_READ)) {
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-            return;
-        }
+    
+    if (!db) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-        let {id, data} = req.body;
-        
-        let query = {
-            find: {},
-        }
-        
+    if (!req.user.permissions.includes(codes.users_permissions.BANNERS_READ)) {
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+        return;
+    }
 
-        // if (id) {
-        //     query.find = {_id: Array.isArray(id) ? {$in: id} : id}
+    let {id, data} = req.body;
+    
+    let query = {
+        find: {},
+    }
+    
 
-        // } else if (data) {
-        //     query.find = {}
-        // }
+    // if (id) {
+    //     query.find = {_id: Array.isArray(id) ? {$in: id} : id}
 
-        // if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
-        //     delete query.projection.updateHistory;
-        // }
+    // } else if (data) {
+    //     query.find = {}
+    // }
 
-        db.EventSport
+    // if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
+    //     delete query.projection.updateHistory;
+    // }
+
+    await db.EventSport
         .find(query.find, {})
         .sort(query.sort)
         .then((events) => {
             
             res.status(200).send(new api.Success(events));
-
         }).catch((error) => {
+            console.error(`Error in api/nx/eventSport.js -- _read service: ${error.message}`)
+            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+        })        
+
+}
+
+async function _update(req, res) {
+    let db = dc.db;
+
+    if (db) {
+
+        return res.status(codes.error.operation.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
+
+    if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
+
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    const {id,data} = req.body
+    const {deportName,deportGroupName} = data
+    let query = {}
+    
+    query = {
+        find: {
+            _id: id
+        },
+        update: {
+            $set: {
+                deportName: deportName,
+                deportGroupName: deportGroupName
+
+            }
+        }
+    };
+
+    try {
+        const eventSport = await db.EventSport.updateOne(query.find, query.update);
+        
+        res.status(200).send(new api.Success(eventSport));
+    } catch (error) {
+        console.error(`Error in api/nx/eventSport.js -- _update service: ${error.message}`)
         res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
             .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-        })        
-    
-    } else {
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
     }
 }
 
-function _update(req, res) {
+async function _delete(req, res) {
     let db = dc.db;
 
-    if (db) {
-        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
+    if (!db) {
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-        const {id,data} = req.body
-        const {deportName,deportGroupName} = data
-        let query = {}
-        query = {
-            find: {
-                _id: id
-            },
-            update: {
-                $set: {
-                    deportName: deportName,
-                    deportGroupName: deportGroupName
-
-                }
-            }
-        };
-        _update();
-
-        function _update() {
-            try {
-                db.EventSport
-                .updateOne(query.find, query.update, (error, eventSport) => {
-                    if (error) {
-                        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                    } else {
-                        res.status(200).send(new api.Success(eventSport));
-                    }
-                });
-            } catch (error) {
-                console.log(JSON.stringify(error))
-            }
-        }
-
-    } else {
-
-        res.status(codes.error.operation.DISCONNECTED.httpCode)
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
-}
 
-function _delete(req, res) {
+    if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
 
-    let db = dc.db;
+        return res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    }
 
-    if (db) {
+    const {id} = req.body;
 
-        if (!req.user.permissions.includes(codes.users_permissions.BANNERS_WRITE)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
+    let query = {
+        find: {
+            _id: Array.isArray(id) ? {$in: id} : id
         }
+    };
 
-        const {id} = req.body;
-
-        let query = {
-            find: {
-                _id: Array.isArray(id) ? {$in: id} : id
-            }
-        };
-
-        db.BannerVOD
+    await db.BannerVOD
         .find(query.find, query.projection)
         .sort(query.sort)
         .then((banners) => {
-            res.status(200).send(new api.Success(banners));
 
-        }).catch((error) => {
-        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
+            res.status(200).send(new api.Success(banners));
+        }).catch(() => {
+            res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+                .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         })        
         
         // db.Banner
@@ -265,10 +261,4 @@ function _delete(req, res) {
         //     res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
         //         .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         // })
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
 }

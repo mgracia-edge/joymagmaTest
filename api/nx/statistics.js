@@ -26,33 +26,35 @@ exports.resourceList = [
         protected: true
     }];
 
-function _subscribers(req, res) {
+async function _subscribers(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.STATS_ACCESS)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        let {from, until} = req.body;
-
-        db.StatsDailySubscribers.find({
-            fromDate: {$gte: new Date(from), $lte: new Date(until)}
-        }, (error, data) => {
-            res.send(new api.Success(data));    
-        });
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
 
+    if (!req.user.permissions.includes(codes.users_permissions.STATS_ACCESS)) {
+
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    let {from, until} = req.body;
+
+    try {
+        const statsDaily = await db.StatsDailySubscribers.find({ fromDate: { $gte: new Date(from), $lte: new Date(until) } });
+
+        res.send(new api.Success(statsDaily));    
+    } catch (error) {
+     
+        console.error(`Error in api/nx/statistics.js -- _subscribers service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));   
+    }
 }
 
 async function _dailyPlay(req, res) {
@@ -60,26 +62,30 @@ async function _dailyPlay(req, res) {
 
     if (db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.STATS_ACCESS)) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    if (!req.user.permissions.includes(codes.users_permissions.STATS_ACCESS)) {
 
-            return;
-        }
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
-        let {from, until, aggregation} = req.body;
+        return;
+    }
 
-        let dateFrom = new Date(from);
-        let dateUntil = new Date(until);
+    let {from, until, aggregation} = req.body;
 
-        const aditionalSearchs = {};
+    let dateFrom = new Date(from);
+    let dateUntil = new Date(until);
 
-        if(!aggregation){
-            aggregation = defAggregation(dateFrom, dateUntil);
-        }else{
-            aggregation = checkLinesByAggregation(dateFrom, dateUntil, aggregation, stats.C);
-        }
+    const aditionalSearchs = {};
+
+    if(!aggregation){
+        aggregation = defAggregation(dateFrom, dateUntil);
+    }else{
+        aggregation = checkLinesByAggregation(dateFrom, dateUntil, aggregation, stats.C);
+    }
 
         // const pipeline = [
         //     {
@@ -127,9 +133,8 @@ async function _dailyPlay(req, res) {
         // ];
         // let data = await db.StatsResume.aggregate(pipeline);
 
-
-
-        let data = await db.StatsResume.find(
+    try {
+        let statsResume = await db.StatsResume.find(
             {
                 date: {$gte: new Date(from), $lt: new Date(until)},
                 aggregation: aggregation, 
@@ -147,74 +152,84 @@ async function _dailyPlay(req, res) {
                 __v: 0
             });
 
-        res.send(new api.Success(data));
-    } else {
+        res.send(new api.Success(statsResume));
+    } catch (error) {
 
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
+        console.error(`Error in api/nx/statistics.js -- _dailyPlay service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));   
     }
-
 }
 
 async function _report(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.STATS_ACCESS)) {
-
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
-
-            return;
-        }
-
-        let {from, until, aggregation} = req.body;
-
-        let dateFrom = new Date(from);
-        let dateUntil = new Date(until);
-
-        if(!aggregation){
-            aggregation = defAggregation(dateFrom, dateUntil);
-        }else{
-            aggregation = checkLinesByAggregation(dateFrom, dateUntil, aggregation, stats.C);
-        }
-
-        let data = await db.StatsResume.find({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation, device: "android_tv"},{sessions:0,aggregation:0});
-        res.send(new api.Success(data));
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
     }
 
+    if (!req.user.permissions.includes(codes.users_permissions.STATS_ACCESS)) {
+
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    let {from, until, aggregation} = req.body;
+
+    let dateFrom = new Date(from);
+    let dateUntil = new Date(until);
+
+    if(!aggregation){
+        aggregation = defAggregation(dateFrom, dateUntil);
+    }else{
+        aggregation = checkLinesByAggregation(dateFrom, dateUntil, aggregation, stats.C);
+    }
+
+    try {
+        let data = await db.StatsResume.find({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation, device: "android_tv"},{sessions:0,aggregation:0});
+
+        res.send(new api.Success(data));
+    } catch (error) {
+        console.error(`Error in api/nx/statistics.js -- _report service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));  
+    }
 }
 
 async function _devices(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.STATS_ACCESS)) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    if (!req.user.permissions.includes(codes.users_permissions.STATS_ACCESS)) {
 
-            return;
-        }
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
-        let {from, until, aggregation} = req.body;
+        return;
+    }
 
-        let dateFrom = new Date(from);
-        let dateUntil = new Date(until);
+    let {from, until, aggregation} = req.body;
 
-        if(!aggregation){
-            aggregation = defAggregation(dateFrom, dateUntil);
-        }else{
-            aggregation = checkLinesByAggregation(dateFrom, dateUntil, aggregation, stats.C);
-        }
+    let dateFrom = new Date(from);
+    let dateUntil = new Date(until);
 
+    if(!aggregation){
+        aggregation = defAggregation(dateFrom, dateUntil);
+    }else{
+        aggregation = checkLinesByAggregation(dateFrom, dateUntil, aggregation, stats.C);
+    }
+
+    try {
+        
         let data = await db.StatsResume.find({
             date: {$gte: new Date(from), $lt: new Date(until)},
             aggregation: aggregation,
@@ -227,13 +242,12 @@ async function _devices(req, res) {
         });
 
         res.send(new api.Success(data));
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
+    } catch (error) {
+        
+        console.error(`Error in api/nx/statistics.js -- _devices service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));  
     }
-
 }
 
 function defAggregation(dateFrom, dateUntil) {

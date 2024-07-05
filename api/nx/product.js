@@ -28,238 +28,223 @@ exports.resourceList = [
         protected: true
     }];
 
-function _create(req, res) {
+async function _create(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        const {name, channels,description,notes} = req.body;
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-        if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
+    const {name, channels,description,notes} = req.body;
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
 
-            return;
+        return res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    }
+
+    try {
+        const data = await db.Products.findOne({"name": name});
+
+        if (data) {
+            return res.status(codes.error.operation.DUPLICATED_ENTITY.httpCode)
+                .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
         }
 
-        db.Products
-            .findOne({"name": name}, (error, data) => {
-                if (error) {
-                    res.status(codes.error.database.DISCONNECTED.httpCode)
-                        .send(new api.Error(codes.error.database.DISCONNECTED));
-                } else {
-                    if (data) {
-                        res.status(codes.error.operation.DUPLICATED_ENTITY.httpCode)
-                            .send(new api.Error(codes.error.operation.DUPLICATED_ENTITY));
-                    } else {
-                        let json = {
-                            name: name,
-                            description:description,
-                            creationDate: new Date(),
-                            lastUpdate: new Date(),
-                            channels: channels,
-                            updateHistory: [{
-                                date: new Date(),
-                                products: {
-                                    channels: channels
-                                }
-                            }]
-                        };
-
-                        if(typeof notes !== "undefined") json.notes = notes;
-
-                        let Products = new db.Products(json);
-
-                        Products.save(json, (err) => {
-                            if (err) {
-                                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-                            } else {
-                                res.status(200).send(new api.Success({}));
-
-                            }
-
-                        });
-                    }
+        let json = {
+            name: name,
+            description:description,
+            creationDate: new Date(),
+            lastUpdate: new Date(),
+            channels: channels,
+            updateHistory: [{
+                date: new Date(),
+                products: {
+                    channels: channels
                 }
-            });
+            }]
+        };
 
-    } else {
+        if (typeof notes !== "undefined") {
+            json.notes = notes;
+        }
 
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
+        let Products = new db.Products(json);
+        await Products.save(json);
+
+        res.status(200).send(new api.Success({}));
+    } catch (error) {
+
+        console.error(`Error in api/nx/product.js -- _create service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
     }
 }
 
-function _read(req, res) {
+async function _read(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_READ)) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_READ)) {
 
-            return;
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    let {id, name, includeUpdateHistory, includeChannels} = req.body;
+
+    let query = {
+        find: {},
+        projection: {
+            updateHistory: 0
+        },
+        sort: {
+            name: 1
         }
+    };
 
-        let {id, name, includeUpdateHistory, includeChannels} = req.body;
+    if (id) {
 
-        let query = {
-            find: {},
-            projection: {
-                updateHistory: 0
-            },
-            sort: {
-                name: 1
-            }
-        };
+        query.find = {_id: Array.isArray(id) ? {$in: id} : id}
 
-        if (id) {
+    } else if (name) {
 
-            query.find = {_id: Array.isArray(id) ? {$in: id} : id}
+        query.find = {name: Array.isArray(name) ? {$in: name} : name}
 
-        } else if (name) {
+    }
 
-            query.find = {name: Array.isArray(name) ? {$in: name} : name}
+    if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
 
-        }
+        delete query.projection.updateHistory;
 
-        if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
+    }
 
-            delete query.projection.updateHistory;
+    if (typeof includeChannels !== "undefined" && !includeChannels) {
 
-        }
+        query.projection.channels = 0;
 
-        if (typeof includeChannels !== "undefined" && !includeChannels) {
+    }
 
-            query.projection.channels = 0;
+    db.Products
+        .find(query.find, query.projection)
+        .sort(query.sort)
+        .then((products) => {
 
-        }
+            res.status(200).send(new api.Success(products));
 
-        db.Products
-            .find(query.find, query.projection)
-            .sort(query.sort)
-            .then((products) => {
-
-                res.status(200).send(new api.Success(products));
-
-            }).catch((error) => {
-            console.log(error)
+        }).catch((error) => {
+            console.error(`Error in api/nx/product.js -- _read service: ${error.message}`)
             res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                 .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         })
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
 }
 
-function _update(req, res) {
+async function _update(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
+        return res.status(codes.error.operation.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
 
-            return;
-        }
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
 
-        const {id, data} = req.body;
+        return;
+    }
 
-        const {name, channels,description,notes} = data;
+    const {id, data} = req.body;
 
-        let query = {
-            find: {
-                _id: id
+    const {name, channels,description,notes} = data;
+
+    let query = {
+        find: {
+            _id: id
+        },
+        update: {
+            $set: {
+                name: name,
+                description:description,
+                lastUpdate: new Date(),
+                channels: channels,
+                notes:notes
+
             },
-            update: {
-                $set: {
-                    name: name,
-                    description:description,
-                    lastUpdate: new Date(),
-                    channels: channels,
-                    notes:notes
-
-                },
-                $push: {
-                    updateHistory: {
-                        date: new Date(),
-                        products: {
-                            channels: channels
-                        }
+            $push: {
+                updateHistory: {
+                    date: new Date(),
+                    products: {
+                        channels: channels
                     }
                 }
             }
-        };
+        }
+    };
 
-        if (typeof channels === 'undefined') delete query.update.$set.channels;
-        if (typeof name === 'undefined') delete query.update.$set.name;
-        if (typeof description === 'undefined') delete query.update.$set.description;
-        if (typeof notes === 'undefined') delete query.update.$set.notes;
+    if (typeof channels === 'undefined') delete query.update.$set.channels;
+    if (typeof name === 'undefined') delete query.update.$set.name;
+    if (typeof description === 'undefined') delete query.update.$set.description;
+    if (typeof notes === 'undefined') delete query.update.$set.notes;
 
-        db.Products.updateOne(query.find, query.update, (error, products) => {
-            if (error) {
-                res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
-                    .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
-            } else {
-                res.status(200).send(new api.Success(products));
-            }
-
-        });
-
-    } else {
-
-        res.status(codes.error.operation.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
+    try {
+        const products = await db.Products.updateOne(query.find, query.update);        
+        
+        res.status(200).send(new api.Success(products));
+    } catch (error) {
+        console.error(`Error in api/nx/product.js -- _update service: ${error.message}`)
+        res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
+            .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
     }
+
 }
 
-function _delete(req, res) {
-
+async function _delete(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    if (!req.user.permissions.includes(codes.users_permissions.PRODUCTS_WRITE)) {
 
-            return;
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    const {id} = req.body;
+
+    let query = {
+        find: {
+            _id: Array.isArray(id) ? {$in: id} : id
         }
+    };
 
-        const {id} = req.body;
+    await db.Products
+        .remove(query.find)
+        .then(() => {
 
-        let query = {
-            find: {
-                _id: Array.isArray(id) ? {$in: id} : id
-            }
-        };
+            res.status(200).send(new api.Success({}));
+        }).catch((error) => {
 
-        db.Products
-            .remove(query.find)
-            .then((data) => {
-
-                res.status(200).send(new api.Success({}));
-
-            }).catch((error) => {
-
+            console.error(`Error in api/nx/product.js -- _delete service: ${error.message}`)
             res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                 .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         })
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
 }
 

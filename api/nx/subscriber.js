@@ -10,58 +10,56 @@ exports.resourceList = [
         protected: true
     }];
 
-function _read(req, res) {
+async function _read(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
-        if (!req.user.permissions.includes(codes.users_permissions.SUBSCRIBERS_READ)) {
+        return res.status(codes.error.database.DISCONNECTED.httpCode)
+            .send(new api.Error(codes.error.database.DISCONNECTED));
+    }
 
-            res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
-                .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+    if (!req.user.permissions.includes(codes.users_permissions.SUBSCRIBERS_READ)) {
 
-            return;
+        res.status(codes.error.userRights.PERMISSION_DENIED.httpCode)
+            .send(new api.Error(codes.error.userRights.PERMISSION_DENIED));
+
+        return;
+    }
+
+    let {id,includeUpdateHistory} = req.body;
+
+    let query = {
+        find: {},
+        projection: {
+            updateHistory: 0
+        },
+        sort: {
+            productName: 1
         }
+    };
 
-        let {id,includeUpdateHistory} = req.body;
+    if (id) {
+        query.find = {_id: Array.isArray(id) ? {$in: id} : id}
+    }
 
-        let query = {
-            find: {},
-            projection: {
-                updateHistory: 0
-            },
-            sort: {
-                productName: 1
-            }
-        };
+    if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
 
-        if (id) {
-            query.find = {_id: Array.isArray(id) ? {$in: id} : id}
-        }
+        delete query.projection.updateHistory;
 
-        if (typeof includeUpdateHistory !== "undefined" && includeUpdateHistory) {
+    }
 
-            delete query.projection.updateHistory;
+    await db.Subscribers
+        .find(query.find, query.projection)
+        .sort(query.sort)
+        .then((channels) => {
 
-        }
+            res.status(200).send(new api.Success(channels));
 
-        db.Subscribers
-            .find(query.find, query.projection)
-            .sort(query.sort)
-            .then((channels) => {
-
-                res.status(200).send(new api.Success(channels));
-
-            }).catch((error) => {
-            console.error(error);
+        }).catch((error) => {
+            console.error(`Error in api/nx/subscriber -- _read service: ${error.message}`);
             res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
                 .send(new api.Error(codes.error.operation.OPERATION_HAS_FAILED));
         })
-
-    } else {
-
-        res.status(codes.error.database.DISCONNECTED.httpCode)
-            .send(new api.Error(codes.error.database.DISCONNECTED));
-    }
 
 }
