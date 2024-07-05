@@ -60,7 +60,7 @@ async function _subscribers(req, res) {
 async function _dailyPlay(req, res) {
     let db = dc.db;
 
-    if (db) {
+    if (!db) {
 
         return res.status(codes.error.database.DISCONNECTED.httpCode)
             .send(new api.Error(codes.error.database.DISCONNECTED));
@@ -190,9 +190,19 @@ async function _report(req, res) {
     }
 
     try {
-        let data = await db.StatsResume.find({date: {$gte: new Date(from), $lte: new Date(until)},aggregation:aggregation, device: "android_tv"},{sessions:0,aggregation:0});
+        let data = await db.StatsResume.find(
+            {
+                date: { $gte: new Date(from), $lte: new Date(until) },
+                aggregation:aggregation, 
+                device: "android_tv"
+            },
+            {
+                sessions:0,
+                aggregation:0
+            }
+        );
 
-        res.send(new api.Success(data));
+        res.status(200).send(new api.Success(data));
     } catch (error) {
         console.error(`Error in api/nx/statistics.js -- _report service: ${error.message}`)
         res.status(codes.error.operation.OPERATION_HAS_FAILED.httpCode)
