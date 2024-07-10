@@ -79,7 +79,7 @@
                 let file = document.createElement('input')
                 file.accept = 'image/*';
                 
-                let maxSize = 0; //kb
+                let maxSize = 500; //kb
                 let width = 0; //px
                 let height = 0; //px
 
@@ -103,9 +103,9 @@
 
                 file.addEventListener('change', function () {
 
-                    // if (file.files[0].size / 1000 > maxSize) {
-                    //     reject(`The image can not be larger than ${maxSize}kb`)
-                    // }
+                    if (file.files[0].size / 1000 > maxSize) {
+                        reject(`The image can not be larger than ${maxSize}kb`)
+                    }
 
                     //check the size
                     var fileObj = file.files[0];
