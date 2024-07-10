@@ -78,33 +78,34 @@
             return $q((resolve, reject) => {
                 let file = document.createElement('input')
                 file.accept = 'image/*';
+                
                 let maxSize = 0; //kb
                 let width = 0; //px
                 let height = 0; //px
 
-                switch (imgType) {
-                    case 'logo':
-                        maxSize = 200;
-                        width = 800;
-                        height = 800;                        
-                        break;
-                    case 'background':
-                        maxSize = 2048;
-                        width = 2560;
-                        height = 1440;                        
-                        break;
-                    default:
-                        break;
-                }
+                // switch (imgType) {
+                //     case 'logo':
+                //         maxSize = 200;
+                //         width = 800;
+                //         height = 800;                        
+                //         break;
+                //     case 'background':
+                //         maxSize = 2048;
+                //         width = 2560;
+                //         height = 1440;                        
+                //         break;
+                //     default:
+                //         break;
+                // }
 
                 file.type = 'file';
                 file.click();
 
                 file.addEventListener('change', function () {
 
-                    if (file.files[0].size / 1000 > maxSize) {
-                        reject(`The image can not be larger than ${maxSize}kb`)
-                    }
+                    // if (file.files[0].size / 1000 > maxSize) {
+                    //     reject(`The image can not be larger than ${maxSize}kb`)
+                    // }
 
                     //check the size
                     var fileObj = file.files[0];
@@ -114,9 +115,9 @@
                     var objectUrl = _URL.createObjectURL(fileObj);
                     img.onload = function () {
                         _URL.revokeObjectURL(objectUrl);
-                        if(this.width != width || this.height != height){
-                            reject(`The image must be  w:${width}px and h:${height}px`);
-                        }
+                        // if(this.width != width || this.height != height){
+                        //     reject(`The image must be  w:${width}px and h:${height}px`);
+                        // }
 
                         let reader = new FileReader();
                         reader.onloadend = function () {
