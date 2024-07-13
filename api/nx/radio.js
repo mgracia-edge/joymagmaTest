@@ -199,9 +199,6 @@ function _update(req, res) {
         }
 
         const {id, data} = req.body;
-
-        // const {name, duration,start,end,poster} = data;
-        console.log('Query update Radio: ', JSON.stringify(req.body.data))
         let query = {
             find: {
                 _id: id
