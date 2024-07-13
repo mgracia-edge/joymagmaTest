@@ -31,45 +31,56 @@ exports.resourceList = [
 
 /** API Interface  ***/
 
-
-function _entrypoint_get_config(req, res) {
-
+async function _entrypoint_get_config(req, res) {
     const db = pdc.db;
 
-    if (db) {
-        db.Channels.find({"source.entrypointId": req.body.entrypointId}, function (error, channels) {
-            res.send(new api.Success(channels));
-        })
-    } else {
-        res.status(C.error.database.DISCONNECTED.httpCode).send(new
-        api.Error(C.error.database.DISCONNECTED));
+    if (!db) {
+        return res.status(C.error.database.DISCONNECTED.httpCode).send(new
+            api.Error(C.error.database.DISCONNECTED));
+    }
+
+    try {
+        const channels = await db.Channels.find({"source.entrypointId": req.body.entrypointId})
+
+        return res.status(200).send(new api.Success(channels));
+    } catch (error) {
+        console.error(`Error in ext/services.js -- _entrypoint_get_config service: ${error.message}`)        
+        res.status(500).send(new api.Error("Error"))
     }
 }
 
-function _get_channel(req, res) {
-
+async function _get_channel(req, res) {
     const db = pdc.db;
 
-    if (db) {
-        db.Channels.findOne({"entryPoint.streamKey": req.body.streamKey}, function (error, channel) {
-            res.send(new api.Success(channel));
-        })
-    } else {
-        res.status(C.error.database.DISCONNECTED.httpCode).send(new
+    if (!db) {
+        return res.status(C.error.database.DISCONNECTED.httpCode).send(new
         api.Error(C.error.database.DISCONNECTED));
+    }
+        
+    try {
+        const channel = await db.Channels.findOne({"entryPoint.streamKey": req.body.streamKey})
+
+        return res.send(new api.Success(channel));
+    } catch (error) {
+        console.error(`Error in ext/services.js -- _get_channel service: ${error.message}`)        
+        res.status(500).send(new api.Error("Error"))
     }
 }
 
-function _entrypoint_post_status(req, res) {
-
+async function _entrypoint_post_status(req, res) {
     const db = pdc.db;
 
-    if (db) {
-        db.Channels.update({"_id": req.body.channelId,}, function (error, channel) {
-            res.send(new api.Success(channel));
-        })
-    } else {
-        res.status(C.error.database.DISCONNECTED.httpCode).send(new
+    if (!db) {
+        return res.status(C.error.database.DISCONNECTED.httpCode).send(new
         api.Error(C.error.database.DISCONNECTED));
+    }
+
+    try {
+        const channel = await db.Channels.updateOne({"_id": req.body.channelId,})
+        
+        res.send(new api.Success(channel));
+    } catch (error) {
+        console.error(`Error in ext/services.js -- _entrypoint_post_status service: ${error.message}`)        
+        res.status(500).send(new api.Error("Error"))   
     }
 }

@@ -109,7 +109,6 @@ function ContentCtrl($scope, $timeout, Chart, cleanUp, $NxApi, randomColor) {
                         if (match) {
                             value = Math.round(match.concurrency);
                         }
-
                         chartData.channels[channel.id].push(value);
                     }
 
@@ -992,7 +991,6 @@ function GridAudienceCtrl($scope, $timeout, Chart, cleanUp, $NxApi, randomColor)
                         $scope.currentSection = section;
                         if (section.name === CONTENT) {
                             $NxApi.channels.read({namesOnly: true}).then((data)=>{
-                                console.log(data)
                                 $scope.filters.channels = data.map(channel => ({...channel, selected: false}));
                                 // TODO: Other channel acum
                                 //$scope.filters.channels.unshift({_id: 1234567890, name: "Others", poster: [{url:""}], selected: false});
