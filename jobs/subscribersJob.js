@@ -64,7 +64,7 @@ async function computeNewSubscriptionsCount(from, until) {
         let uninstalls = 0;
         let lastDailySubscribersActive = 0;
         
-        const activeUsers = await dc.db.Subscribers.count({
+        const activeUsers = await dc.db.Subscribers.countDocuments({
             creationDate: {$lt: until}
         });
 
@@ -81,13 +81,13 @@ async function computeNewSubscriptionsCount(from, until) {
             lastDailySubscribersActive = lastDailySubscribers.active;
 
             // uninstalls calculation
-            const actualBeforeActiveUsers = await dc.db.Subscribers.count({
+            const actualBeforeActiveUsers = await dc.db.Subscribers.countDocuments({
                 creationDate: {$lt: lastDailySubscribers.untilDate}
             });
             uninstalls = lastDailySubscribers.active - actualBeforeActiveUsers;
 
             // installs calculation
-            const actualAfterActiveUsers = await dc.db.Subscribers.count({
+            const actualAfterActiveUsers = await dc.db.Subscribers.countDocuments({
                 $and: [
                     {creationDate: {$gte: lastDailySubscribers.untilDate}}, 
                     {creationDate: {$lt: until}} 
@@ -97,18 +97,17 @@ async function computeNewSubscriptionsCount(from, until) {
         }
 
         // create a new document
-        dc.db.StatsDailySubscribers.remove({fromDate: from}, (error, data) => {
-            dc.db.StatsDailySubscribers.create({
-                fromDate: from,
-                untilDate: until,
-                active: activeUsers,
-                difference: activeUsers - lastDailySubscribersActive, 
-                uninstalls,
-                installs
-            }, (error, data) => {
-                resolve()
-            })
-        })
+        await dc.db.StatsDailySubscribers.deleteOne({fromDate: from});
 
+        await dc.db.StatsDailySubscribers.create({
+            fromDate: from,
+            untilDate: until,
+            active: activeUsers,
+            difference: activeUsers - lastDailySubscribersActive, 
+            uninstalls,
+            installs
+        })
+        
+        resolve()
     });
 }

@@ -179,36 +179,36 @@ const errorCode = {
 
 /** Checks if error codes are unique **/
 
-(function checkCodes(collections) {
-    let codesSoFar = [];
+// (function checkCodes(collections) {
+//     let codesSoFar = [];
 
-    checkProperties(collections);
+//     checkProperties(collections);
 
-    // Inner Functions
+//     // Inner Functions
 
-    function checkProperties(collection) {
-        for (let i in collection) {
-            if (typeof collection[i].code !== "undefined") {
-                if (codeExists(collection[i].code)) {
-                    console.warn(new Error("Error code duplicated for " + i));
-                } else {
-                    codesSoFar.push(collection[i].code);
-                }
-            } else {
-                checkProperties(collection[i]);
-            }
-        }
-    }
+//     function checkProperties(collection) {
+//         for (let i in collection) {
+//             if (typeof collection[i].code !== "undefined") {
+//                 if (codeExists(collection[i].code)) {
+//                     console.warn(new Error("Error code duplicated for " + i));
+//                 } else {
+//                     codesSoFar.push(collection[i].code);
+//                 }
+//             } else {
+//                 checkProperties(collection[i]);
+//             }
+//         }
+//     }
 
-    function codeExists(code) {
-        for (let i = 0; i < codesSoFar.length; i++) {
-            if (codesSoFar[i] === code) return true;
-        }
+//     function codeExists(code) {
+//         for (let i = 0; i < codesSoFar.length; i++) {
+//             if (codesSoFar[i] === code) return true;
+//         }
 
-        return false;
-    }
+//         return false;
+//     }
 
-})(errorCode);
+// })(errorCode);
 
 exports.error = errorCode;
 exports.users_permissions = users_permissions;
