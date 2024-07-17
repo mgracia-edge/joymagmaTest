@@ -77,26 +77,25 @@ function compile(from, until) {
 
 async function computeNewSubscriptionsCount(from, until) {
     return new Promise(async (resolve, reject) => {
-        let activeUsers = await dc.db.Subscribers.count({creationDate: {$lt: until}});
-        let oldUsers = await dc.db.Subscribers.count({creationDate: {$lt: from}});
+        let activeUsers = await dc.db.Subscribers.countDocuments({creationDate: {$lt: until}});
+        let oldUsers = await dc.db.Subscribers.countDocuments({creationDate: {$lt: from}});
 
-        dc.db.StatsDailyInstalls.remove({date: from}, (error, data) => {
-            dc.db.StatsDailyInstalls.create({
-                date: from,
-                installs: {
-                    total: activeUsers - oldUsers
-                },
-                uninstalls: {
-                    total: 0
-                },
-                active: {
-                    total: activeUsers
-                }
-            }, (error, data) => {
-                resolve()
-            })
+        await dc.db.StatsDailyInstalls.deleteOne({date: from});
+
+        await dc.db.StatsDailyInstalls.create({
+            date: from,
+            installs: {
+                total: activeUsers - oldUsers
+            },
+            uninstalls: {
+                total: 0
+            },
+            active: {
+                total: activeUsers
+            }
         })
-
+        
+        resolve()
     });
 }
 
@@ -149,7 +148,7 @@ async function resumeAndStore(from, until) {
 
 
 function aggregateDevices(from, until) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         let res = {
             ios: 0,
             android: 0,
@@ -157,58 +156,53 @@ function aggregateDevices(from, until) {
             browser: 0
         };
 
-        dc.db.StatsLines.aggregate([
+        const data = await dc.db.StatsLines.aggregate([
                 {$match: {date: {$gte: from, $lte: until}, status: C.statusStates.PLAYING}},
                 {$group: {_id: "$agent", count: {$sum: 1}}},
                 {"$match": {"count": {"$gt": 1}}}
-            ],
-            (err, data) => {
-                for (let device of data) {
+            ])
 
-                    if (parseDevice(device._id) === C.device.ANDROID_TV) {
-                        res.androidTv = device.count
-                    } else {
-                        res.android = device.count
-                    }
+        for (let device of data) {
 
-                }
+            if (parseDevice(device._id) === C.device.ANDROID_TV) {
+                res.androidTv = device.count
+            } else {
+                res.android = device.count
+            }
 
+        }
 
-                resolve(res);
-            })
+        resolve(res);
     });
 }
 
 function aggregateChannels(from, until) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         let res = [];
 
-        dc.db.StatsLines.aggregate([
+        const data = await dc.db.StatsLines.aggregate([
                 {$match: {date: {$gte: from, $lte: until}, status: C.statusStates.PLAYING}},
                 {$group: {_id: "$channelId", count: {$sum: 1}}},
                 {"$match": {"count": {"$gt": 1}}}
-            ],
-            (err, data) => {
-                for (let channel of data) {
-                    res.push({id: channel._id, playingTime: channel.count * 5000});
-                }
+        ])
 
-                resolve(res);
-            })
-    });
+        for (let channel of data) {
+            res.push({id: channel._id, playingTime: channel.count * 5000});
+        }
+
+        resolve(res);
+        });
 }
 
 
-function distinct(field, from, until) {
-    return new Promise((resolve, reject) => {
-        dc.db.StatsLines.find({date: {$gte: from, $lte: until}}).distinct(field, (err, ids) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(ids)
-            }
-        })
-    });
+async function distinct(field, from, until) {
+    try {
+        const ids = await dc.db.StatsLines.find({date: {$gte: from, $lte: until}}).distinct(field);
+    
+        return ids;
+    } catch (error) {
+        return error
+    }
 }
 
 function playingTimeFor(from, until, session) {
@@ -278,18 +272,16 @@ class StatisticsResume {
     }
 }
 
-function insertResume(resume) {
-    return new Promise((resolve, reject) => {
-        dc.db.StatsDailyPlayingResume.remove({date: resume.date}, function (error, data) {
-            dc.db.StatsDailyPlayingResume.create(resume, (error, data) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(data);
-                }
-            });
-        });
-    });
+async function insertResume(resume) {
+    try {
+        await dc.db.StatsDailyPlayingResume.deleteOne({date: resume.date});
+
+        const data = await dc.db.StatsDailyPlayingResume.create(resume);
+
+        return data;
+    } catch (error) {
+        return error;
+    }
 }
 
 function parseDevice(agent) {

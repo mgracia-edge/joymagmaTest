@@ -367,6 +367,7 @@ let getDayCache = [];
 
 async function getADay(req, res) {
     let db = pdc.db;
+    let justChache = null;
 
     if(!db) {
         return res.status(500).send({
@@ -381,7 +382,6 @@ async function getADay(req, res) {
     }
 
     let startDate = Date.now();
-    let justChache = null;
 
     let channelEPGId = justChache !== null ? justChache : req.body.channelEPGId;
 
