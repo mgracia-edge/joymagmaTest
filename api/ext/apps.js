@@ -6,6 +6,7 @@ const parseString = require('xml2js').parseString;
 const api = require("../support");
 const C = require("../codes");
 const pdc = require("../../lib/dataConnection");
+const { default: mongoose } = require("mongoose");
 
 
 let ottConfig = [];
@@ -219,7 +220,7 @@ async function checkSubscriberCredentials(req, res) {
         }
         
         storedSubscriber.password = undefined;
-        return res.status(200).send(new api.Success(storedSubscriber));
+        res.status(200).send(new api.Success(storedSubscriber));
     } catch (error) {
         console.log(`Error in ext/apps.js -- checkSubscriberCredentials service: ${error.message}`)
         
@@ -632,6 +633,7 @@ async function getProductChannels(req, res) {
         const product = await db.Products.findOne({ _id: productId })
 
         if (product === null) {
+            console.log('product null')
             return res.send([]);
         }
 
@@ -641,10 +643,6 @@ async function getProductChannels(req, res) {
             },
             enabled: true
         })
-
-        if (!channels) {
-            return res.send([]);
-        }
 
         return res.send(channels)
     } catch (error) {
@@ -670,7 +668,7 @@ async function getSubscriberContents(req, res) {
     }
 
     try {
-        const subscriber = await db.Subscribers.findOne({_id: subscriberId});
+        const subscriber = await db.Subscribers.findOne({_id: subscriberId}).select('products');
 
         if (!subscriber) {
             return res.status(500).send({
@@ -679,63 +677,42 @@ async function getSubscriberContents(req, res) {
             });
         }
 
+
+        const productsQueries = await getProductChannels(subscriber.products);
         let categories = [];
-        let channels = [];
-        let productsQueries = [];
+        const channels = []
 
-        for (let product of subscriber.products) {
-            productsQueries.push(await getChannelsFor(product))
-        }
 
-        Promise.all(productsQueries).then(async (products) => {
-
-            for (let product of products) {
-                for (let channelId of product.channels) {
-                    channels[channelId] = 1
-                }
+        for (let product of productsQueries) {
+            for (let channelId of product.channels) {
+                channels.push(channelId)
             }
+        };
 
-            let channelsQueries = [];
+        const channelsQueries = await getChannels(channels);
 
-            for (let channelId in channels) {
-                channelsQueries.push(await getChannel(channelId));
+        channelsQueries.sort((a, b) => {
+            let p1 = a?.monitoring?.priority ? a.monitoring.priority : 100;
+            let p2 = b?.monitoring?.priority ? b.monitoring.priority : 100;
+            return p1 - p2;
+        }).map((channel) => {
+            if (!channel || !channel.enabled) return;
+
+            if (categories[channel.category]) {
+                categories[channel.category].push(channel)
+            } else {
+                categories[channel.category] = [channel]
             }
-
-            Promise.all(channelsQueries).then(async (channels) => {
-
-                channels.sort((a, b) => {
-                    let p1 = a && a.priority ? a.priority : 100;
-                    let p2 = b && b.priority ? b.priority : 100;
-                    return p1 - p2;
-                });
-
-                for (let channel of channels) {
-
-
-                    if (!channel || !channel.enabled) continue;
-
-
-                    if (categories[channel.category]) {
-                        categories[channel.category].push(channel)
-                    } else {
-                        categories[channel.category] = [channel]
-                    }
-                }
-            });
-            
         })
         
         await renderResponse(categories)
     } catch (error) {
-        console.log(`Error in ext/apps.js -- getSubscriberContents service: ${error.message}`)
         console.error(`Error in ext/apps.js -- getSubscriberContents service: ${error.message}`);
         res.status(500).send({
             error: 0x0010,
             error_dsc: "Error en la base de datos"
         });
     }
-
-
 
     async function renderResponse(categories) {
         try {
@@ -765,12 +742,10 @@ async function getSubscriberContents(req, res) {
                 return a.priority - b.priority;
             })
 
-            console.log(response)
-
             res.status(200).send(response);
         } catch (error) {
             console.error(`renderResponse helper error: ${error.message}`);
-            res.status(500).send({
+            throw new Error({
                 error: 0x0010,
                 error_dsc: "Error en la base de datos"
             });
@@ -778,34 +753,34 @@ async function getSubscriberContents(req, res) {
     }
 
 
-    async function getChannelsFor(id) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const product = await db.Products.findOne({_id: id}, {updateHistory: 0});
-                
-                resolve(product)
-            } catch (error) {
-                console.error(`getChannelsFor helper error: ${error.message}`);
-                reject({
-                    message: "Error en la base de datos"
-                });   
-            }
-        })
+    async function getProductChannels(ids) {
+        try {
+            const product = await db.Products.find({_id: {
+                $in: ids
+            }}, {updateHistory: 0 })
+            
+            return product;
+        } catch (error) {
+            console.error(`getProductChannels helper error: ${error.message}`);
+            throw new Error({
+                message: "Error en la base de datos"
+            });   
+        }
     }
 
-    async function getChannel(id) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const channel = await db.Channels.findOne({_id: id}, {updateHistory: 0});
+    async function getChannels(ids) {
+        try {
+            const channel = await db.Channels.find({_id: {
+                $in: ids
+            }}, {updateHistory: 0});
 
-                resolve(channel)
-            } catch (error) {
-                console.error(`getChannel helper error: ${error.message}`);
-                reject({
-                    message: "Error en la base de datos"
-                });
-            }
-        })
+            return channel
+        } catch (error) {
+            console.error(`getChannels helper error: ${error.message}`);
+            throw new Error({
+                message: "Error en la base de datos"
+            });
+        }
     }
 }
 
