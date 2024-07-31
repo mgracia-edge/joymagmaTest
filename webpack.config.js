@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const MinifyPlugin = require("babel-minify-webpack-plugin");
+const MinifyPlugin = require("terser-webpack-plugin");
 
 function getJSFiles(root, folderPath) {
     let module = [],
@@ -57,9 +57,7 @@ const config = {
         ]
     },
     plugins: [
-        new MinifyPlugin({
-            mangle: false
-        }, {}),
+        new MinifyPlugin(),
     ],
     module: {
         rules: [{

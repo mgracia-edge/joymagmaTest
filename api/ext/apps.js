@@ -218,8 +218,8 @@ async function checkSubscriberCredentials(req, res) {
                 api.Error(C.error.userRights.NON_EXISTENT_USER));
         }
         
-        return storedSubscriber.password = undefined;
-            res.status(200).send(new api.Success(storedSubscriber));
+        storedSubscriber.password = undefined;
+        return res.status(200).send(new api.Success(storedSubscriber));
     } catch (error) {
         console.log(`Error in ext/apps.js -- checkSubscriberCredentials service: ${error.message}`)
         
